@@ -1,0 +1,21 @@
+
+services:
+    marinerproj:
+      container_name: marinerproj
+      image: he/mariner_proj:dev_build
+      build:
+        args:
+          - "PROJ_NAME=mariner_proj"
+          - "DOCKER_PATH=./mariner_proj/.ac_mariner_proj/docker"
+        context: ../..
+        dockerfile: ./mariner_proj/.ac_mariner_proj/Dockerfile
+      command: create_project
+      volumes:
+        - ../..:/web_root
+      env_file:
+        - ./docker/env_file.env
+      ports:
+        - 8002:8000
+        - 5678:5678
+      stdin_open: true
+      tty: true
