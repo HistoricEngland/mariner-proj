@@ -13,7 +13,7 @@ try:
 except ImportError:
     pass
 
-APP_NAME = "Mariner"
+APP_NAME = "mariner_proj"
 APP_VERSION = semantic_version.Version(major=1, minor=0, patch=0)
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
