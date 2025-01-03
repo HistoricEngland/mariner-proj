@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 APP_NAME = "mariner_proj"
-APP_VERSION = semantic_version.Version(major=0, minor=0, patch=0)
+APP_VERSION = semantic_version.Version(major=1, minor=0, patch=0)
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 WEBPACK_LOADER = {
@@ -59,7 +59,7 @@ DEBUG = True
 ROOT_URLCONF = "mariner_proj.urls"
 ROOT_HOSTCONF = "mariner_proj.hosts"
 
-DEFAULT_HOST = "mariner_proj"
+DEFAULT_HOST = "mariner"
 
 # Modify this line as needed for your project to connect to elasticsearch with a password that you generate
 ELASTICSEARCH_CONNECTION_OPTIONS = {
@@ -81,7 +81,7 @@ ELASTICSEARCH_CONNECTION_OPTIONS = {
 # Or Kibana: https://www.elastic.co/guide/en/kibana/current/api-keys.html
 
 # a prefix to append to all elasticsearch indexes, note: must be lower case
-ELASTICSEARCH_PREFIX = "mariner_proj"
+ELASTICSEARCH_PREFIX = "mariner"
 
 ELASTICSEARCH_CUSTOM_INDEXES = []
 # [{
@@ -109,7 +109,7 @@ DATABASES = {
         "CONN_MAX_AGE": 0,
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "HOST": "localhost",
-        "NAME": "mariner_proj",
+        "NAME": "mariner",
         "OPTIONS": {},
         "PASSWORD": "postgis",
         "PORT": "5432",
@@ -250,7 +250,7 @@ RATE_LIMIT = "5/m"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
 
 # Unique session cookie ensures that logins are treated separately for each app
-SESSION_COOKIE_NAME = "mariner_proj"
+SESSION_COOKIE_NAME = "mariner"
 
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
@@ -286,9 +286,9 @@ GRAPH_MODEL_CACHE_TIMEOUT = None
 
 OAUTH_CLIENT_ID = ""  #'9JCibwrWQ4hwuGn5fu2u1oRZSs9V6gK8Vu8hpRC4'
 
-APP_TITLE = "Arches | Heritage Data Management"
+APP_TITLE = "Mariner"
 COPYRIGHT_TEXT = "All Rights Reserved."
-COPYRIGHT_YEAR = "2019"
+COPYRIGHT_YEAR = "2025"
 
 ENABLE_CAPTCHA = False
 # RECAPTCHA_PUBLIC_KEY = ''
