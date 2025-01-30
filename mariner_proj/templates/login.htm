@@ -11,7 +11,7 @@
 
 	<header>
 		<div class="header-bar">
-			<div title="Mariner - login page" class="header-bar__logo">
+			<div title="NMHR - login page" class="header-bar__logo">
 				<div class="header-bar__logo-heading">
 					<a href="/" class="header-bar__logo-link" aria-label="Link to homepage">
 						<img class="header-bar__logo-image" src="{{ STATIC_URL }}img/HE_Logo_RGB.svg" alt="Historic England logo">
@@ -28,7 +28,7 @@
 					{% trans "Sign In" %}
 				</legend>
 				<p>
-					{% trans "If you don't have an account, please email<br /><a href=\"mailto:Maritime@HistoricEngland.org.uk\">Maritime@HistoricEngland.org.uk</a>" %}
+					{% trans "Login access to this site is by invitation only. More information on the NMHR is available on <a href=\"#\">our website</a>." %}
 				</p>
 				{% csrf_token %}
 				<input type="hidden" name="next" value="{{ next }}" />
@@ -55,7 +55,7 @@
 			</fieldset>
 		</form>
 		<div class="row row-cancel-button">
-			<button id="login-cancel-button" class="btn btn-lg btn-default" onclick="location.href='/';" onkeyup="if(event.which == 13 || event.keyCode == 13){ location.href='/'; }">{% trans "Return to Mariner home" %}</button>
+			<button id="login-cancel-button" class="btn btn-lg btn-default" onclick="location.href='/';" onkeyup="if(event.which == 13 || event.keyCode == 13){ location.href='/'; }">{% trans "Return to NMHR home" %}</button>
 		</div>
 	</main>
 
