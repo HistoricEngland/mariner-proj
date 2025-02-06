@@ -48,9 +48,9 @@
 					<button id ="sign-in-button" class="btn btn-primary btn-lg" type="submit">{% trans "Sign in" %}</button>
 				</div>
 				<div style="{% if not auth_failed %}display:none;{% endif %}" id="login-failed-alert" class="alert alert-danger fade in" role="alert" aria-live="Assertive">
-					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
+					<button type="button" class="close" data-dismiss="alert" onclick="document.getElementById('login-failed-alert').remove();"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
 					<p class="alert-title">{% trans "Login failed" %}</p>
-					<span>{% trans "Invalid username and/or password." %}</span>
+					<span role="alert" id="login-fail-message">{% if rate_limited %}{% trans "Too many requests." %}{% else %}{% trans "Invalid username and/or password." %}{% endif %}</span>
 				</div>
 			</fieldset>
 		</form>
