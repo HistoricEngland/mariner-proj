@@ -77,12 +77,21 @@ RUN rm -rf /root/.cache/pip/*
 COPY $ARCHES_PATH ${ARCHES_ROOT}
 RUN chmod +x ${ARCHES_ROOT}/arches/install/arches_admin.py
 
+RUN pip install --upgrade pip setuptools wheel
+
+# Install the mariner_app package first  <<<<<<<<<<<<<< NOT WORKING YET, NEED TO FIX. RUN IN SHELL FOR NOW
+ENV MARINER_APP=${WEB_ROOT}/mariner_app
+WORKDIR ${MARINER_APP}
+#RUN ls -la ${MARINER_APP}
+#RUN pip install -e '.[dev]'
+
 # From here, run commands from ARCHES_ROOT
 WORKDIR ${ARCHES_ROOT}
 
-RUN pip install --upgrade pip setuptools wheel
+# Install the local editable Arches to override the installed package - this is so we can debug Arches
 RUN pip install -e '.[dev]'
 RUN pre-commit install
+
 
 COPY $DOCKER_PATH/entrypoint.sh /entrypoint.sh
 RUN chmod -R 700 /entrypoint.sh && \
