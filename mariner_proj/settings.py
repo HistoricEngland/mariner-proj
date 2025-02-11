@@ -28,6 +28,10 @@ FUNCTION_LOCATIONS.append("mariner_proj.functions")
 ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
 
+DATATYPE_LOCATIONS.append('mariner_app.datatypes')
+FUNCTION_LOCATIONS.append('mariner_app.functions')
+SEARCH_COMPONENT_LOCATIONS.append('mariner_app.search.components')
+
 LOCALE_PATHS.insert(0, os.path.join(APP_ROOT, "locale"))
 
 FILE_TYPE_CHECKING = "lenient"
@@ -143,11 +147,14 @@ INSTALLED_APPS = (
     "django_celery_results",
     # "silk",
     "mariner_proj",  # Ensure the project is listed before any other arches applications
+    "mariner_app",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
 INSTALLED_APPS += ("arches.app",)
+
+ARCHES_APPLICATIONS = ("mariner_app",)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

@@ -4,7 +4,10 @@ from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
 
 urlpatterns = [
-    # project-level urls
+    # add project urls here before mariner_app urls
+
+    # added mariner_app
+    path("", include("mariner_app.urls")),
 ]
 
 # Ensure Arches core urls are superseded by project-level urls
