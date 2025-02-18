@@ -136,7 +136,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <img src="{% webpack_static 'img/landing/featurette1.png' %}" alt="Photo of the London landscape" class="img-rounded img-responsive">
                 </div>
             </div>
-            <div class="row featurette2">
+            <div class="featurette2">
                 <div class="searchbtn-container">
                     <p>
                         <a class="btn btn-primary btn-lg" href="/search" role="button">Search the National Marine Historic Environment Record</a>
@@ -152,21 +152,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </ol>
                 </div>
             </div>
-            <div class="row featurette3">
+            <div class="featurette3">
                 <h2 id="bm-what-service">What is the Marine Historic Environment Service?</h2>
                 <p>The Marine HER Service is the first port of call for anyone seeking information about heritage that is located
                     in England's seas and tidal waters, from the mean high water mark out to the edge of the offshore marine
-                    planning area [KM to source map]. We provide access to, and maintenance and enhancement of the National
+                    planning area <span class="tbc-highlight">[KM to source map]</span>. We provide access to, and maintenance and enhancement of the National
                     Marine Heritage Record.</p>
             </div>
-            <div class="row featurette3">
+            <div class="featurette3">
                 <h2 id="bm-what-record">What is the National Marine Heritage Record?</h2>
                 <p>The National Marine Heritage Record (NMHR) documents England's coastal, intertidal and underwater heritage,
                     from the prehistoric submerged landscapes of Doggerland in the North Sea, to WWII sea defences, to newly
                     discovered wrecks. It is constantly updated with the latest available research, by Historic England marine
                     and coastal specialists.</p>
             </div>
-            <div class="row featurette3">
+            <div class="featurette3">
                 <h2 id="bm-records-held">What type of records do we hold?</h2>
                 <p>We hold records detailing archaeological investigations of coastal structures, and intertidal and underwater
                     sites including over 6,000 shipwrecks and aircraft wrecks, obstructions, submerged prehistoric landscapes,
@@ -177,17 +177,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     records that document 31,000 recorded vessel losses, where no physical site has been found, based on
                     historical documentary evidence such as historic news articles and Lloyds listings.</p>
             </div>
-            <div class="row featurette3">
+            <div class="featurette3">
                 <h2 id="bm-records-provide">What type of records do we provide?</h2>
                 <p>Dependant on the type of the query, we can provide genealogical information, archaeological information,
-                    spatial data in a range of formats, etc. (TBC)</p>
+                    spatial data in a range of formats, etc <span class="tbc-highlight">[KM to expand on this]. 
+                        [Say something about HE open data commitments].</span></p>
+                <div class="row featurette3-row">
+                    <div class="thumbnail featurette-image-block featurette3-first-block">
+                        <img src="{% webpack_static 'img/landing/about-left.png' %}" alt="Left">
+                        <div class="caption">
+                            <a href="https://historicengland.org.uk/research/current/heritage-science/" target="_blank">Historic England archaeologist Mark Dunkley recording the condition of an early iron cannon off the Farne Islands© Wessex Archaeology for Historic England</a>
+                        </div>
+                    </div>
+                    <div class="thumbnail featurette-image-block">
+                        <img src="{% webpack_static 'img/landing/about-right.png' %}" alt="Right">
+                        <div class="caption">
+                            <a href="https://historicengland.org.uk/whats-new/research/back-issues/waves-over-woodlands/" target="_blank">Overview of the southern part of the exposed intertidal peat / submerged forest deposit at the Pett Level coast, looking approximately south-west</a>
+                        </div>
+                    </div>
+                </div>
+                <p><span class="tbc-highlight">[May link externally to Citizan and other partner organisations who are providing data - to be discussed]</span></p>
             </div>
-            <div class="row featurette3">
-                <h2 id="bm-records-provide">What type of records do we provide?</h2>
-                <p>Dependant on the type of the query, we can provide genealogical information, archaeological information,
-                    spatial data in a range of formats, etc. (TBC)</p>
+            <div class="featurette3">
+                <h2 id="bm-what-record">How to use the Marine HER Service</h2>
+                <p>Anyone can use this service. <span class="tbc-highlight">Details to be provided (e.g. public and academic users vs commercial
+                    guidelines - likely to follow GLHER, but tbc).</span></p>
             </div>
-            <div class="row featurette7">
+            <div class="featurette7">
                 <h2>Contact Us</h2>
                 <div class="jumbotron">
                     <h3>The Marine Historic Environment Record Service</h3>
@@ -198,7 +214,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </div>
                             <div class="contact-details">
                                 <p><strong>Website</strong><br/>
-                                    <a href="#" target="_blank">Website for The National Marine Historic Environment Record (TBC)</a></p>
+                                    <a href="#" target="_blank">Website for The National Marine Historic Environment Record <span class="tbc-highlight">(TBC)</span></a></p>
                             </div>
                         </div>
                     </div>
@@ -209,7 +225,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </div>
                             <div class="contact-details">
                                 <p><strong>Address</strong><br>
-                                    TBC</p>
+                                    <span class="tbc-highlight">TBC</span></p>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -218,11 +234,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </div>
                             <div class="contact-details">
                                 <p><strong>Phone number</strong><br>
-                                    TBC</p>
+                                    <span class="tbc-highlight">TBC</span></p>
                             </div>
                         </div>
                     </div>
-                    <p><a class="btn btn-primary btn-lg" href="#" role="button">View on map</a></p>
                 </div>
                 <div>
                     <p>All photographs used on this page are &copy; Historic England Archive</p>
@@ -252,15 +267,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-8 col-sm-9 glher-text-container">
-                        <p class="glaas-title">Greater London Archaeology Advisory Service<br/>
-                            (GLAAS)</p>
+                <div>
+                    <div class="col-xs-8 col-sm-9 nmhr-text-container">
+                        <p class="nmhr-title">National Marine Historic Environment Record<br/>
+                            (NMHR)</p>
                     </div>
                     <div class="col-xs-4 col-sm-3 footer-top-contact-details">
                         <p><strong>Contact Us</strong></p>
                         <p>For enquiry, please contact<br/>
-                            <a href="mailto:Glaas@historicEngland.org.uk">Glaas@historicEngland.org.uk</a></p>
+                            <a href="mailto:Maritime@HistoricEngland.org.uk">Maritime@HistoricEngland.org.uk</a></p>
                     </div>
                 </div>
             </div>
