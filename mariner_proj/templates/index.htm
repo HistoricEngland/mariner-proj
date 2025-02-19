@@ -105,10 +105,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             {% if user.username == 'anonymous' %}
                             <a class="btn btn-primary btn-lg hidden-xs" id="auth-link"
                                 href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">
-                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Login icon" class="icon-user">{% trans "Sign in" %}</a>
+                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user">{% trans "Sign in" %}</a>
                             <a class="mobile-menu-sign-in visible-xs-*" id="auth-link"
                                 href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">
-                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Login icon" class="icon-user hidden-xs">{% trans "Sign in" %}</a>
+                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user hidden-xs">{% trans "Sign in" %}</a>
                             {% else %}
                             <a class="auth-welcome" href="{% url 'user_profile_manager' %}">
                                 {% trans "Welcome, " %} {{ user.first_name|default:user.username }}
@@ -153,21 +153,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
             </div>
             <div class="featurette3">
-                <h2 id="bm-what-service">What is the Marine Historic Environment Service?</h2>
+                <h2 id="bm-what-service" tabindex="0" role="heading" aria-level="2">What is the Marine Historic Environment Service?</h2>
                 <p>The Marine HER Service is the first port of call for anyone seeking information about heritage that is located
                     in England's seas and tidal waters, from the mean high water mark out to the edge of the offshore marine
                     planning area <span class="tbc-highlight">[KM to source map]</span>. We provide access to, and maintenance and enhancement of the National
                     Marine Heritage Record.</p>
             </div>
             <div class="featurette3">
-                <h2 id="bm-what-record">What is the National Marine Heritage Record?</h2>
+                <h2 id="bm-what-record" tabindex="0" role="heading" aria-level="2">What is the National Marine Heritage Record?</h2>
                 <p>The National Marine Heritage Record (NMHR) documents England's coastal, intertidal and underwater heritage,
                     from the prehistoric submerged landscapes of Doggerland in the North Sea, to WWII sea defences, to newly
                     discovered wrecks. It is constantly updated with the latest available research, by Historic England marine
                     and coastal specialists.</p>
             </div>
             <div class="featurette3">
-                <h2 id="bm-records-held">What type of records do we hold?</h2>
+                <h2 id="bm-records-held" tabindex="0" role="heading" aria-level="2">What type of records do we hold?</h2>
                 <p>We hold records detailing archaeological investigations of coastal structures, and intertidal and underwater
                     sites including over 6,000 shipwrecks and aircraft wrecks, obstructions, submerged prehistoric landscapes,
                     marine buildings and structures (such as seaforts, fish traps, docks, harbours, jetties, sea defences), and
@@ -178,19 +178,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     historical documentary evidence such as historic news articles and Lloyds listings.</p>
             </div>
             <div class="featurette3">
-                <h2 id="bm-records-provide">What type of records do we provide?</h2>
+                <h2 id="bm-records-provide" tabindex="0" role="heading" aria-level="2">What type of records do we provide?</h2>
                 <p>Dependant on the type of the query, we can provide genealogical information, archaeological information,
                     spatial data in a range of formats, etc <span class="tbc-highlight">[KM to expand on this]. 
                         [Say something about HE open data commitments].</span></p>
                 <div class="row featurette3-row">
                     <div class="thumbnail featurette-image-block featurette3-first-block">
-                        <img src="{% webpack_static 'img/landing/about-left.png' %}" alt="Left">
+                        <img src="{% webpack_static 'img/landing/about-left.png' %}" alt="">
                         <div class="caption">
                             <a href="https://historicengland.org.uk/research/current/heritage-science/" target="_blank">Historic England archaeologist Mark Dunkley recording the condition of an early iron cannon off the Farne Islands© Wessex Archaeology for Historic England</a>
                         </div>
                     </div>
                     <div class="thumbnail featurette-image-block">
-                        <img src="{% webpack_static 'img/landing/about-right.png' %}" alt="Right">
+                        <img src="{% webpack_static 'img/landing/about-right.png' %}" alt="">
                         <div class="caption">
                             <a href="https://historicengland.org.uk/whats-new/research/back-issues/waves-over-woodlands/" target="_blank">Overview of the southern part of the exposed intertidal peat / submerged forest deposit at the Pett Level coast, looking approximately south-west</a>
                         </div>
@@ -199,7 +199,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <p><span class="tbc-highlight">[May link externally to Citizan and other partner organisations who are providing data - to be discussed]</span></p>
             </div>
             <div class="featurette3">
-                <h2 id="bm-what-record">How to use the Marine HER Service</h2>
+                <h2>How to use the Marine HER Service</h2>
                 <p>Anyone can use this service. <span class="tbc-highlight">Details to be provided (e.g. public and academic users vs commercial
                     guidelines - likely to follow GLHER, but tbc).</span></p>
             </div>
@@ -210,7 +210,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="row website-details">
                         <div class="col-xs-12">
                             <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-website.svg' %}" width="25" height="25" alt="Website icon">
+                                <img src="{% webpack_static 'img/landing/contact-website.svg' %}" width="25" height="25" alt="">
                             </div>
                             <div class="contact-details">
                                 <p><strong>Website</strong><br/>
@@ -221,7 +221,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="row address-phone">
                         <div class="col-sm-6">
                             <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-address.svg' %}" width="25" height="25" alt="Address icon">
+                                <img src="{% webpack_static 'img/landing/contact-address.svg' %}" width="25" height="25" alt="">
                             </div>
                             <div class="contact-details">
                                 <p><strong>Address</strong><br>
@@ -230,7 +230,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <div class="col-sm-6">
                             <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-phone.svg' %}" width="25" height="25" alt="Phone icon">
+                                <img src="{% webpack_static 'img/landing/contact-phone.svg' %}" width="25" height="25" alt="">
                             </div>
                             <div class="contact-details">
                                 <p><strong>Phone number</strong><br>
