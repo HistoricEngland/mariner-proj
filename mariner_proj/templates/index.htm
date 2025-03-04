@@ -80,17 +80,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <div id="navbar" class="navbar-collapse collapse no-transition">
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active">
-                            <a href="/">Home</a>
-                        </li>
                         {% for p in plugins %}
                         <li>
                             <a href="{% url p.slug %}">{{ p.name }}</a>
                         </li>
                         {% endfor %}
-                        <li>
-                            <a href="{% url 'search_home' %}">{% trans "Search" %}</a>
-                        </li>
                         {% if user|can_create_resource_instance and user.username != 'anonymous' %}
                         <li>
                             <a href="{% url 'resource' %}" target="_blank">{% trans "Manage" %}</a>
@@ -111,7 +105,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user hidden-xs">{% trans "Sign in" %}</a>
                             {% else %}
                             <a class="auth-welcome" href="{% url 'user_profile_manager' %}">
-                                {% trans "Welcome, " %} {{ user.first_name|default:user.username }}
+                                {% trans "Profile" %}
                             </a>
                         </li>
                         <li>
