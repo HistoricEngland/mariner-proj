@@ -263,7 +263,7 @@ PREFERRED_COORDINATE_SYSTEMS = (
         "name": "LatLong",
         "srid": "4326",
         "proj4": "+proj=longlat +datum=WGS84 +no_defs",
-        "default": False
+        "default": False,
     },  # Required
 )
 
@@ -304,7 +304,11 @@ TIMEWHEEL_DATE_TIERS = {
         "name": "Century",
         "interval": 100,
         # "range": {"min": 1500, "max": 2000},
-        "child": {"name": "Decade", "interval": 10, "range": {"min": 1750, "max": 2100}},
+        "child": {
+            "name": "Decade",
+            "interval": 10,
+            "range": {"min": 1750, "max": 2100},
+        },
     },
 }
 
@@ -407,9 +411,11 @@ CONTACT_WEBSITE = "#"
 
 # Dictionary containing any additional context items for customising email templates
 EXTRA_EMAIL_CONTEXT = {
-    "contact_email":CONTACT_EMAIL,
-    "contact_website":CONTACT_WEBSITE,
-    "expiration":(datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)).strftime("%A, %d %B %Y")
+    "contact_email": CONTACT_EMAIL,
+    "contact_website": CONTACT_WEBSITE,
+    "expiration": (
+        datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)
+    ).strftime("%A, %d %B %Y"),
 }
 
 # see https://docs.djangoproject.com/en/1.9/topics/i18n/translation/#how-django-discovers-language-preference
