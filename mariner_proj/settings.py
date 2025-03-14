@@ -252,6 +252,21 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
 # Unique session cookie ensures that logins are treated separately for each app
 SESSION_COOKIE_NAME = "mariner"
 
+PREFERRED_COORDINATE_SYSTEMS = (
+    {
+        "name": "BNG",
+        "srid": "27700",
+        "proj4": "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs",
+        "default": False,
+    },
+    {
+        "name": "LatLong",
+        "srid": "4326",
+        "proj4": "+proj=longlat +datum=WGS84 +no_defs",
+        "default": True,
+    },  # Required
+)
+
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
     "default": {
@@ -279,6 +294,23 @@ EXPORT_DATA_FIELDS_IN_CARD_ORDER = False
 
 # Identify the usernames and duration (seconds) for which you want to cache the time wheel
 CACHE_BY_USER = {"default": 3600 * 24, "anonymous": 3600 * 24}  # 24hrs  # 24hrs
+
+TIMEWHEEL_DATE_TIERS = {
+    "name": "Millennium",
+    "interval": 1000,
+    "range": {"min": -2000, "max": 3000},
+    "root": True,
+    "child": {
+        "name": "Century",
+        "interval": 100,
+        # "range": {"min": 1500, "max": 2000},
+        "child": {
+            "name": "Decade",
+            "interval": 10,
+            "range": {"min": 1750, "max": 2100},
+        },
+    },
+}
 
 TILE_CACHE_TIMEOUT = 600  # seconds
 CLUSTER_DISTANCE_MAX = 5000  # meters
@@ -314,8 +346,8 @@ CELERY_RESULT_BACKEND = (
 CELERY_TASK_SERIALIZER = "json"
 
 
-CELERY_SEARCH_EXPORT_EXPIRES = 24 * 3600  # seconds
-CELERY_SEARCH_EXPORT_CHECK = 3600  # seconds
+CELERY_SEARCH_EXPORT_EXPIRES = 60 * 3  # seconds
+CELERY_SEARCH_EXPORT_CHECK = 15  # seconds
 
 CELERY_BEAT_SCHEDULE = {
     "delete-expired-search-export": {
@@ -373,9 +405,14 @@ RESTRICT_MEDIA_ACCESS = False
 # value and is not signed in with a user account then the request will not be allowed.
 RESTRICT_CELERY_EXPORT_FOR_ANONYMOUS_USER = False
 
+# Contact settings
+CONTACT_EMAIL = "#"
+CONTACT_WEBSITE = "#"
+
 # Dictionary containing any additional context items for customising email templates
 EXTRA_EMAIL_CONTEXT = {
-    "salutation": _("Hi"),
+    "contact_email": CONTACT_EMAIL,
+    "contact_website": CONTACT_WEBSITE,
     "expiration": (
         datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)
     ).strftime("%A, %d %B %Y"),
