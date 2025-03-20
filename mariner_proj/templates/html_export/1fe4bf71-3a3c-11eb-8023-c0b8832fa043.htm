@@ -1,0 +1,29 @@
+{% load template_tags %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Test model places</title>
+      {% include 'html_export/milligram.htm' %}
+      {% include 'html_export/custom_style.htm' %}
+   </head>
+   <body>
+      <header>
+         {% include 'html_export/custom_header.htm' %}
+         <h1>Places</h1>
+      </header>
+      <main>
+         {% for resource in resources %}
+         {% with resource_data=resource.resource %}
+         <section>
+            <blockquote>
+               <h2>{{ resource.displayname }} </h2>
+            </blockquote>
+         </section>
+         {% endwith %}
+         {% endfor %}
+      </main>
+   </body>
+</html>
