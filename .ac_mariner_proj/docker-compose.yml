@@ -13,6 +13,7 @@ services:
       volumes:
         - ../../arches:/web_root/arches
         - ../../mariner_proj:/web_root/mariner_proj
+        - ../../mariner_app:/web_root/mariner_app
         - ./docker:/web_root/docker
         - ../../mariner_proj-package:/web_root/mariner_proj_package
         - ../../mariner_proj-data:/web_root/mariner_proj_data
@@ -55,6 +56,7 @@ services:
       volumes:
         - ../../arches:/web_root/arches
         - ../../mariner_proj:/web_root/mariner_proj
+        - ../../mariner_app:/web_root/mariner_app
       env_file:
         - ./docker/env_file.env
       ports:
@@ -71,6 +73,7 @@ services:
       volumes:
         - ../../arches:/web_root/arches
         - ../../mariner_proj:/web_root/mariner_proj
+        - ../../mariner_app:/web_root/mariner_app
       env_file:
         - ./docker/env_file.env
       ports:

@@ -5,6 +5,7 @@ USER root
 ARG PROJ_NAME=project
 ARG ARCHES_PATH=./arches
 ARG DOCKER_PATH=./docker
+ARG MARINER_APP_PATH=./mariner_app
 
 ## Setting default environment variables
 ENV ARCHES_PROJECT=$PROJ_NAME
@@ -77,12 +78,21 @@ RUN rm -rf /root/.cache/pip/*
 COPY $ARCHES_PATH ${ARCHES_ROOT}
 RUN chmod +x ${ARCHES_ROOT}/arches/install/arches_admin.py
 
+RUN pip install --upgrade pip setuptools wheel
+
+# Install the mariner_app package first
+ENV MARINER_APP=${WEB_ROOT}/mariner_app
+COPY $MARINER_APP_PATH ${MARINER_APP}
+WORKDIR ${MARINER_APP}
+RUN pip install -e '.[dev]'
+
 # From here, run commands from ARCHES_ROOT
 WORKDIR ${ARCHES_ROOT}
 
-RUN pip install --upgrade pip setuptools wheel
+# Install the local editable Arches to override the installed package - this is so we can debug Arches
 RUN pip install -e '.[dev]'
 RUN pre-commit install
+
 
 COPY $DOCKER_PATH/entrypoint.sh /entrypoint.sh
 RUN chmod -R 700 /entrypoint.sh && \
