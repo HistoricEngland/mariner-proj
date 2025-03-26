@@ -5,7 +5,6 @@ from django.urls import include, path
 
 urlpatterns = [
     # add project urls here before mariner_app urls
-
     # added mariner_app
     path("", include("mariner_app.urls")),
 ]

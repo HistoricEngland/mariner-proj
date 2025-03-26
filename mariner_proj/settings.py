@@ -28,9 +28,9 @@ FUNCTION_LOCATIONS.append("mariner_proj.functions")
 ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
 
-DATATYPE_LOCATIONS.append('mariner_app.datatypes')
-FUNCTION_LOCATIONS.append('mariner_app.functions')
-SEARCH_COMPONENT_LOCATIONS.append('mariner_app.search.components')
+DATATYPE_LOCATIONS.append("mariner_app.datatypes")
+FUNCTION_LOCATIONS.append("mariner_app.functions")
+SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
 
 LOCALE_PATHS.insert(0, os.path.join(APP_ROOT, "locale"))
 
