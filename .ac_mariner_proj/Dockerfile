@@ -80,7 +80,12 @@ RUN chmod +x ${ARCHES_ROOT}/arches/install/arches_admin.py
 
 RUN pip install --upgrade pip setuptools wheel
 
-# Install the mariner_app package first
+# Install the project
+COPY ./${PROJ_NAME} ${APP_ROOT}
+WORKDIR ${APP_ROOT}
+RUN pip install -e '.[dev]'
+
+# Install the mariner_app package in editable mode
 ENV MARINER_APP=${WEB_ROOT}/mariner_app
 COPY $MARINER_APP_PATH ${MARINER_APP}
 WORKDIR ${MARINER_APP}
