@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         """
         # Update languageid to 'en-us'
         Value = apps.get_model("models", "Value")
-        Value.objects.filter(language_id='en-US').update(language_id='en-us')
+        Value.objects.filter(language_id="en-US").update(language_id="en-us")
 
         # Drop schemas if they exist
         schemas_to_drop = [
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             "period",
             "person",
             "place",
-            "wreck_site"
+            "wreck_site",
         ]
         for schema in schemas_to_drop:
             schema_editor.execute(f"DROP SCHEMA IF EXISTS {schema} CASCADE")
