@@ -9,6 +9,10 @@ from arches.app.utils.betterJSONSerializer import JSONSerializer, JSONDeserializ
 import uuid
 import datetime
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def publish_graphs_after_restore(apps, schema_editor):
     """
@@ -24,23 +28,20 @@ def publish_graphs_after_restore(apps, schema_editor):
         if not system_user:
             raise Exception("No superuser found to publish graphs.")
 
-    # Get all unpublished resource graphs excluding the system settings model
     graphs_to_publish = Graph.objects.filter(
         isresource=True, publication__isnull=True
     ).exclude(graphid=system_settings_id)
 
-    # Publish each graph using proxy function
     for graph in graphs_to_publish:
-        #publish_proxy(apps, graph, system_user, notes=_("Published after restore"))
         try:
             graph.publish(
                 user=system_user,
                 notes=_("Published after restore"),
             )
         except Exception as e:
+            logger.error(f"Failed to publish graph {graph.graphid}: {e}")
             raise UnpublishedModelError(e)
-        
-        
+
 
 class Migration(migrations.Migration):
 
