@@ -26,9 +26,7 @@ def publish_graphs_after_restore(apps, schema_editor):
         if not system_user:
             raise Exception("No superuser found to publish graphs.")
 
-    graphs_to_publish = Graph.objects.filter(
-        isresource=True, publication__isnull=True
-    )
+    graphs_to_publish = Graph.objects.filter(isresource=True, publication__isnull=True)
 
     for graph in graphs_to_publish:
         try:
