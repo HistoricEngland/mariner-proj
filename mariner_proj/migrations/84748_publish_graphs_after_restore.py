@@ -18,8 +18,6 @@ def publish_graphs_after_restore(apps, schema_editor):
     """
     Publish all graphs after restore
     """
-    system_settings_id = settings.SYSTEM_SETTINGS_RESOURCE_MODEL_ID
-
     try:
         system_user = User.objects.get(username="admin")
     except User.DoesNotExist:
@@ -30,7 +28,7 @@ def publish_graphs_after_restore(apps, schema_editor):
 
     graphs_to_publish = Graph.objects.filter(
         isresource=True, publication__isnull=True
-    ).exclude(graphid=system_settings_id)
+    )
 
     for graph in graphs_to_publish:
         try:
