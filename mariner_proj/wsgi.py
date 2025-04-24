@@ -31,9 +31,13 @@ if path not in sys.path:
 os.environ["DJANGO_SETTINGS_MODULE"] = "mariner_proj.settings"
 
 from django.core.wsgi import get_wsgi_application
-
-application = get_wsgi_application()
-
 from arches.app.models.system_settings import settings
 
-settings.update_from_db()
+original_application = get_wsgi_application()
+
+# This is a wrapper function that will be called instead of the original application
+def application_with_lazy_settings(environ, start_response):
+    settings.update_from_db()
+    return original_application(environ, start_response)
+
+application = application_with_lazy_settings
