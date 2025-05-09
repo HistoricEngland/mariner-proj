@@ -31,6 +31,10 @@ function buildFilepathLookup(path, staticUrlPrefix) {
         if (file.match(new RegExp(Path.sep + '\\.')) || file.match(/^\./)) {
             return lookup;
         }
+
+        // applies Windows fix from this information: https://community.archesproject.org/t/lessons-from-arches-7-6-upgrade-on-a-windows-server/2604
+        file = file.replace(/\\/g ,'/')
+        
         const extension = file.match(/[^.]+$/).toString();
         const extensionReplacementRegex = new RegExp(`\\.${extension}$`);
 
