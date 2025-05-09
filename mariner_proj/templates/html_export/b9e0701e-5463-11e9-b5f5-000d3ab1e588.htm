@@ -294,15 +294,62 @@
         <hr/>
         {% endif %}
 
-        {# Associated Monuments/Areas/Artefacts/Maritime Vessels/Historic Aircraft #}
-        {% if resource_data|has_key:"Associated Monuments and Areas" %}
+        {# Associated Monuments, Sites and Artefacts #}
+        {% if resource_data|has_key:"Associated Monuments, Sites and Artefacts" %}
         <section>
             <div class="container">
-                <h3>Associated Monuments/Areas/Artefacts/Maritime Vessels/Historic Aircraft</h3>
+                <h3>Associated Monuments, Sites and Artefacts</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {{ resource_data|val_from_key:"Associated Monuments and Areas"|val_from_key:"@display_value" }}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Monument, Site or Artefact</div>
+                                    <div class="rcell">Association Type</div>
+                                </div>
+                                {% for monument in resource_data|val_from_key:"Associated Monuments, Sites and Artefacts" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Monument, Site or Artefact">
+                                        {{ monument|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Association Type">
+                                        {{ monument|val_from_key:"Asset Association Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Wrecks, Crash Sites, Vessels or Aircraft #}
+        {% if resource_data|has_key:"Associated Wrecks, Vessels or Aircraft" %}
+        <section>
+            <div class="container">
+                <h3>Associated Wrecks, Crash Sites, Vessels or Aircraft</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Wreck, Crash Site, Vessel or Aircraft</div>
+                                    <div class="rcell">Association Type</div>
+                                </div>
+                                {% for wreck in resource_data|val_from_key:"Associated Wrecks, Vessels or Aircraft" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Wreck, Crash Site, Vessel or Aircraft">
+                                        {{ wreck|val_from_key:"Wreck, Crash Site, Vessel or Aircraft"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Association Type">
+                                        {{ wreck|val_from_key:"Asset Association Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
