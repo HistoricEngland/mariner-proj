@@ -140,6 +140,46 @@
         <hr/>
         {% endif %}
 
+        {# Associated Actors #}
+        {% if resource_data|has_key:"Associated Actors" %}
+        <section>
+            <div class="container">
+                <h3>Associated Actors</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Person or Organisation</div>
+                                    <div class="rcell">Role Type</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                </div>
+                                {% for actor in resource_data|val_from_key:"Associated Actors" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Associated Actor">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Role Type">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Associated Actor Start Date">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Associated Actor End Date">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Location Data #}
         {% if resource_data|has_key:"Location Data" %}
         <section>
@@ -359,14 +399,18 @@
         {% endif %}
 
         {# Parent Activities #}
-        {% if resource_data|has_key:"Parent_Activity" %}
+        {% if resource_data|has_key:"Parent Activity" %}
         <section>
             <div class="container">
                 <h3>Parent Activities</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {{ resource_data|val_from_key:"Parent_Activity"|val_from_key:"@display_value" }}
+                            <ul>
+                                {% for parent in resource_data|val_from_key:"Parent Activity" %}
+                                <li>{{ parent|val_from_key:"@display_value" }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -383,7 +427,22 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {{ resource_data|val_from_key:"Associated Activities"|val_from_key:"@display_value" }}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Associated Activity</div>
+                                    <div class="rcell">Association Type</div>
+                                </div>
+                                {% for assoc in resource_data|val_from_key:"Associated Activities" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Associated Activity">
+                                        {{ assoc|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Association Type">
+                                        {{ assoc|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -398,40 +457,40 @@
             <div class="container">
                 <h3>External Cross References</h3>
                 <div class="row">
-                <div class="column">
-                    <div class="keeptogether">
-                        <div class="rtable">
-                            <div class="rrow rheader">
-                                <div class="rcell">External Cross Reference</div>
-                                <div class="rcell">External Cross Reference Source</div>
-                                <div class="rcell">URL</div>
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">External Cross Reference</div>
+                                    <div class="rcell">External Cross Reference Source</div>
+                                    <div class="rcell">URL</div>
+                                </div>
+                                {% for exref in resource_data|val_from_key:"External Cross References" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="External Cross Reference">
+                                        {{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="External Cross Reference Source">
+                                        {{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="URL">
+                                        {% with exref|val_from_key:"URL" as URL %}
+                                        {% if URL|has_key:"url" and URL|has_key:"url_label" %}
+                                            <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url_label'}}</a>
+                                        {% elif URL|has_key:"url_label" %}
+                                            {{URL|val_from_key:"url_label"}}
+                                        {% elif URL|has_key:"url" %}
+                                            <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url'}}</a>
+                                        {% else %}
+                                            <br />
+                                        {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% for exref in resource_data|val_from_key:"External Cross References" %}
-                            <div class="rrow">
-                                <div class="rcell" data-title="External Cross Reference">
-                                    {{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}
-                                </div>
-                                <div class="rcell" data-title="External Cross Reference Source">
-                                    {{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}
-                                </div>
-                                <div class="rcell" data-title="URL">
-                                    {% with exref|val_from_key:"URL" as URL %}
-                                    {% if URL|has_key:"url" and URL|has_key:"url_label" %}
-                                        <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url_label'}}</a>
-                                    {% elif URL|has_key:"url_label" %}
-                                        {{URL|val_from_key:"url_label"}}
-                                    {% elif URL|has_key:"url" %}
-                                        <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url'}}</a>
-                                    {% else %}
-                                        <br />
-                                    {% endif %}
-                                    {% endwith %}
-                                </div>
-                            </div>
-                            {% endfor %}
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </section>
