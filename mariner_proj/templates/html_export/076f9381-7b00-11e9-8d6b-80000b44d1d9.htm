@@ -161,6 +161,46 @@
         <hr/>
         {% endif %}
 
+        {# Associated Actors #}
+        {% if resource_data|has_key:"Associated Actors" %}
+        <section>
+            <div class="container">
+                <h3>Associated Actors</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Person or Organisation</div>
+                                    <div class="rcell">Role Type</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                </div>
+                                {% for actor in resource_data|val_from_key:"Associated Actors" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Associated Actor">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Role Type">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Associated Actor Start Date">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Associated Actor End Date">
+                                        {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Location Data #}
         {% if resource_data|has_key:"Location Data" %}
         <section>
