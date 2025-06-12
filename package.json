@@ -18,20 +18,23 @@
         "ts:check": "vue-tsc --noEmit",
         "ts:watch": "vue-tsc --watch --noEmit",
         "start": "cross-env NODE_OPTIONS=--max-old-space-size=2048 webpack serve --config ./webpack/webpack.config.dev.js",
-        "vitest": "vitest --run --coverage"
+        "vitest": "vitest --run --coverage",
+        "test:accessibility": "playwright test mariner_proj/tests/accessibility/accessibility.spec.js"
     },
     "dependencies": {
         "arches": "archesproject/arches#dev/7.6.x"
     },
     "devDependencies": {
-        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x"
+        "@axe-core/playwright": "^4.10.2",
+        "@playwright/test": "^1.52.0",
+        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x",
+        "playwright": "^1.52.0"
     },
-    "nodeModulesPaths": {
-    },
+    "nodeModulesPaths": {},
     "overrides": {
         "moment-timezone": "^0.5.45",
         "nomnom": "npm:@gerhobbelt/nomnom",
-        "rimraf": "^5.0.7", 
+        "rimraf": "^5.0.7",
         "underscore": "^1.13.6"
     }
 }
