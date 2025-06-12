@@ -25,7 +25,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "arches>=7.6.6,<7.7.0",
-    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.0",
+    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@cs_84876_geojsontobngfunction",
     "wfastcgi>=3.0.0,<3.1.0"
 ]
 version = "1.0.0a"
