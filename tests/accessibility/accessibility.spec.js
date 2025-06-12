@@ -28,7 +28,8 @@ async function ensureDir(dir) {
 for (const url of pagesToTest) {
   test(`Accessibility check for ${url}`, async ({ page }) => {
     await ensureDir(reportDir);
-    await page.goto(`http://localhost:8002${url}`);
+    const port = 8000; // Adjust this to your server's port 8000 for inside the container, 8002 from the dev host
+    await page.goto(`http://localhost:${port}${url}`);
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
