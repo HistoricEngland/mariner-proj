@@ -120,6 +120,38 @@
         <hr/>
         {% endif %}
 
+        {# Associated Wrecks, Crash Sites, Vessels or Aircraft #}
+        {% if resource_data|has_key:"Associated Wrecks, Vessels or Aircraft" %}
+        <section>
+            <div class="container">
+                <h3>Associated Wrecks, Crash Sites, Vessels or Aircraft</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Wreck, Vessel or Aircraft</div>
+                                    <div class="rcell">Wreck Association Type</div>
+                                </div>
+                                {% for wreck in resource_data|val_from_key:"Associated Wrecks, Vessels or Aircraft" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Wreck, Vessel or Aircraft">
+                                        {{ wreck|val_from_key:"Wreck, Vessel or Aircraft"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Wreck Association Type">
+                                        {{ wreck|val_from_key:"Wreck Association Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Descriptions #}
         {% if resource_data|has_key:"Descriptions" %}
         <section>
@@ -192,6 +224,42 @@
         <hr/>
         {% endif %}
 
+        {# Commissioning #}
+        {% if resource_data|has_key:"Commissioning" %}
+        <section>
+            <div class="container">
+                <h3>Commissioning</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Date of Commission</div>
+                                    <div class="rcell">Date of Decommission</div>
+                                    <div class="rcell">Commissioning Note</div>
+                                </div>
+                                {% with comm=resource_data|val_from_key:"Commissioning"|val_from_key:"Commissioning Notes" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Date of Commission">
+                                        {{ comm|val_from_key:"Commissioning Timespan"|val_from_key:"Date of Commission"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Date of Decommission">
+                                        {{ comm|val_from_key:"Commissioning Timespan"|val_from_key:"Date of Decommission"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Commissioning Note">
+                                        {{ comm|val_from_key:"Commisioning Note"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Vessel Dimensions #}
         {% if resource_data|has_key:"Vessel Dimensions" %}
         <section>
@@ -220,6 +288,66 @@
                                     </div>
                                     <div class="rcell" data-title="Dimension Value">
                                         {{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Value"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Use Phase #}
+        {% if resource_data|has_key:"Use Phase" %}
+        <section>
+            <div class="container">
+                <h3>Use Phase</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Functional Vessel Type</div>
+                                    <div class="rcell">Evidence Type</div>
+                                    <div class="rcell">Nationality</div>
+                                    <div class="rcell">Place of Registration</div>
+                                    <div class="rcell">Owner</div>
+                                    <div class="rcell">Period</div>
+                                    <div class="rcell">Description</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                </div>
+                                {% for use in resource_data|val_from_key:"Use Phase" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Functional Vessel Type">
+                                        {{ use|val_from_key:"Use Phase Classification"|val_from_key:"Functional Vessel Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Evidence Type">
+                                        {{ use|val_from_key:"Use Phase Classification"|val_from_key:"Use Phase Evidence Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Nationality">
+                                        {{ use|val_from_key:"Use Phase Nationality"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Place of Registration">
+                                        {{ use|val_from_key:"Use Phase Classification"|val_from_key:"Use Phase Place of Registration"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Owner">
+                                        {{ use|val_from_key:"Use Phase Owner"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Period">
+                                        {{ use|val_from_key:"Use Phase Period"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Description">
+                                        {{ use|val_from_key:"Use Phase Classification"|val_from_key:"Use Phase Classification Description"|val_from_key:"Use Phase Description"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase Start Date">
+                                        {{ use|val_from_key:"Use Phase Timespan"|val_from_key:"Use Phase Start Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Use Phase End Date">
+                                        {{ use|val_from_key:"Use Phase Timespan"|val_from_key:"Use Phase End Date"|val_from_key:"@display_value" }}
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -457,6 +585,48 @@
                                 </div>
                                 {% endfor %}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Historic Events #}
+        {% if resource_data|has_key:"Associated Historic Event" %}
+        <section>
+            <div class="container">
+                <h3>Associated Historic Events</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <ul>
+                                {% for event in resource_data|val_from_key:"Associated Historic Event" %}
+                                    <li>{{ event|val_from_key:"@display_value" }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Heritage Story #}
+        {% if resource_data|has_key:"Associated Heritage Story" %}
+        <section>
+            <div class="container">
+                <h3>Associated Heritage Story</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <ul>
+                                {% for story in resource_data|val_from_key:"Associated Heritage Story" %}
+                                    <li>{{ story|val_from_key:"@display_value" }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 </div>
