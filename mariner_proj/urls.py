@@ -1,10 +1,23 @@
 from django.conf import settings
+from django.urls import include
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import include, path
+from django.urls import include, path, re_path
+from arches.app.views.auth import PasswordResetView
 
 urlpatterns = [
     # add project urls here before mariner_app urls
+    path(
+        "password_reset/",
+        PasswordResetView.as_view(
+            html_email_template_name="registration/password_reset_html_email.html",
+            extra_email_context={
+                "app_title": settings.APP_TITLE,
+                "contact_email": settings.CONTACT_EMAIL,
+            },
+        ),
+        name="password_reset",
+    ),
     # added mariner_app
     path("", include("mariner_app.urls")),
 ]
@@ -21,4 +34,4 @@ if settings.ROOT_URLCONF == __name__:
     if settings.SHOW_LANGUAGE_SWITCH is True:
         urlpatterns = i18n_patterns(*urlpatterns)
 
-    urlpatterns.append(path("i18n/", include("django.conf.urls.i18n")))
+urlpatterns.append(path("i18n/", include("django.conf.urls.i18n")))
