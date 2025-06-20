@@ -13,6 +13,10 @@ try:
 except ImportError:
     pass
 
+# SILENCE THE ARCHES VERSION CHECK WHERN USING A GIT REFERENCE IN PYPROJECT.TOML
+SILENCED_SYSTEM_CHECKS += ["arches.E002"]
+
+
 APP_NAME = "mariner_proj"
 APP_VERSION = semantic_version.Version(major=1, minor=0, patch=0)
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
