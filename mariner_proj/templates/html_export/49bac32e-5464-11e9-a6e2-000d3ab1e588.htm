@@ -20,9 +20,42 @@
 
         <section class="section-title">
             <blockquote>
-                <h2>{{ resource.displayname }}</h2>
+                <h2>
+                    {% if resource_data|has_key:"Names" %}
+                        {% for name in resource_data|val_from_key:"Names" %}
+                            {% if name|val_from_key:"Name Use Type"|val_from_key:"@display_value" == "Primary" %}
+                                {{ name|val_from_key:"Name"|val_from_key:"@display_value" }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {{ resource.displayname }}
+                    {% endif %}
+                </h2>
             </blockquote>
         </section>
+
+        {# Other Names #}
+        {% if resource_data|has_key:"Names" %}
+        <section>
+            <div class="container">
+                <h3>Names</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <ul>
+                                {% for name in resource_data|val_from_key:"Names" %}
+                                    {% if name|val_from_key:"Name Use Type"|val_from_key:"@display_value" != "Primary" %}
+                                        <li>{{ name|val_from_key:"Name"|val_from_key:"@display_value" }} ({{ name|val_from_key:"Name Use Type"|val_from_key:"@display_value" }})</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
 
         {# System Reference Numbers #}
         {% if resource_data|has_key:"System Reference Numbers" %}
@@ -698,7 +731,7 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <ul>
+                           
                                 {% for story in resource_data|val_from_key:"Associated Heritage Story" %}
                                     <li>{{ story|val_from_key:"@display_value" }}</li>
                                 {% endfor %}
