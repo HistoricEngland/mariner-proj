@@ -77,11 +77,11 @@
         <hr/>
         {% endif %}
 
-        {# Local Information #}
+        {# Location Information #}
         {% if resource_data|has_key:"Location Data" %}
         <section>
             <div class="container location-details">
-                <h3>Local Information</h3>
+                <h3>Location Information</h3>
                 <div class="row">
                     <div class="column">
                         {% if resource_data|val_from_key:"Location Data"|has_key:"Location Descriptions" %}
@@ -134,6 +134,55 @@
         <hr/>
         {% endif %}
 
+        {# Associated Crash Sites, Aircraft or Vessels #}
+        {% if resource_data|has_key:"Associated Crash Sites, Vessels or Aircraft" %}
+        <section>
+            <div class="container">
+                <h3>Associated Crash Sites, Aircraft or Vessels</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Crash Site, Aircraft or Vessel</div>
+                                    <div class="rcell">Association Type</div>
+                                </div>
+                                {% for assoc in resource_data|val_from_key:"Associated Crash Sites, Vessels or Aircraft" %}
+                                <div class="rrow">
+                                    <div class="rcell">{{ assoc|val_from_key:"Crash Site, Aircraft or Vessel "|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ assoc|val_from_key:"Crash Site, Aircraft or Vessel Association Type"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Descriptions #}
+        {% if resource_data|has_key:"Descriptions" %}
+        <section>
+            <div class="container">
+                <h3>Descriptions</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                        {% with descs=resource_data|val_from_key:"Descriptions" %}
+                            {% for desc in descs %}
+                                <p>{{ desc|val_from_key:"Description"|val_from_key:"@display_value"|safe }}</p>
+                            {% endfor %}
+                        {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Aircraft Ownership Details #}
         {% if resource_data|has_key:"Owner" %}
         <section>
@@ -174,7 +223,7 @@
         {% if resource_data|has_key:"Aircraft Construction Phase" %}
         <section>
             <div class="container">
-                <h3>Construction Phases</h3>
+                <h3>Construction Phase(s)</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
@@ -202,23 +251,27 @@
         <hr/>
         {% endif %}
 
-        {# Associated Crash Sites, Aircraft or Vessels #}
-        {% if resource_data|has_key:"Associated Crash Sites, Vessels or Aircraft" %}
+        {# Aircraft Dimensions #}
+        {% if resource_data|has_key:"Aircraft Dimensions" %}
         <section>
             <div class="container">
-                <h3>Associated Crash Sites, Aircraft or Vessels</h3>
+                <h3>Aircraft Dimensions</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
                             <div class="rtable">
                                 <div class="rrow rheader">
-                                    <div class="rcell">Crash Site, Aircraft or Vessel</div>
-                                    <div class="rcell">Association Type</div>
+                                    <div class="rcell">Dimension Type</div>
+                                    <div class="rcell">Dimension Type Qualifier</div>
+                                    <div class="rcell">Measurement Unit</div>
+                                    <div class="rcell">Value</div>
                                 </div>
-                                {% for assoc in resource_data|val_from_key:"Associated Crash Sites, Vessels or Aircraft" %}
+                                {% for dim in resource_data|val_from_key:"Aircraft Dimensions" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ assoc|val_from_key:"Crash Site, Aircraft or Vessel "|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ assoc|val_from_key:"Crash Site, Aircraft or Vessel Association Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type Qualifier"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Measurement Unit"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Value"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -266,38 +319,6 @@
         <hr/>
         {% endif %}
 
-        {# Aircraft Dimensions #}
-        {% if resource_data|has_key:"Aircraft Dimensions" %}
-        <section>
-            <div class="container">
-                <h3>Aircraft Dimensions</h3>
-                <div class="row">
-                    <div class="column">
-                        <div class="keeptogether">
-                            <div class="rtable">
-                                <div class="rrow rheader">
-                                    <div class="rcell">Dimension Type</div>
-                                    <div class="rcell">Dimension Type Qualifier</div>
-                                    <div class="rcell">Measurement Unit</div>
-                                    <div class="rcell">Value</div>
-                                </div>
-                                {% for dim in resource_data|val_from_key:"Aircraft Dimensions" %}
-                                <div class="rrow">
-                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type Qualifier"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Measurement Unit"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Value"|val_from_key:"@display_value" }}</div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <hr/>
-        {% endif %}
-
         {# Flights #}
         {% if resource_data|has_key:"Flights" %}
         <section>
@@ -316,6 +337,7 @@
                                     <div class="rcell">Cargo</div>
                                     <div class="rcell">Destination</div>
                                     <div class="rcell">Departure</div>
+                                    <div class="rcell">Losses</div>
                                 </div>
                                 {% for flight in resource_data|val_from_key:"Flights" %}
                                     {% for detail in flight|val_from_key:"Flight"|val_from_key:"Flight Details" %}
@@ -328,31 +350,15 @@
                                         <div class="rcell">{{ detail|val_from_key:"Cargo Details"|val_from_key:"Cargo"|val_from_key:"@display_value" }}</div>
                                         <div class="rcell">{{ detail|val_from_key:"Destination"|val_from_key:"Place of Destination"|val_from_key:"Destination Placenames"|val_from_key:"Place of Destination Name"|val_from_key:"@display_value" }}</div>
                                         <div class="rcell">{{ detail|val_from_key:"Departure"|val_from_key:"Place of Departure"|val_from_key:"Departure Placenames"|val_from_key:"Place of Departure Name"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell">
+                                            Date of Loss Start: {{ detail|val_from_key:"Loss"|val_from_key:"Loss Timespan"|val_from_key:"Start Date of Loss"|val_from_key:"@display_value"|default:"N/A" }}<br>
+                                            Passengers Lost: {{ detail|val_from_key:"Loss"|val_from_key:"Passengers Lost"|val_from_key:"@display_value"|default:"N/A" }}<br>
+                                            Crew Lost: {{ detail|val_from_key:"Loss"|val_from_key:"Crew Lost"|val_from_key:"@display_value"|default:"N/A" }}
+                                        </div>
                                     </div>
                                     {% endfor %}
                                 {% endfor %}
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <hr/>
-        {% endif %}
-
-        {# Descriptions #}
-        {% if resource_data|has_key:"Descriptions" %}
-        <section>
-            <div class="container">
-                <h3>Descriptions</h3>
-                <div class="row">
-                    <div class="column">
-                        <div class="keeptogether">
-                        {% with descs=resource_data|val_from_key:"Descriptions" %}
-                            {% for desc in descs %}
-                                <p>{{ desc|val_from_key:"Description"|val_from_key:"@display_value"|safe }}</p>
-                            {% endfor %}
-                        {% endwith %}
                         </div>
                     </div>
                 </div>
@@ -378,34 +384,6 @@
                                 <div class="rrow">
                                     <div class="rcell">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
                                     <div class="rcell">{{ source|val_from_key:"@display_value" }}</div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <hr/>
-        {% endif %}
-
-        {# Associated Activities #}
-        {% if resource_data|has_key:"Associated Activities" %}
-        <section>
-            <div class="container">
-                <h3>Associated Activities</h3>
-                <div class="row">
-                    <div class="column">
-                        <div class="keeptogether">
-                            <div class="rtable">
-                                <div class="rrow rheader">
-                                    <div class="rcell">Activity</div>
-                                    <div class="rcell">Type</div>
-                                </div>
-                                {% for act in resource_data|val_from_key:"Associated Activities" %}
-                                <div class="rrow">
-                                    <div class="rcell">{{ act|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ act|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -449,6 +427,34 @@
         <hr/>
         {% endif %}
 
+        {# Associated Monuments, Sites and Artefacts #}
+        {% if resource_data|has_key:"Associated Monuments, Sites and Artefacts" %}
+        <section>
+            <div class="container">
+                <h3>Associated Monuments, Sites and Artefacts</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Monument, Site or Artefact</div>
+                                    <div class="rcell">Association Type</div>
+                                </div>
+                                {% for assoc in resource_data|val_from_key:"Associated Monuments, Sites and Artefacts" %}
+                                <div class="rrow">
+                                    <div class="rcell">{{ assoc|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ assoc|val_from_key:"Association Type"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
         {# Associated Archives #}
         {% if resource_data|has_key:"Associated Archives" %}
         <section>
@@ -473,6 +479,76 @@
                                 </div>
                                 {% endfor %}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Activities #}
+        {% if resource_data|has_key:"Associated Activities" %}
+        <section>
+            <div class="container">
+                <h3>Associated Activities</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Activity</div>
+                                    <div class="rcell">Type</div>
+                                </div>
+                                {% for act in resource_data|val_from_key:"Associated Activities" %}
+                                <div class="rrow">
+                                    <div class="rcell">{{ act|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell">{{ act|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Historic Event #}
+        {% if resource_data|has_key:"Associated Historic Event" %}
+        <section>
+            <div class="container">
+                <h3>Associated Historic Event</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <ul>
+                                {% for event in resource_data|val_from_key:"Associated Historic Event" %}
+                                    <li>{{ event|val_from_key:"@display_value" }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+
+        {# Associated Heritage Story #}
+        {% if resource_data|has_key:"Associated Heritage Story" %}
+        <section>
+            <div class="container">
+                <h3>Associated Heritage Story</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <ul>
+                                {% for story in resource_data|val_from_key:"Associated Heritage Story" %}
+                                    <li>{{ story|val_from_key:"@display_value" }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 </div>
