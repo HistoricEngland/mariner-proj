@@ -351,9 +351,9 @@
                                         <div class="rcell">{{ detail|val_from_key:"Destination"|val_from_key:"Place of Destination"|val_from_key:"Destination Placenames"|val_from_key:"Place of Destination Name"|val_from_key:"@display_value" }}</div>
                                         <div class="rcell">{{ detail|val_from_key:"Departure"|val_from_key:"Place of Departure"|val_from_key:"Departure Placenames"|val_from_key:"Place of Departure Name"|val_from_key:"@display_value" }}</div>
                                         <div class="rcell">
-                                            Date of Loss Start: {{ detail|val_from_key:"Loss"|val_from_key:"Loss Timespan"|val_from_key:"Start Date of Loss"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                                            Passengers Lost: {{ detail|val_from_key:"Loss"|val_from_key:"Passengers Lost"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                                            Crew Lost: {{ detail|val_from_key:"Loss"|val_from_key:"Crew Lost"|val_from_key:"@display_value"|default:"N/A" }}
+                                            Loss Date: {{ detail|val_from_key:"Loss"|val_from_key:"Loss Timespan"|val_from_key:"Start Date of Loss"|val_from_key:"@display_value"|default:"N/A" }}<br>
+                                            Passengers: {{ detail|val_from_key:"Loss"|val_from_key:"Passengers Lost"|val_from_key:"@display_value"|default:"N/A" }}<br>
+                                            Crew: {{ detail|val_from_key:"Loss"|val_from_key:"Crew Lost"|val_from_key:"@display_value"|default:"N/A" }}
                                         </div>
                                     </div>
                                     {% endfor %}
