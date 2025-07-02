@@ -3,7 +3,13 @@ from django.db import migrations
 
 
 def load_spatialviews(apps, schema_editor):
-    SpatialView = apps.get_model("models", "SpatialView")
+    try:
+        SpatialView = apps.get_model("models", "SpatialView")
+    except LookupError as e:
+        print(
+            f"Warning: Could not get SpatialView model: {e}. Skipping spatialview migration (likely running in test or incomplete DB setup)."
+        )
+        return
     records = [
         {
             "spatialviewid": UUID("a15ac9f1-3b8b-4c30-9872-0a5a9a89b2e8"),
@@ -289,7 +295,23 @@ def load_spatialviews(apps, schema_editor):
 
     from django.db import IntegrityError, DatabaseError
 
+    # Check for geometrynode existence before inserting
+    Node = None
+    try:
+        Node = apps.get_model("models", "Node")
+    except LookupError:
+        print(
+            "Warning: Could not get Node model. Skipping geometrynode existence checks."
+        )
+
     for record in records:
+        geometrynode_id = record.get("geometrynode_id")
+        if Node is not None and geometrynode_id is not None:
+            if not Node.objects.filter(nodeid=geometrynode_id).exists():
+                print(
+                    f"Warning: Skipping SpatialView '{record['slug']}' because geometrynode_id {geometrynode_id} does not exist in nodes table."
+                )
+                continue
         try:
             SpatialView.objects.update_or_create(
                 spatialviewid=record["spatialviewid"], defaults=record
@@ -303,7 +325,13 @@ def load_spatialviews(apps, schema_editor):
 
 
 def unload_spatialviews(apps, schema_editor):
-    SpatialView = apps.get_model("models", "SpatialView")
+    try:
+        SpatialView = apps.get_model("models", "SpatialView")
+    except LookupError as e:
+        print(
+            f"Warning: Could not get SpatialView model: {e}. Skipping spatialview unload (likely running in test or incomplete DB setup)."
+        )
+        return
     spatialviewids = [
         UUID("a15ac9f1-3b8b-4c30-9872-0a5a9a89b2e8"),
         UUID("747a8dd6-70e3-47f7-ac6b-e704f8ea1a43"),
