@@ -15,9 +15,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "4a7be135-9938-11ea-b0e2-f875a44e0e11",
                     "description": "activity_name",
-                }
+                },
+                {
+                    "nodeid": "44441e0c-99ac-11ea-97cc-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("b2b381e5-1459-11eb-ab26-f875a44e0e11"),
             "language_id": "en",
         },
@@ -31,9 +35,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "190f65cc-33ae-11ef-8f99-0242ac120006",
                     "description": "crash_site_name",
-                }
+                },
+                {
+                    "nodeid": "190e1a1e-33ae-11ef-8f99-0242ac120006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("190f34a8-33ae-11ef-8f99-0242ac120006"),
             "language_id": "en",
         },
@@ -47,9 +55,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "5477031c-11f9-11ef-9565-0242ac120006",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "9a1c8f00-145f-11ef-b089-0242ac130006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("55d522aa-144e-11ef-9fc8-0242ac130006"),
             "language_id": "en",
         },
@@ -63,9 +75,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "f0f95950-a937-11ed-b890-0242ac130006",
                     "description": "site_name",
-                }
+                },
+                {
+                    "nodeid": "b2b30a04-ad1c-11ed-acf1-0242ac130006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("3a047c7c-ad1d-11ed-af5b-0242ac130006"),
             "language_id": "en",
         },
@@ -79,9 +95,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "4bc44105-99aa-11ea-aaa3-f875a44e0e11",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "44441e0c-99ac-11ea-97cc-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("38521798-3bd0-11eb-ad57-f875a44e0e11"),
             "language_id": "en",
         },
@@ -95,9 +115,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "008e66d1-28e0-11eb-b03a-f875a44e0e11",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "95495b17-298b-11eb-b6cb-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("30f52d8a-3e07-11eb-9a63-f875a44e0e11"),
             "language_id": "en",
         },
@@ -111,9 +135,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "10a8d52a-1848-11ef-9bf8-0242ac130006",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "a9fa7f04-1851-11ef-88ae-0242ac130006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("a93c8c00-1848-11ef-b394-0242ac130006"),
             "language_id": "en",
         },
@@ -127,9 +155,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "d00d4c8c-299f-11eb-bc0e-f875a44e0e11",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "95495b17-298b-11eb-b6cb-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("ce5aad62-3e0e-11eb-b8d2-f875a44e0e11"),
             "language_id": "en",
         },
@@ -143,9 +175,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "676d47ff-9c1c-11ea-b07f-f875a44e0e11",
                     "description": "monument_name",
-                }
+                },
+                {
+                    "nodeid": "2182c97e-b532-11ee-b6dc-0242ac120006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("ca063178-28cf-11eb-be6d-f875a44e0e11"),
             "language_id": "en",
         },
@@ -159,9 +195,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "2ce82688-8862-11ea-86b9-f875a44e0e11",
                     "description": "period_name",
-                }
+                },
+                {
+                    "nodeid": "2501f374-9458-11ea-b75f-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("3e42372e-3edf-11eb-bf20-f875a44e0e11"),
             "language_id": "en",
         },
@@ -175,9 +215,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "972d3869-b6f2-11ea-8f39-f875a44e0e11",
                     "description": "placename",
-                }
+                },
+                {
+                    "nodeid": "d6772ed4-b6da-11ee-9b93-0242ac120006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("cb6cf3e7-4f66-11eb-bd0a-f875a44e0e11"),
             "language_id": "en",
         },
@@ -191,9 +235,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "4cf307e2-07b5-11eb-8253-f875a44e0e11",
                     "description": "name",
-                }
+                },
+                {
+                    "nodeid": "99456f68-0dfd-11eb-b132-f875a44e0e11",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("6678040f-3dff-11eb-a042-f875a44e0e11"),
             "language_id": "en",
         },
@@ -207,9 +255,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "f45dbbe8-80b7-11ea-b325-f875a44e0e11",
                     "description": "site_name",
-                }
+                },
+                {
+                    "nodeid": "e0ffa302-b551-11ee-92d8-0242ac120006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("64be56e3-3ee5-11eb-b1f0-f875a44e0e11"),
             "language_id": "en",
         },
@@ -223,9 +275,13 @@ def load_spatialviews(apps, schema_editor):
                 {
                     "nodeid": "e14eef30-ee59-11ed-94d5-0242ac120006",
                     "description": "wreck_site_name",
-                }
+                },
+                {
+                    "nodeid": "e14c9ca8-ee59-11ed-94d5-0242ac120006",
+                    "description": "primary_reference_number",
+                },
             ],
-            "isactive": False,
+            "isactive": True,
             "geometrynode_id": UUID("e14cdbd2-ee59-11ed-94d5-0242ac120006"),
             "language_id": "en",
         },
@@ -237,9 +293,30 @@ def load_spatialviews(apps, schema_editor):
         )
 
 
+def unload_spatialviews(apps, schema_editor):
+    SpatialView = apps.get_model("models", "SpatialView")
+    spatialviewids = [
+        UUID("a15ac9f1-3b8b-4c30-9872-0a5a9a89b2e8"),
+        UUID("747a8dd6-70e3-47f7-ac6b-e704f8ea1a43"),
+        UUID("7bfe40d2-0faa-427b-b565-87a46cc05d27"),
+        UUID("011d068a-14db-41f4-b9cb-b2a3ed56995c"),
+        UUID("36a16183-67f9-40dd-863a-770cbfaed5ac"),
+        UUID("5dc4eb00-3cdd-433f-bec6-17bf3975797a"),
+        UUID("25481123-f14e-4f83-bad0-08b0c24bdda8"),
+        UUID("51f17799-590a-4ab5-804a-e31d164f120a"),
+        UUID("2c9dca15-168a-41c6-9cfa-58ae2f02d042"),
+        UUID("40fa4acf-ef6c-4c56-9f7a-c129a4cbc644"),
+        UUID("1dcf6c0d-df52-4456-ae31-fc802af0b435"),
+        UUID("4cd30b8f-2f2d-4e1c-98dc-f3089051d36e"),
+        UUID("69a3eae6-e45c-4596-845a-87014a06d777"),
+        UUID("c5f9fc90-fe2f-486b-a2b8-66815ffc6c75"),
+    ]
+    SpatialView.objects.filter(spatialviewid__in=spatialviewids).delete()
+
+
 class Migration(migrations.Migration):
     dependencies = [("mariner_proj", "84748_publish_graphs_after_restore")]
 
     operations = [
-        migrations.RunPython(load_spatialviews),
+        migrations.RunPython(load_spatialviews, reverse_code=unload_spatialviews),
     ]
