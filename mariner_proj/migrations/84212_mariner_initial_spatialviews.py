@@ -1,5 +1,7 @@
+import sys
 from uuid import UUID
-from django.db import migrations
+
+from django.db import DatabaseError, IntegrityError, migrations
 
 
 def load_spatialviews(apps, schema_editor):
@@ -293,15 +295,14 @@ def load_spatialviews(apps, schema_editor):
         },
     ]
 
-    from django.db import IntegrityError, DatabaseError
-
     # Check for geometrynode existence before inserting
     Node = None
     try:
         Node = apps.get_model("models", "Node")
     except LookupError:
         print(
-            "Warning: Could not get Node model. Skipping geometrynode existence checks."
+            "Warning: Could not get Node model. Skipping geometrynode existence checks.",
+            file=sys.stderr,
         )
 
     for record in records:
@@ -309,7 +310,8 @@ def load_spatialviews(apps, schema_editor):
         if Node is not None and geometrynode_id is not None:
             if not Node.objects.filter(nodeid=geometrynode_id).exists():
                 print(
-                    f"Warning: Skipping SpatialView '{record['slug']}' because geometrynode_id {geometrynode_id} does not exist in nodes table."
+                    f"[DEBUG] Skipping SpatialView '{record['slug']}' because geometrynode_id {geometrynode_id} does not exist in nodes table.",
+                    file=sys.stderr,
                 )
                 continue
         try:
@@ -317,9 +319,10 @@ def load_spatialviews(apps, schema_editor):
                 spatialviewid=record["spatialviewid"], defaults=record
             )
         except (IntegrityError, DatabaseError, Exception) as e:
-            # Log or print a warning, but do not fail the migration if the data is missing (e.g., during testing)
+            # Log a debug warning, but do not fail the migration if the data is missing (e.g., during testing)
             print(
-                f"Warning: Could not insert or update SpatialView {record['slug']}: {e}"
+                f"[DEBUG] Could not insert or update SpatialView {record['slug']}: {e}",
+                file=sys.stderr,
             )
             continue
 
@@ -328,8 +331,11 @@ def unload_spatialviews(apps, schema_editor):
     try:
         SpatialView = apps.get_model("models", "SpatialView")
     except LookupError as e:
+        import sys
+
         print(
-            f"Warning: Could not get SpatialView model: {e}. Skipping spatialview unload (likely running in test or incomplete DB setup)."
+            f"[DEBUG] Could not get SpatialView model: {e}. Skipping spatialview unload (likely running in test or incomplete DB setup).",
+            file=sys.stderr,
         )
         return
     spatialviewids = [
