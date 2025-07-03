@@ -167,10 +167,10 @@
                                     <div class="rcell">Place of Destination</div>
                                 </div>
                                 <div class="rrow">
-                                    <div class="rcell">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Vessel"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Assoc Vessel Association Type"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Place of Departure"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Place of Destination"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Vessel">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Vessel"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Association Type">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Assoc Vessel Association Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Place of Departure">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Place of Departure"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Place of Destination">{{ resource_data|val_from_key:"Associated Vessels"|val_from_key:"Place of Destination"|val_from_key:"@display_value" }}</div>
                                 </div>
                             </div>
                         </div>
@@ -227,9 +227,9 @@
                                 </div>
                                 {% for owner in resource_data|val_from_key:"Owner" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ owner|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership Start Date"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership End Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Owner">{{ owner|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Ownership Start Date">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Ownership End Date">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership End Date"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -258,10 +258,10 @@
                                 </div>
                                 {% with wd=resource_data|val_from_key:"Wreck Discovery" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ wd|val_from_key:"Wreck Discovery Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Discovery Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Dicsovery End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wd|val_from_key:"Wreck Discovery Descriptions"|val_from_key:"Wreck Discovery Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Discovery Type">{{ wd|val_from_key:"Wreck Discovery Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Discovery Start Date">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Discovery Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Discovery End Date">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Dicsovery End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Discovery Description">{{ wd|val_from_key:"Wreck Discovery Descriptions"|val_from_key:"Wreck Discovery Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
                                 {% endwith %}
                             </div>
@@ -274,7 +274,7 @@
         {% endif %}
 
         {# Wreck Identification and Characterization #}
-        {% if resource_data|has_key:"Phase Classification" %}
+        {% if resource_data|has_key:"Phases" %}
         <section>
             <div class="container">
                 <h3>Wreck Identification and Characterization</h3>
@@ -286,7 +286,7 @@
                                     <div class="rcell">Possible Vessel Type</div>
                                     <div class="rcell">Confidence of Interpretation</div>
                                     <div class="rcell">Nationality</div>
-                                    <div class="rcell">Potential Manner(s) of Loss</div>
+                                    <div class="rcell">Manner of Loss</div>
                                     <div class="rcell">Orientation (degrees)</div>
                                     <div class="rcell">Period</div>
                                     <div class="rcell">Phase Start Date</div>
@@ -297,31 +297,74 @@
                                     <div class="rcell">Construction Materials</div>
                                     <div class="rcell">Construction Technique</div>
                                 </div>
-                                {% with phase=resource_data|val_from_key:"Phase Classification" %}
-                                    {% if phase|has_key:"Wreck Identification Event" %}
-                                        {% for event in phase|val_from_key:"Wreck Identification Event" %}
-                                        <div class="rrow">
-                                            <div class="rcell">{{ event|val_from_key:"Possible Vessel Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Phase Certainty"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Nationality"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Potential Manner(s) of Loss"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Orientation (degrees)"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Period"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Phase Timespan"|val_from_key:"Phase Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Phase Timespan"|val_from_key:"Phase End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Interpretation"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Evidence Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Propulsion Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Construction Materials"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                            <div class="rcell">{{ event|val_from_key:"Construction Technique"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                {% for phases in resource_data|val_from_key:"Phases" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Possible Vessel Type">
+                                        {{ phases|val_from_key:"Wreck Identification Event"|val_from_key:"Possible Vessel Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Confidence of Interpretation">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Phase Certainty"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Nationality">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Nationality"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Manner of Loss">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Manner of Loss"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Orientation (degrees)">
+                                        {{ phases|val_from_key:"Wreck Identification Event"|val_from_key:"Wreck Orientation"|val_from_key:"Orientation (degrees)"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Period">
+                                        {{ phases|val_from_key:"Period"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Phase Start Date">
+                                        {{ phases|val_from_key:"Phase Timespan"|val_from_key:"Phase Start Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Phase End Date">
+                                        {{ phases|val_from_key:"Phase Timespan"|val_from_key:"Phase End Date"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Interpretation">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Phase Classification Description"|val_from_key:"Phase Description"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Evidence Type">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Evidence Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Propulsion Type">
+                                        {{ phases|val_from_key:"Phase Classification"|val_from_key:"Propulsion Type"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Construction Materials">
+                                        {{ phases|val_from_key:"Main Construction Material"|val_from_key:"@display_value" }}
+                                    </div>
+                                    <div class="rcell" data-title="Construction Technique">
+                                        {{ phases|val_from_key:"Construction Technique"|val_from_key:"@display_value" }}
+                                    </div>
+                                </div>
+                                {# Wreck dimension sub-row #}
+                                {% with dims_list=phases|val_from_key:"Wreck Identification Event"|val_from_key:"Wreck Dimensions" %}
+                                {% if dims_list %}
+                                <div class="rrow">
+                                    <div class="rcell" colspan="13">
+                                        <div class="rtable">
+                                            <div class="rrow rheader">
+                                                <div class="rcell">Wreck Dimension Type</div>
+                                                <div class="rcell">Wreck Dimension Type Qualifier</div>
+                                                <div class="rcell">Wreck Dimension Value</div>
+                                                <div class="rcell">Wreck Dimension Measurement Unit</div>
+                                            </div>
+                                            {% for dims in dims_list %}
+                                            <div class="rrow">
+                                                <div class="rcell" data-title="Wreck Dimension Type">{{ dims|val_from_key:"Wreck Dimension"|val_from_key:"Wreck Dimension Type"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Wreck Dimension Type Qualifier">{{ dims|val_from_key:"Wreck Dimension"|val_from_key:"Wreck Dimension Type Qualifier"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Wreck Dimension Value">{{ dims|val_from_key:"Wreck Dimension"|val_from_key:"Wreck Dimension Value"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Wreck Dimension Measurement Unit">{{ dims|val_from_key:"Wreck Dimension"|val_from_key:"Wreck Dimension Measurement Unit"|val_from_key:"@display_value" }}</div>
+                                            </div>
+                                            {% endfor %}
                                         </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <div class="rrow">
-                                            <div class="rcell" colspan="13">No Wreck Identification Event data available.</div>
-                                        </div>
-                                    {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
                                 {% endwith %}
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -346,8 +389,8 @@
                                 </div>
                                 {% with we=resource_data|val_from_key:"Wreck Event" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ we|val_from_key:"Wreck Event Timespan"|val_from_key:"Wreck Event Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ we|val_from_key:"Wreck Event Timespan"|val_from_key:"Wreck Event End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Event Start Date">{{ we|val_from_key:"Wreck Event Timespan"|val_from_key:"Wreck Event Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Event End Date">{{ we|val_from_key:"Wreck Event Timespan"|val_from_key:"Wreck Event End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
                                 {% endwith %}
                             </div>
@@ -379,17 +422,17 @@
                                 </div>
                                 {% with wa=resource_data|val_from_key:"Wreck Assemblage" %}
                                 <div class="rrow">
-                                    <div class="rcell">
+                                    <div class="rcell" data-title="Hull Assemblage">
                                         {% if wa|val_from_key:"Hull Assemblage"|val_from_key:"value" == True %}Intact
                                         {% elif wa|val_from_key:"Hull Assemblage"|val_from_key:"value" == False %}Not Intact
                                         {% else %}N/A{% endif %}
                                     </div>
-                                    <div class="rcell">{{ wa|val_from_key:"Cargo Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wa|val_from_key:"Ordnance Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wa|val_from_key:"Number of Masts"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wa|val_from_key:"Number of Boilers"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wa|val_from_key:"Number of Propellers"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ wa|val_from_key:"Associated Object Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Cargo Type">{{ wa|val_from_key:"Cargo Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Ordnance Type">{{ wa|val_from_key:"Ordnance Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Number of Masts">{{ wa|val_from_key:"Number of Masts"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Number of Boilers">{{ wa|val_from_key:"Number of Boilers"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Number of Propellers">{{ wa|val_from_key:"Number of Propellers"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Associated Object Type">{{ wa|val_from_key:"Associated Object Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
                                 {% if wa|has_key:"Component" %}
                                 <div class="rrow">
@@ -401,8 +444,8 @@
                                             </div>
                                             {% for comp in wa|val_from_key:"Component" %}
                                             <div class="rrow">
-                                                <div class="rcell">{{ comp|val_from_key:"Component Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                                <div class="rcell">{{ comp|val_from_key:"Component Material"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                                <div class="rcell" data-title="Component Type">{{ comp|val_from_key:"Component Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                                <div class="rcell" data-title="Component Material">{{ comp|val_from_key:"Component Material"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                             </div>
                                             {% endfor %}
                                         </div>
@@ -441,15 +484,15 @@
                                 </div>
                                 {% for risk in resource_data|val_from_key:"Risk Management" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Status"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Condition Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Current Vulnerability"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Threat Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Trend Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Priority Category"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Status">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Status"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Condition Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Condition Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Current Vulnerability">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Current Vulnerability"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Threat Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Threat Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Trend Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Trend Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Priority Category">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Priority Category"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -481,13 +524,13 @@
                                 </div>
                                 {% for dpa in resource_data|val_from_key:"Designation and Protection Assignment (edtf)" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation Names"|val_from_key:"Designation Name"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation or Protection Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Grade"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  Amendment Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell">{{ dpa|val_from_key:"Designation Identifier"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Name">{{ dpa|val_from_key:"Designation Names"|val_from_key:"Designation Name"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Type">{{ dpa|val_from_key:"Designation or Protection Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Grade">{{ dpa|val_from_key:"Grade"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Amendment Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  Amendment Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Identifier">{{ dpa|val_from_key:"Designation Identifier"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -514,8 +557,8 @@
                                 </div>
                                 {% for source in resource_data|val_from_key:"Bibliographic Source Citation" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ source|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source Number">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source Title">{{ source|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -544,10 +587,10 @@
                                 </div>
                                 {% for actor in resource_data|val_from_key:"Associated Actors" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Actor">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Role">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -559,11 +602,11 @@
         <hr/>
         {% endif %}
 
-        {# Associated Monuments, Sites and Artefacts #}
-        {% if resource_data|has_key:"Associated Monuments, Sites and Artefacts" %}
+        {# Associated Monuments, Sites, Craft and Artefacts #}
+        {% if resource_data|has_key:"Associated Monuments, Sites, Craft and Artefacts" %}
         <section>
             <div class="container">
-                <h3>Associated Monuments, Sites and Artefacts</h3>
+                <h3>Associated Monuments, Sites, Craft and Artefacts</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
@@ -572,10 +615,10 @@
                                     <div class="rcell">Monument, Site or Artefact</div>
                                     <div class="rcell">Association Type</div>
                                 </div>
-                                {% for assoc in resource_data|val_from_key:"Associated Monuments, Sites and Artefacts" %}
+                                {% for assoc in resource_data|val_from_key:"Associated Monuments, Sites, Craft and Artefacts" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ assoc|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ assoc|val_from_key:"Association Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Monument, Site or Artefact">{{ assoc|val_from_key:"Monument, Site, Craft or Artefact"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Asset Association Type"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -604,10 +647,10 @@
                                 </div>
                                 {% for archive in resource_data|val_from_key:"Associated Archives" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object References"|val_from_key:"Archive Object Reference"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Titles"|val_from_key:"Archive Object Title"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Type"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Holder"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Number">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object References"|val_from_key:"Archive Object Reference"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Title">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Titles"|val_from_key:"Archive Object Title"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Type">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Holder">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Holder"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -634,8 +677,8 @@
                                 </div>
                                 {% for act in resource_data|val_from_key:"Associated Activities" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ act|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ act|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Activity">{{ act|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Type">{{ act|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -732,9 +775,9 @@
                                 </div>
                                 {% for exref in resource_data|val_from_key:"External Cross References" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Notes">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
