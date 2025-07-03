@@ -9,7 +9,8 @@ def load_spatialviews(apps, schema_editor):
         SpatialView = apps.get_model("models", "SpatialView")
     except LookupError as e:
         print(
-            f"Warning: Could not get SpatialView model: {e}. Skipping spatialview migration (likely running in test or incomplete DB setup)."
+            f"Warning: Could not get SpatialView model: {e}. Skipping spatialview migration (likely running in test or incomplete DB setup).",
+            file=sys.stderr,
         )
         return
     records = [
@@ -316,9 +317,10 @@ def load_spatialviews(apps, schema_editor):
                 continue
         try:
             SpatialView.objects.update_or_create(
-                spatialviewid=record["spatialviewid"], defaults=record
+                spatialviewid=record["spatialviewid"],
+                defaults={k: v for k, v in record.items() if k != "spatialviewid"},
             )
-        except (IntegrityError, DatabaseError, Exception) as e:
+        except (IntegrityError, DatabaseError) as e:
             # Log a debug warning, but do not fail the migration if the data is missing (e.g., during testing)
             print(
                 f"[DEBUG] Could not insert or update SpatialView {record['slug']}: {e}",
@@ -331,8 +333,6 @@ def unload_spatialviews(apps, schema_editor):
     try:
         SpatialView = apps.get_model("models", "SpatialView")
     except LookupError as e:
-        import sys
-
         print(
             f"[DEBUG] Could not get SpatialView model: {e}. Skipping spatialview unload (likely running in test or incomplete DB setup).",
             file=sys.stderr,
