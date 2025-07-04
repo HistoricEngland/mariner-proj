@@ -44,11 +44,13 @@
                         <div class="keeptogether">
                             <ul>
                                 {% for name in resource_data|val_from_key:"Crash Site Names" %}
-                                    <li>
-                                        {{ name|val_from_key:"Crash Site Name"|val_from_key:"@display_value"|default:"N/A" }}
-                                        ({{ name|val_from_key:"Crash Site Name Type"|val_from_key:"@display_value"|default:"N/A" }})
-                                        ({{ name|val_from_key:"Crash Site Name Use Type"|val_from_key:"@display_value"|default:"N/A" }})
-                                    </li>
+                                    {% if name|val_from_key:"Crash Site Name Use Type"|val_from_key:"@display_value" != "Primary" %}
+                                        <li>
+                                            {{ name|val_from_key:"Crash Site Name"|val_from_key:"@display_value" }}
+                                            ({{ name|val_from_key:"Crash Site Name Type"|val_from_key:"@display_value" }})
+                                            ({{ name|val_from_key:"Crash Site Name Use Type"|val_from_key:"@display_value" }})
+                                        </li>
+                                    {% endif %}
                                 {% empty %}
                                     <li>No crash site names available</li>
                                 {% endfor %}
@@ -70,9 +72,9 @@
                         <div>
                             <h3>System Reference Numbers</h3>
                             <p>
-                                <strong>Legacy ID:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"LegacyID"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                                <strong>Primary Reference Number:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"PrimaryReferenceNumber"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                                <strong>UUID:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"UUID"|val_from_key:"@display_value"|default:"N/A" }}
+                                <strong>Legacy ID:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"LegacyID"|val_from_key:"@display_value" }}<br>
+                                <strong>Primary Reference Number:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"PrimaryReferenceNumber"|val_from_key:"@display_value" }}<br>
+                                <strong>UUID:</strong> {{ resource_data|val_from_key:"System Reference Numbers"|val_from_key:"UUID"|val_from_key:"@display_value" }}
                             </p>
                         </div>
                     </div>
@@ -93,9 +95,7 @@
                         <h4>Location Descriptions</h4>
                         <p>
                             {% for desc in resource_data|val_from_key:"Location Data"|val_from_key:"Location Descriptions" %}
-                                {{ desc|val_from_key:"Location Description"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                            {% empty %}
-                                N/A
+                                {{ desc|val_from_key:"Location Description"|val_from_key:"@display_value" }}<br>
                             {% endfor %}
                         </p>
                         {% endif %}
@@ -103,23 +103,35 @@
                         <h4>Coordinates</h4>
                         <p>
                             {% for latlong in resource_data|val_from_key:"Location Data"|val_from_key:"Decimal LatLong References" %}
-                                <strong>Longitude:</strong> {{ latlong|val_from_key:"Decimal Longitude"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                                <strong>Latitude:</strong> {{ latlong|val_from_key:"Decimal Latitude"|val_from_key:"@display_value"|default:"N/A" }}<br>
-                            {% empty %}
-                                N/A
+                                <strong>Latitude:</strong> {{ latlong|val_from_key:"Decimal Latitude"|val_from_key:"@display_value" }}<br>
+                                <strong>Longitude:</strong> {{ latlong|val_from_key:"Decimal Longitude"|val_from_key:"@display_value" }}<br>
                             {% endfor %}
-                        </p>
-                        {% endif %}
-                        {% if resource_data|val_from_key:"Location Data"|has_key:"Named Location (place)" %}
-                        <h4>Named Location</h4>
-                        <p>
-                            {{ resource_data|val_from_key:"Location Data"|val_from_key:"Named Location (place)"|val_from_key:"@display_value"|default:"N/A" }}
                         </p>
                         {% endif %}
                     </div>
                     <div class="column">
                         <div class="keeptogether">
                             <div>
+                                {% if resource_data|val_from_key:"Location Data"|has_key:"Named Location (place)" %}
+                                <h4>Named Locations</h4>
+                                <p>
+                                    {% for named in resource_data|val_from_key:"Location Data"|val_from_key:"Named Location (place)"|val_from_key:"instance_details" %}
+                                        {{ named|val_from_key:"display_value" }}<br>
+                                    {% endfor %}
+                                </p>
+                                {% endif %}
+                                {% if resource_data|val_from_key:"Location Data"|has_key:"Localities/Administrative Areas" %}
+                                <h4>Localities/Administrative Areas</h4>
+                                <p>
+                                    {% for area in resource_data|val_from_key:"Location Data"|val_from_key:"Localities/Administrative Areas" %}
+                                    {% if area|val_from_key:"Area Type"|has_key:"@display_value" %}
+                                        <strong>{{ area|val_from_key:"Area Type"|val_from_key:"@display_value" }}:</strong> {{ area|val_from_key:"Area Names"|val_from_key:"Area Name"|val_from_key:"@display_value" }}</br/>
+                                    {% else %}
+                                        {{ area|val_from_key:"Area Names"|val_from_key:"Area Name"|val_from_key:"@display_value" }}</br/>
+                                    {% endif %}
+                                    {% endfor %}
+                                </p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -137,7 +149,7 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <p>{{ resource_data|val_from_key:"Parent Site"|val_from_key:"@display_value"|default:"N/A" }}</p>
+                            <p>{{ resource_data|val_from_key:"Parent Site"|val_from_key:"@display_value" }}</p>
                         </div>
                     </div>
                 </div>
@@ -163,10 +175,10 @@
                                 </div>
                                 {% for assoc in resource_data|val_from_key:"Associated Historic Aircraft" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Assoc Sites Association Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Place of Departure">{{ assoc|val_from_key:"Associated Place of Departure"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Place of Destination">{{ assoc|val_from_key:"Associated Place of Destination"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Historic Aircraft">{{ assoc|val_from_key:"Historic Aircraft"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Assoc Sites Association Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Place of Departure">{{ assoc|val_from_key:"Associated Place of Departure"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Place of Destination">{{ assoc|val_from_key:"Associated Place of Destination"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Historic Aircraft">{{ assoc|val_from_key:"Historic Aircraft"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% empty %}
                                 <div class="rrow"><div class="rcell" colspan="4">No associated historic aircraft</div></div>
@@ -188,11 +200,22 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                        {% for desc in resource_data|val_from_key:"Descriptions" %}
-                            <p>{{ desc|val_from_key:"Description"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                        {% empty %}
-                            <p>No descriptions available</p>
-                        {% endfor %}
+                        {% with descs=resource_data|val_from_key:"Descriptions" %}
+                            {# Show 'Summary' type first if present #}
+                            {% for desc in descs %}
+                                {% if desc|val_from_key:"Description Type"|val_from_key:"@display_value" == "Summary" %}
+                                    <p><strong>{{ desc|val_from_key:"Description Type"|val_from_key:"@display_value" }}:</strong><br>
+                                        {{ desc|val_from_key:"Description"|val_from_key:"@display_value"|safe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                            {# Then show all others except 'Summary' #}
+                            {% for desc in descs %}
+                                {% if desc|val_from_key:"Description Type"|val_from_key:"@display_value" != "Summary" %}
+                                    <p><strong>{{ desc|val_from_key:"Description Type"|val_from_key:"@display_value" }}:</strong><br>
+                                        {{ desc|val_from_key:"Description"|val_from_key:"@display_value"|safe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
                         </div>
                     </div>
                 </div>
@@ -209,11 +232,22 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {% for owner in resource_data|val_from_key:"Owner" %}
-                                <p>{{ owner|val_from_key:"@display_value"|default:"N/A" }}</p>
-                            {% empty %}
-                                <p>No ownership details available</p>
-                            {% endfor %}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Owner</div>
+                                    <div class="rcell">Ownership Start Date</div>
+                                    <div class="rcell">Ownership End Date</div>
+                                </div>
+                                {% for owner in resource_data|val_from_key:"Owner" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Owner">{{ owner|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Ownership Start Date">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Ownership End Date">{{ owner|val_from_key:"Ownership"|val_from_key:"Ownership Timespan"|val_from_key:"Ownership End Date"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% empty %}
+                                <div class="rrow"><div class="rcell" colspan="3">No ownership details available</div></div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,13 +265,13 @@
                     <div class="column">
                         <div class="keeptogether">
                             {% with discovery=resource_data|val_from_key:"Crash Site Discovery" %}
-                                <p><strong>Discovery Type:</strong> {{ discovery|val_from_key:"Crash Site Discovery Type"|val_from_key:"@display_value"|default:"N/A" }}</p>
+                                <p><strong>Discovery Type:</strong> {{ discovery|val_from_key:"Crash Site Discovery Type"|val_from_key:"@display_value" }}</p>
                                 {% if discovery|has_key:"Crash Site Discovery Timespan" %}
-                                    <p><strong>Discovery Start Date:</strong> {{ discovery|val_from_key:"Crash Site Discovery Timespan"|val_from_key:"Crash Site Discovery Start Date"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                                    <p><strong>Discovery End Date:</strong> {{ discovery|val_from_key:"Crash Site Discovery Timespan"|val_from_key:"Crash Site Discovery End Date"|val_from_key:"@display_value"|default:"N/A" }}</p>
+                                    <p><strong>Discovery Start Date:</strong> {{ discovery|val_from_key:"Crash Site Discovery Timespan"|val_from_key:"Crash Site Discovery Start Date"|val_from_key:"@display_value" }}</p>
+                                    <p><strong>Discovery End Date:</strong> {{ discovery|val_from_key:"Crash Site Discovery Timespan"|val_from_key:"Crash Site Discovery End Date"|val_from_key:"@display_value" }}</p>
                                 {% endif %}
                                 {% if discovery|has_key:"Crash Site Discovery Descriptions" %}
-                                    <p><strong>Description:</strong> {{ discovery|val_from_key:"Crash Site Discovery Descriptions"|val_from_key:"Crash Site Discovery Description"|val_from_key:"@display_value"|default:"N/A" }}</p>
+                                    <p><strong>Description:</strong> {{ discovery|val_from_key:"Crash Site Discovery Descriptions"|val_from_key:"Crash Site Discovery Description"|val_from_key:"@display_value" }}</p>
                                 {% endif %}
                             {% endwith %}
                         </div>
@@ -258,18 +292,59 @@
                         <div class="keeptogether">
                             <div class="rtable">
                                 <div class="rrow rheader">
+                                    <div class="rcell">Possible Aircraft Type</div>
+                                    <div class="rcell">Nationality</div>
+                                    <div class="rcell">Potential Manner(s) of Loss</div>
+                                    <div class="rcell">Orientation (degrees)</div>
                                     <div class="rcell">Period</div>
-                                    <div class="rcell">Phase Classification</div>
-                                    <div class="rcell">Phase Timespan</div>
+                                    <div class="rcell">Phase Start Date</div>
+                                    <div class="rcell">Phase End Date</div>
+                                    <div class="rcell">Interpretation</div>
+                                    <div class="rcell">Evidence Type</div>
+                                    <div class="rcell">Confidence of Interpretation</div>
+                                    <div class="rcell">Construction Materials</div>
                                 </div>
                                 {% for ident in resource_data|val_from_key:"Crash Site Identification" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Period">{{ ident|val_from_key:"Period"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Phase Classification">{{ ident|val_from_key:"Phase Classification"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Phase Timespan">{{ ident|val_from_key:"Phase Timespan"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Possible Aircraft Type">{{ ident|val_from_key:"Crash Site Identification Event"|val_from_key:"Possible Aircraft Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Nationality">{{ ident|val_from_key:"Phase Classification"|val_from_key:"Nationality"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Potential Manner(s) of Loss">{{ ident|val_from_key:"Phase Classification"|val_from_key:"Manner of Loss"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Orientation (degrees)">{{ ident|val_from_key:"Crash Site Identification Event"|val_from_key:"Crash Site Orientation"|val_from_key:"Orientation (degrees)"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Period">{{ ident|val_from_key:"Period"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Phase Start Date">{{ ident|val_from_key:"Phase Timespan"|val_from_key:"Phase Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Phase End Date">{{ ident|val_from_key:"Phase Timespan"|val_from_key:"Phase End Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Interpretation">{{ ident|val_from_key:"Phase Classification"|val_from_key:"Phase Classification Description"|val_from_key:"Phase Description"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Evidence Type">{{ ident|val_from_key:"Phase Classification"|val_from_key:"Evidence Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Confidence of Interpretation">{{ ident|val_from_key:"Phase Classification"|val_from_key:"Phase Certainty"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Construction Materials">{{ ident|val_from_key:"Main Construction Material"|val_from_key:"@display_value" }}</div>
                                 </div>
+                                {# Crash Site dimension sub-row #}
+                                {% with dims_list=ident|val_from_key:"Crash Site Identification Event"|val_from_key:"Crash Site Dimensions" %}
+                                {% if dims_list %}
+                                <div class="rrow">
+                                    <div class="rcell" colspan="13">
+                                        <div class="rtable">
+                                            <div class="rrow rheader">
+                                                <div class="rcell">Dimension Type</div>
+                                                <div class="rcell">Qualifier</div>
+                                                <div class="rcell">Value</div>
+                                                <div class="rcell">Measurement Unit</div>
+                                            </div>
+                                            {% for dims in dims_list %}
+                                            <div class="rrow">
+                                                <div class="rcell" data-title="Dimension Type">{{ dims|val_from_key:"Crash Site Dimension"|val_from_key:"Crash Site Dimension Type"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Qualifier">{{ dims|val_from_key:"Crash Site Dimension"|val_from_key:"Crash Site Dimension Type Qualifier"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Value">{{ dims|val_from_key:"Crash Site Dimension"|val_from_key:"Crash Site Dimension Value"|val_from_key:"@display_value" }}</div>
+                                                <div class="rcell" data-title="Measurement Unit">{{ dims|val_from_key:"Crash Site Dimension"|val_from_key:"Crash Site Dimension Measurement Unit"|val_from_key:"@display_value" }}</div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endwith %}
                                 {% empty %}
-                                <div class="rrow"><div class="rcell" colspan="3">No identification data available</div></div>
+                                <div class="rrow"><div class="rcell" colspan="11">No identification data available</div></div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -290,10 +365,10 @@
                         <div class="keeptogether">
                             {% with event=resource_data|val_from_key:"Crash Event" %}
                                 {% if event|has_key:"Crash Event Timespan" %}
-                                    <p><strong>Start Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Start Date"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                                    <p><strong>End Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event End Date"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                                    <p><strong>Date Qualifier:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Date Qualifier"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                                    <p><strong>Display Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Display Date"|val_from_key:"@display_value"|default:"N/A" }}</p>
+                                    <p><strong>Start Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Start Date"|val_from_key:"@display_value" }}</p>
+                                    <p><strong>End Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event End Date"|val_from_key:"@display_value" }}</p>
+                                    <p><strong>Date Qualifier:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Date Qualifier"|val_from_key:"@display_value" }}</p>
+                                    <p><strong>Display Date:</strong> {{ event|val_from_key:"Crash Event Timespan"|val_from_key:"Crash Event Display Date"|val_from_key:"@display_value" }}</p>
                                 {% endif %}
                             {% endwith %}
                         </div>
@@ -322,11 +397,11 @@
                                         <div class="rcell">Fuselage Assemblage</div>
                                     </div>
                                     <div class="rrow">
-                                        <div class="rcell" data-title="Cargo Type">{{ assemblage|val_from_key:"Cargo Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                        <div class="rcell" data-title="Number of Engines">{{ assemblage|val_from_key:"Number of Engines"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                        <div class="rcell" data-title="Number of Wings">{{ assemblage|val_from_key:"Number of Wings"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                        <div class="rcell" data-title="Ordnance Type">{{ assemblage|val_from_key:"Ordnance Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                        <div class="rcell" data-title="Fuselage Assemblage">{{ assemblage|val_from_key:"Fuselage Assemblage"|val_from_key:"display_value"|default:"N/A" }}</div>
+                                        <div class="rcell" data-title="Cargo Type">{{ assemblage|val_from_key:"Cargo Type"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Number of Engines">{{ assemblage|val_from_key:"Number of Engines"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Number of Wings">{{ assemblage|val_from_key:"Number of Wings"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Ordnance Type">{{ assemblage|val_from_key:"Ordnance Type"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Fuselage Assemblage">{{ assemblage|val_from_key:"Fuselage Assemblage"|val_from_key:"display_value" }}</div>
                                     </div>
                                 </div>
                             {% endwith %}
@@ -346,11 +421,32 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {% for risk in resource_data|val_from_key:"Risk Management" %}
-                                <p>{{ risk|val_from_key:"@display_value"|default:"N/A" }}</p>
-                            {% empty %}
-                                <p>No risk management data available</p>
-                            {% endfor %}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Status</div>
+                                    <div class="rcell">Description</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                    <div class="rcell">Condition Type</div>
+                                    <div class="rcell">Current Vulnerability</div>
+                                    <div class="rcell">Threat Type</div>
+                                    <div class="rcell">Trend Type</div>
+                                    <div class="rcell">Priority Category</div>
+                                </div>
+                                {% for risk in resource_data|val_from_key:"Risk Management" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Status">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Status"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Condition Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Condition Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Current Vulnerability">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Current Vulnerability"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Threat Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Threat Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Trend Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Trend Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Priority Category">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Priority Category"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -369,22 +465,24 @@
                         <div class="keeptogether">
                             <div class="rtable">
                                 <div class="rrow rheader">
-                                    <div class="rcell">Designation Identifier</div>
-                                    <div class="rcell">Designation Names</div>
+                                    <div class="rcell">Name</div>
                                     <div class="rcell">Type</div>
                                     <div class="rcell">Grade</div>
-                                    <div class="rcell">Timespan</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                    <div class="rcell">Amendment Date</div>
+                                    <div class="rcell">Identifier</div>
                                 </div>
-                                {% for des in resource_data|val_from_key:"Designation and Protection Assignment (edtf)" %}
+                                {% for dpa in resource_data|val_from_key:"Designation and Protection Assignment (edtf)" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Designation Identifier">{{ des|val_from_key:"Designation Identifier"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Designation Names">{{ des|val_from_key:"Designation Names"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Type">{{ des|val_from_key:"Designation or Protection Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Grade">{{ des|val_from_key:"Grade"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Timespan">{{ des|val_from_key:"Designation and Protection Timespan"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Name">{{ dpa|val_from_key:"Designation Names"|val_from_key:"Designation Name"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Type">{{ dpa|val_from_key:"Designation or Protection Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Grade">{{ dpa|val_from_key:"Grade"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Amendment Date">{{ dpa|val_from_key:"Designation and Protection Timespan"|val_from_key:"Designation and Protection  Amendment Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Identifier">{{ dpa|val_from_key:"Designation Identifier"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                 </div>
-                                {% empty %}
-                                <div class="rrow"><div class="rcell" colspan="5">No designation or protection data available</div></div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -403,13 +501,18 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <ul>
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Source Number</div>
+                                    <div class="rcell">Source Title</div>
+                                </div>
                                 {% for source in resource_data|val_from_key:"Bibliographic Source Citation" %}
-                                    <li>{{ source|val_from_key:"@display_value"|default:"N/A" }}</li>
-                                {% empty %}
-                                    <li>No bibliographic sources available</li>
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Source Number">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source Title">{{ source|val_from_key:"@display_value" }}</div>
+                                </div>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -426,11 +529,22 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {% for actor in resource_data|val_from_key:"Associated Actors" %}
-                                <p>{{ actor|val_from_key:"Associated Actor"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                            {% empty %}
-                                <p>No associated actors available</p>
-                            {% endfor %}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Actor</div>
+                                    <div class="rcell">Role</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                </div>
+                                {% for actor in resource_data|val_from_key:"Associated Actors" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Actor">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Role">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -454,8 +568,8 @@
                                 </div>
                                 {% for assoc in resource_data|val_from_key:"Associated Monuments, Sites and Artefacts" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Asset Association Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Monument, Site or Artefact">{{ assoc|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Asset Association Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Monument, Site or Artefact">{{ assoc|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% empty %}
                                 <div class="rrow"><div class="rcell" colspan="2">No associated monuments, sites or artefacts</div></div>
@@ -477,11 +591,22 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            {% for archive in resource_data|val_from_key:"Associated Archives" %}
-                                <p>{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                            {% empty %}
-                                <p>No associated archives available</p>
-                            {% endfor %}
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Archive Object Number</div>
+                                    <div class="rcell">Archive Object Title</div>
+                                    <div class="rcell">Archive Object Type</div>
+                                    <div class="rcell">Archive Holder</div>
+                                </div>
+                                {% for archive in resource_data|val_from_key:"Associated Archives" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Archive Object Number">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object References"|val_from_key:"Archive Object Reference"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Title">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Titles"|val_from_key:"Archive Object Title"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Type">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Holder">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Holder"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -498,11 +623,39 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Activity</div>
+                                    <div class="rcell">Type</div>
+                                </div>
+                                {% for act in resource_data|val_from_key:"Associated Activities" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Activity">{{ act|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Type">{{ act|val_from_key:"Activity Type"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr/>
+        {% endif %}
+        
+        {# Associated Places #}
+        {% if resource_data|has_key:"Associated Places" %}
+        <section>
+            <div class="container">
+                <h3>Associated Places</h3>
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
                             <ul>
-                                {% for activity in resource_data|val_from_key:"Associated Activities" %}
-                                    <li>{{ activity|val_from_key:"@display_value"|default:"N/A" }}</li>
+                                {% for place in resource_data|val_from_key:"Associated Places"|val_from_key:"instance_details" %}
+                                    <li>{{ place|val_from_key:"display_value" }}</li>
                                 {% empty %}
-                                    <li>No associated activities available</li>
+                                    <li>{{ resource_data|val_from_key:"Associated Places"|val_from_key:"@display_value" }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -513,36 +666,17 @@
         <hr/>
         {% endif %}
 
-        {# Associated Place #}
-        {% if resource_data|has_key:"Associated Places" %}
-        <section>
-            <div class="container">
-                <h3>Associated Place</h3>
-                <div class="row">
-                    <div class="column">
-                        <div class="keeptogether">
-                            <p>{{ resource_data|val_from_key:"Associated Places"|val_from_key:"@display_value"|default:"N/A" }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <hr/>
-        {% endif %}
-
-        {# Associated Historic Events #}
+        {# Associated Historic Event #}
         {% if resource_data|has_key:"Associated Historic Event" %}
         <section>
             <div class="container">
-                <h3>Associated Historic Events</h3>
+                <h3>Associated Historic Event</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
                             <ul>
                                 {% for event in resource_data|val_from_key:"Associated Historic Event" %}
-                                    <li>{{ event|val_from_key:"@display_value"|default:"N/A" }}</li>
-                                {% empty %}
-                                    <li>No associated historic events available</li>
+                                    <li>{{ event|val_from_key:"@display_value" }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -563,9 +697,7 @@
                         <div class="keeptogether">
                             <ul>
                                 {% for story in resource_data|val_from_key:"Associated Heritage Story" %}
-                                    <li>{{ story|val_from_key:"@display_value"|default:"N/A" }}</li>
-                                {% empty %}
-                                    <li>No associated heritage stories available</li>
+                                    <li>{{ story|val_from_key:"@display_value" }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -586,20 +718,16 @@
                         <div class="keeptogether">
                             <div class="rtable">
                                 <div class="rrow rheader">
+                                    <div class="rcell">External Cross Reference</div>
                                     <div class="rcell">Source</div>
-                                    <div class="rcell">Number</div>
                                     <div class="rcell">Notes</div>
-                                    <div class="rcell">URL</div>
                                 </div>
-                                {% for ref in resource_data|val_from_key:"External Cross References" %}
+                                {% for exref in resource_data|val_from_key:"External Cross References" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Source">{{ ref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Number">{{ ref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Notes">{{ ref|val_from_key:"External Cross Reference Notes"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="URL">{{ ref|val_from_key:"External Cross Reference URL"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Notes">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}</div>
                                 </div>
-                                {% empty %}
-                                <div class="rrow"><div class="rcell" colspan="4">No external cross references available</div></div>
                                 {% endfor %}
                             </div>
                         </div>
