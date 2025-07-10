@@ -47,7 +47,6 @@
                                     {% if name|val_from_key:"Crash Site Name Use Type"|val_from_key:"@display_value" != "Primary" %}
                                         <li>
                                             {{ name|val_from_key:"Crash Site Name"|val_from_key:"@display_value" }}
-                                            ({{ name|val_from_key:"Crash Site Name Type"|val_from_key:"@display_value" }})
                                             ({{ name|val_from_key:"Crash Site Name Use Type"|val_from_key:"@display_value" }})
                                         </li>
                                     {% endif %}
