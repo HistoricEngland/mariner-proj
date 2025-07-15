@@ -238,19 +238,34 @@
         {% endif %}
 
         {# Artefact Condition Assessment #}
+        {% if resource_data|has_key:"Condition Assessment" and resource_data|val_from_key:"Condition Assessment" %}
         <section>
             <div class="container">
                 <h3>Artefact Condition Assessment</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <p>N/A</p>
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Condition</div>
+                                    <div class="rcell">Start Date</div>
+                                    <div class="rcell">End Date</div>
+                                </div>
+                                {% for cond in resource_data|val_from_key:"Condition Assessment" %}
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Condition">{{ cond|val_from_key:"Condition State"|val_from_key:"Condition Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Start Date">{{ cond|val_from_key:"Condition Assessment Timespan"|val_from_key:"Condition Assessment Start Date"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="End Date">{{ cond|val_from_key:"Condition Assessment Timespan"|val_from_key:"Condition Assessment End Date"|val_from_key:"@display_value" }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <hr/>
+        {% endif %}
 
         {# Copyright #}
         <section>
@@ -259,7 +274,18 @@
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <p>N/A</p>
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Holder</div>
+                                    <div class="rcell">Type</div>
+                                    <div class="rcell">Note</div>
+                                </div>
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Holder">{{ resource_data|val_from_key:"Copyright"|val_from_key:"Copyright Holder"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Type">{{ resource_data|val_from_key:"Copyright"|val_from_key:"Copyright Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Note">{{ resource_data|val_from_key:"Copyright"|val_from_key:"Copyright Note"|val_from_key:"Copyright Note Text"|val_from_key:"@display_value" }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -268,19 +294,32 @@
         <hr/>
 
         {# Repository Storage Location #}
+        {% if resource_data|has_key:"Repository Storage Location" %}
         <section>
             <div class="container">
                 <h3>Repository Storage Location</h3>
                 <div class="row">
                     <div class="column">
                         <div class="keeptogether">
-                            <p>N/A</p>
+                            <div class="rtable">
+                                <div class="rrow rheader">
+                                    <div class="rcell">Repository Owner</div>
+                                    <div class="rcell">Storage Building Name</div>
+                                    <div class="rcell">Storage Area Name</div>
+                                </div>
+                                <div class="rrow">
+                                    <div class="rcell" data-title="Repository Owner">{{ resource_data|val_from_key:"Repository Storage Location"|val_from_key:"Repository owner"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Storage Building Name">{{ resource_data|val_from_key:"Repository Storage Location"|val_from_key:"Storage Building"|val_from_key:"Storage Building Name"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Storage Area Name">{{ resource_data|val_from_key:"Repository Storage Location"|val_from_key:"Storage Area Names"|val_from_key:"Storage Area Name"|val_from_key:"@display_value" }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <hr/>
+        {% endif %}
 
         {# Bibliographic Source Citation #}
         {% if resource_data|has_key:"Bibliographic Source Citation" %}
@@ -356,7 +395,7 @@
                                 {% for act in resource_data|val_from_key:"Associated Activities" %}
                                 <div class="rrow">
                                     <div class="rcell" data-title="Activity">{{ act|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell" data-title="Type">{{ act|val_from_key:"Activity Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Type">{{ act|val_from_key:"Associated Activity Type"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
