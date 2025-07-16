@@ -62,6 +62,7 @@ if getattr(djsettings, "ENABLE_AZURE_MONITORING", True):
             resource=resource,
             instrumentation_options=instrumentation_options,
             enable_live_metrics=True,
+            logger_name="appinsights_logger",
         )
         print("[AzureMonitor] Azure Monitor OpenTelemetry setup complete.")
 
