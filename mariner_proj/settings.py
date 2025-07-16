@@ -218,6 +218,38 @@ FORCE_SCRIPT_NAME = None
 RESOURCE_IMPORT_LOG = os.path.join(APP_ROOT, "logs", "resource_import.log")
 DEFAULT_RESOURCE_IMPORT_USER = {"username": "admin", "userid": 1}
 
+
+# Azure Monitor OpenTelemetry configuration
+ENABLE_AZURE_MONITORING = os.getenv("ENABLE_AZURE_MONITORING", "true").lower() == "true"
+APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING", ""
+)
+APPINSIGHT_SERVICE_NAME = os.getenv("APPINSIGHT_SERVICE_NAME", "mariner")
+
+# Logging configuration - Azure monitoring is now handled by the azure-monitor-opentelemetry package
+# and configured in wsgi.py
+ENABLE_FILE_LOGGING = os.getenv("MARINER-ENABLE-FILE-LOGGING", "true").lower() == "true"
+ENABLE_CONSOLE_LOGGING = (
+    os.getenv("MARINER-ENABLE-CONSOLE-LOGGING", "true").lower() == "true"
+)
+
+LOG_LEVEL = os.getenv("MARINER-DJANGO-LOG-LEVEL", "WARNING").upper()
+
+LOGGING_HANDLERS = {}
+if ENABLE_FILE_LOGGING:
+    LOGGING_HANDLERS["file"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.FileHandler",
+        "filename": os.path.join(APP_ROOT, "arches.log"),
+        "formatter": "console",
+    }
+if ENABLE_CONSOLE_LOGGING:
+    LOGGING_HANDLERS["console"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.StreamHandler",
+        "formatter": "console",
+    }
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -226,25 +258,22 @@ LOGGING = {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
     },
-    "handlers": {
-        "file": {
-            "level": "WARNING",  # DEBUG, INFO, WARNING, ERROR
-            "class": "logging.FileHandler",
-            "filename": os.path.join(APP_ROOT, "arches.log"),
-            "formatter": "console",
-        },
-        "console": {
-            "level": "WARNING",
-            "class": "logging.StreamHandler",
-            "formatter": "console",
-        },
-    },
+    "handlers": LOGGING_HANDLERS,
     "loggers": {
         "arches": {
-            "handlers": ["file", "console"],
-            "level": "WARNING",
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
             "propagate": True,
-        }
+        },
+        "django": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
+        "": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+        },
     },
 }
 
