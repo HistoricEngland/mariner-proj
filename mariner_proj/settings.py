@@ -233,21 +233,17 @@ RESOURCE_IMPORT_LOG = os.path.join(APP_ROOT, "logs", "resource_import.log")
 DEFAULT_RESOURCE_IMPORT_USER = {"username": "admin", "userid": 1}
 
 
-# Azure Monitor OpenTelemetry configuration
-ENABLE_AZURE_MONITORING = os.getenv("ENABLE_AZURE_MONITORING", "true").lower() == "true"
-APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
-    "APPLICATIONINSIGHTS_CONNECTION_STRING", ""
-)
-APPINSIGHT_SERVICE_NAME = os.getenv("APPINSIGHT_SERVICE_NAME", "mariner")
+# Azure Monitor OpenTelemetry configuration - use environment variables to set these values in production
+ENABLE_AZURE_MONITORING = False
+APPLICATIONINSIGHTS_CONNECTION_STRING = None
+APPINSIGHT_SERVICE_NAME = "mariner"
 
 # Logging configuration - Azure monitoring is now handled by the azure-monitor-opentelemetry package
 # and configured in wsgi.py
-ENABLE_FILE_LOGGING = os.getenv("MARINER-ENABLE-FILE-LOGGING", "true").lower() == "true"
-ENABLE_CONSOLE_LOGGING = (
-    os.getenv("MARINER-ENABLE-CONSOLE-LOGGING", "true").lower() == "true"
-)
+ENABLE_FILE_LOGGING = False
+ENABLE_CONSOLE_LOGGING = True
 
-LOG_LEVEL = os.getenv("MARINER-DJANGO-LOG-LEVEL", "WARNING").upper()
+LOG_LEVEL = "DEBUG"
 
 LOGGING_HANDLERS = {}
 if ENABLE_FILE_LOGGING:
