@@ -339,10 +339,9 @@ NOCAPTCHA = True
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #<-- Only need to uncomment this for testing without an actual email server
 # EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.english-heritage.org.uk"
-# EMAIL_HOST_USER = "xxxx@xxx.com"
+EMAIL_HOST_USER = "xxxx@xxx.com"
 # EMAIL_HOST_PASSWORD = 'xxxxxxx'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = "Edward.Dening@HistoricEngland.org.uk"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
