@@ -13,6 +13,7 @@ urlpatterns = [
             extra_email_context={
                 "app_title": settings.APP_TITLE,
                 "contact_email": settings.CONTACT_EMAIL,
+                "salutation": settings.SALUTATION,
             },
         ),
         name="password_reset",
