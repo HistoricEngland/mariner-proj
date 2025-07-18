@@ -356,7 +356,7 @@
                                         {{ comm|val_from_key:"Commissioning Timespan"|val_from_key:"Date of Decommission"|val_from_key:"@display_value" }}
                                     </div>
                                     <div class="rcell" data-title="Commissioning Note">
-                                        {{ comm|val_from_key:"Commisioning Note"|val_from_key:"@display_value" }}
+                                        {{ comm|val_from_key:"Commisioning Note"|val_from_key:"@display_value"|safe }}
                                     </div>
                                 </div>
                                 {% endwith %}
