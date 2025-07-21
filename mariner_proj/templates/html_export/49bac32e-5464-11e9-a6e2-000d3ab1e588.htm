@@ -386,16 +386,16 @@
                                 </div>
                                 {% for dim in resource_data|val_from_key:"Vessel Dimensions" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Dimension Type">
+                                    <div class="rcell" data-title="Type">
                                         {{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type"|val_from_key:"@display_value" }}
                                     </div>
-                                    <div class="rcell" data-title="Dimension Type Qualifier">
+                                    <div class="rcell" data-title="Qualifier">
                                         {{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Type Qualifier"|val_from_key:"@display_value" }}
                                     </div>
-                                    <div class="rcell" data-title="Dimension Measurement Unit">
+                                    <div class="rcell" data-title="Measurement Unit">
                                         {{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Measurement Unit"|val_from_key:"@display_value" }}
                                     </div>
-                                    <div class="rcell" data-title="Dimension Value">
+                                    <div class="rcell" data-title="Value">
                                         {{ dim|val_from_key:"Dimension"|val_from_key:"Dimension Value"|val_from_key:"@display_value" }}
                                     </div>
                                 </div>
@@ -517,7 +517,7 @@
                                                     {% if dest_date %} ({{ dest_date }}){% endif %}
                                                 {% endwith %}
                                             </div>
-                                            <div class="rcell" data-title="Passengers Lost">
+                                            <div class="rcell" data-title="Losses">
                                                 Loss Date: 
                                                 {% with loss_date=detail|val_from_key:"Loss"|val_from_key:"Loss Timespan"|val_from_key:"Start Date of Loss"|val_from_key:"@display_value" %}
                                                     {% if loss_date %}{{ loss_date }}{% else %}N/A{% endif %}
@@ -553,8 +553,8 @@
                                 </div>
                                 {% for source in resource_data|val_from_key:"Bibliographic Source Citation" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ source|val_from_key:"@display_value"|safe }}</div>
+                                    <div class="rcell" data-title="Source Number">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source Title">{{ source|val_from_key:"@display_value"|safe }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -583,16 +583,16 @@
                                 </div>
                                 {% for actor in resource_data|val_from_key:"Associated Actors" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Associated Actor">
+                                    <div class="rcell" data-title="Person or Organisation">
                                         {{ actor|val_from_key:"Associated Actor"|val_from_key:"Actor"|val_from_key:"@display_value" }}
                                     </div>
                                     <div class="rcell" data-title="Role Type">
                                         {{ actor|val_from_key:"Associated Actor"|val_from_key:"Role Type"|val_from_key:"@display_value" }}
                                     </div>
-                                    <div class="rcell" data-title="Associated Actor Start Date">
+                                    <div class="rcell" data-title="Start Date">
                                         {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor Start Date"|val_from_key:"@display_value" }}
                                     </div>
-                                    <div class="rcell" data-title="Associated Actor End Date">
+                                    <div class="rcell" data-title="End Date">
                                         {{ actor|val_from_key:"Associated Actor"|val_from_key:"Associated Actor Timespan"|val_from_key:"Associated Actor End Date"|val_from_key:"@display_value" }}
                                     </div>
                                 </div>
@@ -655,10 +655,10 @@
                                 </div>
                                 {% for archive in resource_data|val_from_key:"Associated Archives" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object References"|val_from_key:"Archive Object Reference"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Titles"|val_from_key:"Archive Object Title"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Type"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Holder"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Number">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object References"|val_from_key:"Archive Object Reference"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Title">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Titles"|val_from_key:"Archive Object Title"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Object Type">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Object Type"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Archive Holder">{{ archive|val_from_key:"Associated Archive Objects"|val_from_key:"Archive Holder"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -760,9 +760,9 @@
                                 </div>
                                 {% for exref in resource_data|val_from_key:"External Cross References" %}
                                 <div class="rrow">
-                                    <div class="rcell">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell">
+                                    <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="External Cross Reference Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="URL">
                                         <a href="{{ exref|val_from_key:"URL"|val_from_key:"url" }}" target="_blank">{{ exref|val_from_key:"URL"|val_from_key:"url_label" }}</a>
                                     </div>
                                 </div>
