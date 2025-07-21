@@ -622,7 +622,7 @@
                                 {% for monument in resource_data|val_from_key:"Associated Monuments, Sites and Artefacts" %}
                                 <div class="rrow">
                                     <div class="rcell" data-title="Monument, Site or Artefact">
-                                        {{ monument|val_from_key:"Associated Monuments, Sites or Artefact"|val_from_key:"@display_value" }}
+                                        {{ monument|val_from_key:"Monument, Site or Artefact"|val_from_key:"@display_value" }}
                                     </div>
                                     <div class="rcell" data-title="Association Type">
                                         {{ monument|val_from_key:"Association Type"|val_from_key:"@display_value" }}
