@@ -150,12 +150,74 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                {# Area Statuses #}
+                                {% with area=resource_data|val_from_key:"Discovery"|val_from_key:"Location Data"|val_from_key:"Area" %}
+                                {% if area and area|val_from_key:"Area Assignments" %}
+                                <div class="rtable" style="margin-top:1em;">
+                                    <div class="rrow rheader">
+                                        <div class="rcell">Area Status</div>
+                                        <div class="rcell">Start Date</div>
+                                        <div class="rcell">End Date</div>
+                                    </div>
+                                    {% for assignment in area|val_from_key:"Area Assignments" %}
+                                    <div class="rrow">
+                                        <div class="rcell" data-title="Area Status">{{ assignment|val_from_key:"Area Status"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Start Date">{{ assignment|val_from_key:"Area Status Timespan"|val_from_key:"Area Status Start Date"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="End Date">{{ assignment|val_from_key:"Area Status Timespan"|val_from_key:"Area Status End Date"|val_from_key:"@display_value" }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+
+                                {# Seabed Use Classification #}
+                                {% with seabed_assignments=resource_data|val_from_key:"Discovery"|val_from_key:"Location Data"|val_from_key:"Seabed Use Classification Assignment" %}
+                                {% if seabed_assignments %}
+                                <div class="rtable" style="margin-top:1em;">
+                                    <div class="rrow rheader">
+                                        <div class="rcell">Seabed Use Classification</div>
+                                        <div class="rcell">Seabed Use Note</div>
+                                        <div class="rcell">Geology</div>
+                                        <div class="rcell">Seabed Sediment</div>
+                                    </div>
+                                    {% for assignment in seabed_assignments %}
+                                    <div class="rrow">
+                                        <div class="rcell" data-title="Seabed Use Classification">{{ assignment|val_from_key:"Seabed Use Classification"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Seabed Use Note">{{ assignment|val_from_key:"Seabed Use Notes"|val_from_key:"Seabed Use Notes Value"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Geology">{{ assignment|val_from_key:"Geology"|val_from_key:"@display_value" }}</div>
+                                        <div class="rcell" data-title="Seabed Sediment">{{ assignment|val_from_key:"Seabed Sediment"|val_from_key:"@display_value" }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+
                             </div>
                         </div>
                     </div>
                 </div>
                 {% endif %}
                 {% endwith %}
+
+                {# Finder sub-row #}
+                {% with finder=resource_data|val_from_key:"Discovery"|val_from_key:"Finder" %}
+                {% if finder %}
+                <div class="row">
+                    <div class="column">
+                        <div class="keeptogether">
+                            <div class="container">
+                                <h4>Finder</h4>
+                                <p>
+                                    {{ finder|val_from_key:"@display_value" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+
             </div>
         </section>
         <hr/>
