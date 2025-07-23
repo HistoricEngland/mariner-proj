@@ -575,7 +575,7 @@
                                 <div class="rrow">
                                     <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference"|val_from_key:"@display_value" }}</div>
                                     <div class="rcell" data-title="Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell" data-title="Description">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Description">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}|safe</div>
                                 </div>
                                 {% endfor %}
                             </div>
