@@ -270,7 +270,7 @@
                                     <p><strong>Discovery End Date:</strong> {{ discovery|val_from_key:"Crash Site Discovery Timespan"|val_from_key:"Crash Site Discovery End Date"|val_from_key:"@display_value" }}</p>
                                 {% endif %}
                                 {% if discovery|has_key:"Crash Site Discovery Descriptions" %}
-                                    <p><strong>Description:</strong> {{ discovery|val_from_key:"Crash Site Discovery Descriptions"|val_from_key:"Crash Site Discovery Description"|val_from_key:"@display_value" }}</p>
+                                    <p><strong>Description:</strong> {{ discovery|val_from_key:"Crash Site Discovery Descriptions"|val_from_key:"Crash Site Discovery Description"|val_from_key:"@display_value"|safe }}</p>
                                 {% endif %}
                             {% endwith %}
                         </div>
@@ -435,7 +435,7 @@
                                 {% for risk in resource_data|val_from_key:"Risk Management" %}
                                 <div class="rrow">
                                     <div class="rcell" data-title="Status">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Status"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A"|safe }}</div>
                                     <div class="rcell" data-title="Start Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="End Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="Condition Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Condition Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
@@ -725,7 +725,7 @@
                                 <div class="rrow">
                                     <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
                                     <div class="rcell" data-title="Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
-                                    <div class="rcell" data-title="Notes">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Notes">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value"|safe }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
