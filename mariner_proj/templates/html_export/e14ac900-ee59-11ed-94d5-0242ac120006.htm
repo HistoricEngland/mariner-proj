@@ -261,7 +261,7 @@
                                     <div class="rcell" data-title="Wreck Discovery Type">{{ wd|val_from_key:"Wreck Discovery Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="Wreck Discovery Start Date">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Discovery Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="Wreck Discovery End Date">{{ wd|val_from_key:"Wreck Discovery Timespan"|val_from_key:"Wreck Dicsovery End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Wreck Discovery Description">{{ wd|val_from_key:"Wreck Discovery Descriptions"|val_from_key:"Wreck Discovery Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Wreck Discovery Description">{{ wd|val_from_key:"Wreck Discovery Descriptions"|val_from_key:"Wreck Discovery Description"|val_from_key:"@display_value"|default:"N/A"|safe }}</div>
                                 </div>
                                 {% endwith %}
                             </div>
@@ -485,7 +485,7 @@
                                 {% for risk in resource_data|val_from_key:"Risk Management" %}
                                 <div class="rrow">
                                     <div class="rcell" data-title="Status">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Status"|val_from_key:"@display_value"|default:"N/A" }}</div>
-                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A" }}</div>
+                                    <div class="rcell" data-title="Description">{{ risk|val_from_key:"Risk Descriptions"|val_from_key:"Risk Description"|val_from_key:"@display_value"|default:"N/A"|safe }}</div>
                                     <div class="rcell" data-title="Start Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment Start Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="End Date">{{ risk|val_from_key:"Risk Assessment Timespan"|val_from_key:"Risk Assessment End Date"|val_from_key:"@display_value"|default:"N/A" }}</div>
                                     <div class="rcell" data-title="Condition Type">{{ risk|val_from_key:"Risk Status Assessment"|val_from_key:"Risk Condition Type"|val_from_key:"@display_value"|default:"N/A" }}</div>
@@ -612,12 +612,12 @@
                         <div class="keeptogether">
                             <div class="rtable">
                                 <div class="rrow rheader">
-                                    <div class="rcell">Monument, Site or Artefact</div>
+                                    <div class="rcell">Monument, Site, Craft or Artefact</div>
                                     <div class="rcell">Association Type</div>
                                 </div>
                                 {% for assoc in resource_data|val_from_key:"Associated Monuments, Sites, Craft and Artefacts" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Monument, Site or Artefact">{{ assoc|val_from_key:"Monument, Site, Craft or Artefact"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Monument, Site, Craft or Artefact">{{ assoc|val_from_key:"Monument, Site, Craft or Artefact"|val_from_key:"@display_value" }}</div>
                                     <div class="rcell" data-title="Association Type">{{ assoc|val_from_key:"Asset Association Type"|val_from_key:"@display_value" }}</div>
                                 </div>
                                 {% endfor %}
