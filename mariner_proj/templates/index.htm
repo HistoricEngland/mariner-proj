@@ -51,6 +51,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/slick.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/accessible-slick-theme.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="https://use.typekit.net/hkz3ptw.css">
         {% render_bundle 'css/project' 'css' %}
         
         {% if app_settings.ACCESSIBILITY_MODE %}
@@ -75,7 +76,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/" class="navbar-brand header-bar__logo-link" aria-label="Link to homepage">
-                        <img class="header-bar__logo-image" src="{% webpack_static 'img/HE_Logo_RGB.svg' %}" alt="Historic England logo">
+                        <img class="header-bar__logo-image" src="{% webpack_static 'img/HE_Logo_Stacked_RGB.svg' %}" alt="Historic England logo">
                     </a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse no-transition">
@@ -123,7 +124,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <article class="container">
             <div class="row featurette1">
                 <div class="featurette1-left-container">
-                    <h1>National Marine Historic Environment Record (NMHR)</h1>
+                    <h1>Marine Historic Environment Record Service for England</h1>
                     <p class="lead">The online heritage information and management system for the marine historic environment.</p>
                 </div>
                 <div class="featurette1-right-container pull-right">
@@ -133,30 +134,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="featurette2">
                 <div class="searchbtn-container">
                     <p>
-                        <a class="btn btn-primary btn-lg" href="/search" role="button">Search the National Marine Historic Environment Record</a>
+                        <a class="btn btn-primary btn-lg" href="/search" role="button">Search the National Marine Heritage Record</a>
                     </p>
                 </div>
                 <div class="featurette2-sub-container">
                     <h2>On this page</h2>
                     <ol>
-                        <li><a href="#bm-what-service">What is the Marine Historic Environment Service?</a></li>
+                        <li><a href="#bm-what-service">What is the Marine Historic Environment Service for England?</a></li>
                         <li><a href="#bm-what-record">What is the National Marine Heritage Record?</a></li>
                         <li><a href="#bm-records-held">What type of records do we hold?</a></li>
                         <li><a href="#bm-records-provide">What type of records do we provide?</a></li>
-                        <li><a href="#bm-how-to-use">How to use the Marine HER Service</a></li>
+                        <li><a href="#bm-how-to-use">How to use the Marine HER Service for England</a></li>
+                        <li><a href="#bm-contact">Contact Us</a></li>
                     </ol>
                 </div>
             </div>
             <div class="featurette3">
-                <h2 id="bm-what-service" tabindex="0" role="heading" aria-level="2">What is the Marine Historic Environment Service?</h2>
-                <p>The Marine HER Service is the first port of call for anyone seeking information about heritage that is located
-                    in England's seas and tidal waters, from the mean high water mark out to the edge of the offshore marine
-                    planning area <span class="tbc-highlight">[KM to source map]</span>. We provide access to, and maintenance and enhancement of the National
+                <h2 id="bm-what-service" tabindex="0" role="heading" aria-level="2">What is the Marine Historic Environment Record Service for England?</h2>
+                <p>The Marine HER Service for England is the first port of call for anyone seeking information about heritage
+                    that is located in England’s seas and tidal waters, from the mean high water mark out to the edge of the
+                    offshore marine planning area. We provide access to, and maintenance and enhancement of, the National
                     Marine Heritage Record.</p>
             </div>
             <div class="featurette3">
                 <h2 id="bm-what-record" tabindex="0" role="heading" aria-level="2">What is the National Marine Heritage Record?</h2>
-                <p>The National Marine Heritage Record (NMHR) documents England's coastal, intertidal and underwater heritage,
+                <p>The National Marine Heritage Record (NMHR) documents England’s coastal, intertidal and underwater heritage,
                     from the prehistoric submerged landscapes of Doggerland in the North Sea, to WWII sea defences, to newly
                     discovered wrecks. It is constantly updated with the latest available research, by Historic England marine
                     and coastal specialists.</p>
@@ -165,18 +167,53 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <h2 id="bm-records-held" tabindex="0" role="heading" aria-level="2">What type of records do we hold?</h2>
                 <p>We hold records detailing archaeological investigations of coastal structures, and intertidal and underwater
                     sites including over 6,000 shipwrecks and aircraft wrecks, obstructions, submerged prehistoric landscapes,
-                    marine buildings and structures (such as seaforts, fish traps, docks, harbours, jetties, sea defences), and
-                    find spots. These records are based on archaeological reports, radio carbon dates, reports from Marine
-                    aggregate extractions, UKHO data, historic seascape characterisation, local and project data sets (Citizan
-                    and the Ships Project), recreational diver information, and Receiver of Wreck droit finds. We also hold
-                    records that document 31,000 recorded vessel losses, where no physical site has been found, based on
+                    marine buildings and structures (such as seaforts, fish traps, docks, harbours, jetties, sea defences),
+                    and find spots. These records are based on archaeological reports, radio carbon dates, reports from Marine
+                    aggregate extractions, UKHO data, historic seascape characterisation, local and project data sets
+                    (including Citizan), recreational diver information, and Receiver of Wreck droit finds. We also hold
+                    records that document 31, 000 recorded vessel losses, where no physical site has been found, based on
                     historical documentary evidence such as historic news articles and Lloyds listings.</p>
             </div>
             <div class="featurette3">
                 <h2 id="bm-records-provide" tabindex="0" role="heading" aria-level="2">What type of records do we provide?</h2>
-                <p>Dependant on the type of the query, we can provide genealogical information, archaeological information,
-                    spatial data in a range of formats, etc <span class="tbc-highlight">[KM to expand on this]. 
-                        [Say something about HE open data commitments].</span></p>
+                <p>Dependant on the type of the query, we can provide exports of our records, including the following in
+                    HTML format:</p>
+                <ul>
+                    <li>Wreck Sites</li>
+                    <li>Site type</li>
+                    <li>Maritime Vessels</li>
+                    <li>Aircraft Crash Sites</li>
+                    <li>Historic Aircraft</li>
+                    <li>Monuments</li>
+                    <li>Artefacts</li>
+                    <li>Activities</li>
+                </ul>
+                <p>All of our records can also be exported in CSV format, and where possible, geospatially in Shapefile
+                    format. Additional data and contextual information derived from GIS layers held by the Marine HER
+                    Service for England can be provided where relevant.</p>
+                <p>Where source materials cited in these records have been digitally archived by an external trusted
+                    repository, links through to these resources have been provided. Source materials held by the Marine
+                    HER Service for England will be viewable upon request. Please note that requests to view material
+                    held by the Historic England Archive should be directed to
+                    <a href="https://historicengland.org.uk/services-skills/archives/">Archive Services</a>.</p>
+                <p>Historic England is committed to the open sharing of data relating to nationally designated sites on
+                    the National Heritage List for England (NHLE), as well as other key datasets, through their Open
+                    Data Hub under the Open Government Licence v3 (OGL). Therefore, records in the NMHR that are
+                    designated as Protected Wreck sites and Scheduled Monuments are also present within the freely
+                    available NHLE datasets. However, the contents of these two datasets are not identical, with the
+                    NMHR more frequently updated with the latest research and fieldwork results. As such, we would
+                    recommend using both datasets.</p>
+<!-- GOT DOWN TO HERE -->
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 <div class="row featurette3-row">
                     <div class="thumbnail featurette-image-block featurette3-first-block">
                         <img src="{% webpack_static 'img/landing/about-left.png' %}" aria-labelledby="img-left">
@@ -199,7 +236,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     guidelines - likely to follow GLHER, but tbc).</span></p>
             </div>
             <div class="featurette7">
-                <h2>Contact Us</h2>
+                <h2 id="bm-contact">Contact Us</h2>
                 <div class="jumbotron">
                     <h3>The Marine Historic Environment Record Service</h3>
                     <div class="row website-details">
@@ -247,17 +284,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="container">
                 <div class="row footer-top-first-row">
                     <div class="col-sm-4">
-                        <a href="#">
+                        <a href="#" class="logo-link">
                             <img class="footer-he-logo" src="{% webpack_static 'img/landing/footer-he-logo-white.svg' %}" alt="Historic England logo">
                         </a>
                     </div>
                     <div class="col-sm-5">
-                        <a href="#">
+                        <a href="#" class="logo-link">
                             <img class="footer-getty-logo" src="{% webpack_static 'img/landing/footer-getty-logo-white.png' %}" alt="The Getty logo">
                         </a>
                     </div>
                     <div class="col-sm-3">
-                        <a href="#">
+                        <a href="#" class="logo-link">
                             <img class="footer-arches-logo" src="{% webpack_static 'img/landing/footer-arches-logo-white.png' %}" alt="Arches Project logo">
                         </a>
                     </div>

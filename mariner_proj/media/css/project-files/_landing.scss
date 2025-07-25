@@ -6,11 +6,15 @@
 
 /* General - Start */
 
+/* was: font-family: Source Sans Pro, Arial, Helvetica; */
+
 .landing-page {
     .tbc-highlight {
         background-color: yellow;
     }
-    font-family: Source Sans Pro, Arial, Helvetica;
+    font-family: articulat-cf, tahoma, verdana !important;
+    letter-spacing: .02em;
+    line-height: 30px;
     font-size: 1.125rem;
     font-weight: 300;
     overflow-x: hidden;
@@ -23,10 +27,25 @@
             outline: 2px solid #EC6625!important;
         }
     }
+    p:not(.copyright), li:not(.navbar-nav li) {
+        margin-top: 20px;
+    }
     p,
     a:not(.caption a):not(.footer-top-contact-details a),
     li {
         font-size: 1.8rem;
+    }
+    ul:not(ul.navbar-nav) {
+        margin-left: 20px;
+        padding-left: 0;
+        list-style-type: none;
+    }
+    li:not(.navbar-nav li) {
+        display: table;
+        &:before {
+            content: '\25fe';
+            padding-right: 1.25rem;
+        }
     }
     a:not(.btn-primary):not(footer a) {
         color: #2579A4;
@@ -66,7 +85,8 @@
                 .navbar-header {
                     .header-bar__logo-link {
                         .header-bar__logo-image {
-                            width: 200px;
+                            height: 47px;
+                            width: auto;
                         }
                     }
                 }
@@ -343,12 +363,25 @@
             padding-top: 46px;
             .footer-top-first-row {
                 margin-bottom: 30px;
-                .footer-he-logo,
                 .footer-getty-logo,
                 .footer-arches-logo {
                     max-height: 40px;
                     width: auto;
-                }    
+                }
+                .footer-he-logo {
+                    max-height: 44px;
+                    width: auto;
+                }
+                .logo-link {
+                    &:focus-visible {
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
+                    &:focus {
+                        outline: 2px solid #fd0 !important;
+                        outline-offset: 2px !important;
+                    }
+                }
             }
             .nmhr-text-container {
                 .nmhr-title {
@@ -362,6 +395,17 @@
                 }
                 a {
                     text-decoration: underline;
+                    &:hover {
+                        text-decoration: underline 2px;
+                    }
+                    &:focus {
+                        box-shadow: 0 -2px #fd0, 0 4px #fff !important;
+                        color: #1a1a1a !important;
+                        background-color: #fd0;
+                        text-decoration: none;
+                        outline: none !important;
+                        outline-offset: 0;
+                    }
                 }
             }
             .row {
@@ -374,17 +418,30 @@
             background: #2A2A2A;
             .footer-container {
                 min-height: 60px;
-                padding-top: 15px;
                 .footer-links {
+                    min-height: 60px;
                     a {
                         white-space: nowrap;
                         text-decoration: underline;
                         font-size: 1.8rem;
+                        line-height: 60px;
+                        &:hover {
+                            text-decoration: underline 2px;
+                        }
+                        &:focus {
+                            box-shadow: 0 -2px #fd0, 0 4px #fff !important;
+                            color: #1a1a1a !important;
+                            background-color: #fd0;
+                            text-decoration: none;
+                            outline: none !important;
+                            outline-offset: 0;
+                        }
                     }
                 }
                 .footer-copyright {
                     .copyright {
                         text-align: right;
+                        line-height: 60px;
                     }
                 }
             }
@@ -406,7 +463,8 @@
                 .header-bar__logo {
                     padding: 13px 20px;
                     .header-bar__logo-image {
-                        width: 150px;
+                        height: 38px;
+                        padding-left: 10px;
                     }
                 }
             }
@@ -419,7 +477,8 @@
                     .navbar-header {
                         .header-bar__logo-link {
                             .header-bar__logo-image {
-                                width: 150px;
+                                height: 38px;
+                                padding-left: 10px;
                             }
                         }
                     }
@@ -706,7 +765,6 @@
                         }
                     }
                     .footer-copyright {
-                        margin-top: 20px;
                         .copyright {
                             text-align: left;
                         }
