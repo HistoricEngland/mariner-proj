@@ -55,6 +55,26 @@ def load_spatialviews(apps, schema_editor):
             "language_id": "en",
         },
         {
+            "spatialviewid": UUID("697a8dd6-70e3-47f7-ac6b-e704f8ea1a69"),
+            "schema": "public",
+            "slug": "artefact",
+            "description": "Defines information relating to the character of man made items of heritage significance. Includes individual artefacts, architectural items, artefact assemblages, individual ecofacts and ecofact assemblages, and environmental samples. Last updated: January 2024",
+            "ismixedgeometrytypes": False,
+            "attributenodes": [
+                {
+                    "nodeid": "1d49ee68-2d51-11ef-ae46-0242ac140006",
+                    "description": "artefact_name",
+                },
+                {
+                    "nodeid": "1d4a56be-2d51-11ef-ae46-0242ac140006",
+                    "description": "primary_reference_number",
+                },
+            ],
+            "isactive": True,
+            "geometrynode_id": UUID("1d49c9c4-2d51-11ef-ae46-0242ac140006"),
+            "language_id": "en",
+        },
+        {
             "spatialviewid": UUID("7bfe40d2-0faa-427b-b565-87a46cc05d27"),
             "schema": "public",
             "slug": "climate_hazard",
@@ -341,6 +361,7 @@ def unload_spatialviews(apps, schema_editor):
     spatialviewids = [
         UUID("a15ac9f1-3b8b-4c30-9872-0a5a9a89b2e8"),
         UUID("747a8dd6-70e3-47f7-ac6b-e704f8ea1a43"),
+        UUID("697a8dd6-70e3-47f7-ac6b-e704f8ea1a69"),
         UUID("7bfe40d2-0faa-427b-b565-87a46cc05d27"),
         UUID("011d068a-14db-41f4-b9cb-b2a3ed56995c"),
         UUID("36a16183-67f9-40dd-863a-770cbfaed5ac"),
