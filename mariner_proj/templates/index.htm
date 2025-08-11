@@ -98,7 +98,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         {% endif %}
                         <li>
                             {% if user.username == 'anonymous' %}
-                            <a class="btn btn-primary btn-lg hidden-xs" id="auth-link"
+                            <a class="hidden-xs" id="auth-link"
                                 href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">
                                 <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user">{% trans "Sign in" %}</a>
                             <a class="mobile-menu-sign-in visible-xs-*" id="auth-link"
@@ -134,31 +134,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="featurette2">
                 <div class="searchbtn-container">
                     <p>
-                        <a class="btn btn-primary btn-lg" href="/search" role="button">Search the National Marine Heritage Record</a>
+                        <a class="he-button" href="/search" role="button">Search the National Marine Heritage Record</a>
                     </p>
                 </div>
                 <div class="featurette2-sub-container">
+                    <p><strong>Status Notification:</strong> The new online database built to host the National Marine Heritage
+                        Record (NMHR) using the Arches cultural heritage inventory software platform is currently in an initial
+                        extended accessibility and usability testing phase. This means that this website is currently only
+                        accessible to select internal users while this testing takes place. If you are a user and have feedback
+                        on the usability or accessibility of the system, please contact <a href="mailto:MHERSE@historicengland.org.uk">MHERSE@historicengland.org.uk</a>.</p>
                     <h2>On this page</h2>
-                    <ol>
+                    <ul>
                         <li><a href="#bm-what-service">What is the Marine Historic Environment Service for England?</a></li>
                         <li><a href="#bm-what-record">What is the National Marine Heritage Record?</a></li>
                         <li><a href="#bm-records-held">What type of records do we hold?</a></li>
                         <li><a href="#bm-records-provide">What type of records do we provide?</a></li>
                         <li><a href="#bm-how-to-use">How to use the Marine HER Service for England</a></li>
                         <li><a href="#bm-contact">Contact Us</a></li>
-                    </ol>
+                    </ul>
                 </div>
             </div>
             <div class="featurette3">
                 <h2 id="bm-what-service" tabindex="0" role="heading" aria-level="2">What is the Marine Historic Environment Record Service for England?</h2>
                 <p>The Marine HER Service for England is the first port of call for anyone seeking information about heritage
-                    that is located in England’s seas and tidal waters, from the mean high water mark out to the edge of the
+                    that is located in England's seas and tidal waters, from the mean high water mark out to the edge of the
                     offshore marine planning area. We provide access to, and maintenance and enhancement of, the National
                     Marine Heritage Record.</p>
+                <div class="thumbnail featurette-image-block featurette3-first-block">
+                    <img src="{% webpack_static 'img/landing/marine-her-map.jpg' %}" aria-labelledby="what-is-map">
+                    <div class="caption" id="what-is-map">
+                        Coverage of the National Marine Heritage Record, showing territorial waters up to 12 nautical
+                        miles offshore (red line) and the English offshore marine planning area up to 200 nautical
+                        miles offshore (blue polygon)
+                    </div>
+                </div>
             </div>
             <div class="featurette3">
                 <h2 id="bm-what-record" tabindex="0" role="heading" aria-level="2">What is the National Marine Heritage Record?</h2>
-                <p>The National Marine Heritage Record (NMHR) documents England’s coastal, intertidal and underwater heritage,
+                <p>The National Marine Heritage Record (NMHR) documents England's coastal, intertidal and underwater heritage,
                     from the prehistoric submerged landscapes of Doggerland in the North Sea, to WWII sea defences, to newly
                     discovered wrecks. It is constantly updated with the latest available research, by Historic England marine
                     and coastal specialists.</p>
@@ -195,7 +208,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     repository, links through to these resources have been provided. Source materials held by the Marine
                     HER Service for England will be viewable upon request. Please note that requests to view material
                     held by the Historic England Archive should be directed to
-                    <a href="https://historicengland.org.uk/services-skills/archives/">Archive Services</a>.</p>
+                    <a href="https://historicengland.org.uk/images-books/archive/">Archive Services</a>.</p>
                 <p>Historic England is committed to the open sharing of data relating to nationally designated sites on
                     the National Heritage List for England (NHLE), as well as other key datasets, through their Open
                     Data Hub under the Open Government Licence v3 (OGL). Therefore, records in the NMHR that are
@@ -203,70 +216,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     available NHLE datasets. However, the contents of these two datasets are not identical, with the
                     NMHR more frequently updated with the latest research and fieldwork results. As such, we would
                     recommend using both datasets.</p>
-<!-- GOT DOWN TO HERE -->
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                 <div class="row featurette3-row">
                     <div class="thumbnail featurette-image-block featurette3-first-block">
                         <img src="{% webpack_static 'img/landing/about-left.png' %}" aria-labelledby="img-left">
                         <div class="caption">
-                            <a id="img-left" href="https://historicengland.org.uk/research/current/heritage-science/" target="_blank">Historic England archaeologist Mark Dunkley recording the condition of an early iron cannon off the Farne Islands© Wessex Archaeology for Historic England</a>
+                            <a id="img-left" href="https://historicengland.org.uk/whats-new/research/the-london-wreck/" target="_blank">Close up of the gnomon of the pocket sun dial</a>
                         </div>
                     </div>
                     <div class="thumbnail featurette-image-block">
                         <img src="{% webpack_static 'img/landing/about-right.png' %}" aria-labelledby="img-right">
                         <div class="caption">
-                            <a id="img-right" href="https://historicengland.org.uk/whats-new/research/back-issues/waves-over-woodlands/" target="_blank">Overview of the southern part of the exposed intertidal peat / submerged forest deposit at the Pett Level coast, looking approximately south-west</a>
+                            <a id="img-right" href="https://historicengland.org.uk/whats-new/news/innovative-marking-technology-protect-shipwrecks-heritage-crime" target="_blank">A bronze gun found at the wreck site and a cuttlefish nearby</a>
                         </div>
                     </div>
                 </div>
-                <p><span class="tbc-highlight">[May link externally to Citizan and other partner organisations who are providing data - to be discussed]</span></p>
             </div>
             <div class="featurette3">
-                <h2 id="bm-how-to-use" tabindex="0" role="heading" aria-level="2">How to use the Marine HER Service</h2>
-                <p>Anyone can use this service. <span class="tbc-highlight">Details to be provided (e.g. public and academic users vs commercial
-                    guidelines - likely to follow GLHER, but tbc).</span></p>
+                <h2 id="bm-how-to-use" tabindex="0" role="heading" aria-level="2">How to use the Marine HER Service for England</h2>
+                <p>The NMHR is a public record, and we welcome enquires from anyone interested in England's marine
+                    historic environment. This website allows users to view and search NMHR records for free.
+                    To request an export of any part of our dataset, please contact us by email or phone using the
+                    details below.</p>
+                <p>Please be aware that while this website may be used by commercial and academic users to carry
+                    out preliminary investigations or decide the parameters for a full search, these users should
+                    contact MHERSE to request a full search, as this will include any necessary record creation
+                    or enhancement work and ensure they receive the most up-to-date and accurate dataset possible.</p>
             </div>
             <div class="featurette7">
                 <h2 id="bm-contact">Contact Us</h2>
                 <div class="jumbotron">
-                    <h3>The Marine Historic Environment Record Service</h3>
-                    <div class="row website-details">
-                        <div class="col-xs-12">
-                            <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-website.svg' %}" width="25" height="25" alt="">
-                            </div>
-                            <div class="contact-details">
-                                <p><strong>Website</strong><br/>
-                                    <a href="#" target="_blank">Website for The National Marine Historic Environment Record <span class="tbc-highlight">(TBC)</span></a></p>
-                            </div>
-                        </div>
-                    </div>
+                    <h3>The Marine Historic Environment Record Service for England</h3>
                     <div class="row address-phone">
                         <div class="col-sm-6">
-                            <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-address.svg' %}" width="25" height="25" alt="">
-                            </div>
                             <div class="contact-details">
-                                <p><strong>Address</strong><br>
-                                    <span class="tbc-highlight">TBC</span></p>
+                                <p><strong>Email</strong><br>
+                                <a href="mailto:MHERSE@HistoricEngland.org.uk">MHERSE@HistoricEngland.org.uk</a></p>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="contact-icon">
-                                <img src="{% webpack_static 'img/landing/contact-phone.svg' %}" width="25" height="25" alt="">
-                            </div>
                             <div class="contact-details">
                                 <p><strong>Phone number</strong><br>
-                                    <span class="tbc-highlight">TBC</span></p>
+                                    01793 445100</p>
                             </div>
                         </div>
                     </div>
@@ -307,7 +297,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="col-xs-4 col-sm-3 footer-top-contact-details">
                         <p><strong>Contact Us</strong></p>
                         <p>For enquiry, please contact<br/>
-                            <a href="mailto:Maritime@HistoricEngland.org.uk">Maritime@HistoricEngland.org.uk</a></p>
+                            <a href="mailto:MHERSE@HistoricEngland.org.uk">MHERSE@HistoricEngland.org.uk</a></p>
                     </div>
                 </div>
             </div>
