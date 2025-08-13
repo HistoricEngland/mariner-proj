@@ -28,7 +28,7 @@
         margin-top: 20px;
     }
     p,
-    a:not(.caption a):not(.footer-top-contact-details a),
+    a:not(.caption a),
     li {
         font-size: 1.8rem;
     }
@@ -419,11 +419,9 @@
             margin-right: 25px;
         }
         .footer-top {
-            min-height: 266px;
             background: #404040;
-            padding-top: 46px;
+            padding: 46px 0;
             .footer-top-first-row {
-                margin-bottom: 30px;
                 .footer-getty-logo,
                 .footer-arches-logo {
                     max-height: 40px;
@@ -441,31 +439,6 @@
                     &:focus {
                         outline: 2px solid #fd0 !important;
                         outline-offset: 2px !important;
-                    }
-                }
-            }
-            .nmhr-text-container {
-                .nmhr-title {
-                    font-size: 2.8rem;
-                }
-            }
-            .footer-top-contact-details {
-                p,
-                a {
-                    font-size: 1.6rem;
-                }
-                a {
-                    text-decoration: underline;
-                    &:hover {
-                        text-decoration: underline 2px;
-                    }
-                    &:focus {
-                        box-shadow: 0 -2px #fd0, 0 4px #fff !important;
-                        color: #1a1a1a !important;
-                        background-color: #fd0;
-                        text-decoration: none;
-                        outline: none !important;
-                        outline-offset: 0;
                     }
                 }
             }
@@ -683,12 +656,6 @@
                     }
                 }
             }
-            .nmhr-text-container {
-                width: 66.66666667%;
-            }
-            .footer-top-contact-details {
-                width: 33.33333333%;
-            }
             .footer-links {
                 padding-bottom: 15px;
             }
@@ -716,8 +683,7 @@
             width: 100%;
         }
     }
-    .featurette1-left-container h1 br,
-    footer .nmhr-text-container .nmhr-title br {
+    .featurette1-left-container h1 br {
         display: none;
     }
     .featurette2 {
@@ -779,23 +745,6 @@
         footer {
             margin-top: 40px;
             .footer-top {
-                .nmhr-text-container {
-                    .nmhr-title {
-                        font-size: 2.6rem;
-                        margin-bottom: 20px;
-                        br {
-                            display: none;
-                        }
-                    }
-                }
-                .nmhr-text-container,
-                .footer-top-contact-details {
-                    float: none;
-                    width: 100vw;
-                }
-                .footer-top-contact-details {
-                    margin-bottom: 30px;
-                }
                 .footer-top-first-row {
                     .footer-he-logo,
                     .footer-getty-logo,
