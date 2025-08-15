@@ -29,8 +29,12 @@ ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
 
 DATATYPE_LOCATIONS.append("mariner_app.datatypes")
-FUNCTION_LOCATIONS.append("mariner_app.functions")
+FUNCTION_LOCATIONS.append(["mariner_app.functions","arches_he_sysref_funcs.functions"])
 SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
+
+PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000 #
+# This is the initial seed for the primary reference number, which is incremented by 1 for each new resource.
+# Set the initial seed to the highest primary reference number in your database + 20 
 
 LOCALE_PATHS.insert(0, os.path.join(APP_ROOT, "locale"))
 
@@ -148,13 +152,14 @@ INSTALLED_APPS = (
     # "silk",
     "mariner_proj",  # Ensure the project is listed before any other arches applications
     "mariner_app",
+    "arches_he_sysref_funcs",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
 INSTALLED_APPS += ("arches.app",)
 
-ARCHES_APPLICATIONS = ("mariner_app",)
+ARCHES_APPLICATIONS = ("mariner_app","arches_he_sysref_funcs")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
