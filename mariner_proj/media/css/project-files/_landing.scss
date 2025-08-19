@@ -24,7 +24,7 @@
             outline: 2px solid #EC6625!important;
         }
     }
-    p:not(.copyright), li:not(.navbar-nav li) {
+    p:not(.copyright):not(.contact-details p), li:not(.navbar-nav li) {
         margin-top: 20px;
     }
     p,
