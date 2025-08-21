@@ -29,7 +29,8 @@ ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
 
 DATATYPE_LOCATIONS.append("mariner_app.datatypes")
-FUNCTION_LOCATIONS.append(["mariner_app.functions", "arches_he_sysref_funcs.functions"])
+FUNCTION_LOCATIONS.append("mariner_app.functions")
+FUNCTION_LOCATIONS.append("arches_he_sysref_funcs.functions")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
 
 PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000
