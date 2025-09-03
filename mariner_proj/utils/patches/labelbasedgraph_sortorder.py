@@ -71,12 +71,22 @@ def patched_as_json(
                 elif isinstance(previous_val, list):
                     formatted_node_value["@sortorder"] = child_node.sortorder
                     display_data[formatted_node_name].append(formatted_node_value)
+                    # sort the list
+                    display_data[formatted_node_name] = sorted(
+                        display_data[formatted_node_name],
+                        key=lambda x: x["@sortorder"],
+                    )
                 else:
                     formatted_node_value["@sortorder"] = child_node.sortorder
                     display_data[formatted_node_name] = [
                         previous_val,
                         formatted_node_value,
                     ]
+                    # sort the list
+                    display_data[formatted_node_name] = sorted(
+                        display_data[formatted_node_name],
+                        key=lambda x: x["@sortorder"],
+                    )
 
     val = self.value
     if compact and display_data:
