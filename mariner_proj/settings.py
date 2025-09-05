@@ -268,8 +268,17 @@ LOGGING = {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
     },
+    "root": {
+        "handlers": list(LOGGING_HANDLERS.keys()),
+        "level": LOG_LEVEL,
+    },
     "handlers": LOGGING_HANDLERS,
     "loggers": {
+        "mariner_proj": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
         "arches": {
             "handlers": list(LOGGING_HANDLERS.keys()),
             "level": LOG_LEVEL,
@@ -279,10 +288,6 @@ LOGGING = {
             "handlers": list(LOGGING_HANDLERS.keys()),
             "level": LOG_LEVEL,
             "propagate": True,
-        },
-        "": {
-            "handlers": list(LOGGING_HANDLERS.keys()),
-            "level": LOG_LEVEL,
         },
     },
 }
