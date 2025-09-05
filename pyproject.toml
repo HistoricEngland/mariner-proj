@@ -28,6 +28,7 @@ dependencies = [
     "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.0",
     "wfastcgi>=3.0.0,<3.1.0",
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
+    "opentelemetry-instrumentation-celery"
 ]
 version = "1.0.0a"
 
