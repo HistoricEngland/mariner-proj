@@ -1,10 +1,26 @@
 from django.conf import settings
+from arches.app.models.system_settings import settings as ArchesSettings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
+from arches.app.views.auth import PasswordResetView
+
+ArchesSettings.update_from_db()
 
 urlpatterns = [
     # add project urls here before mariner_app urls
+    path(
+        "password_reset/",
+        PasswordResetView.as_view(
+            html_email_template_name="registration/password_reset_html_email.html",
+            extra_email_context={
+                "app_name": ArchesSettings.APP_NAME,
+                "contact_email": settings.CONTACT_EMAIL,
+                "salutation": settings.SALUTATION,
+            },
+        ),
+        name="password_reset",
+    ),
     # added mariner_app
     path("", include("mariner_app.urls")),
     path("", include("arches_he_sysref_funcs.urls")),

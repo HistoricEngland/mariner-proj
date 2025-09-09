@@ -418,14 +418,18 @@ RESTRICT_MEDIA_ACCESS = False
 # value and is not signed in with a user account then the request will not be allowed.
 RESTRICT_CELERY_EXPORT_FOR_ANONYMOUS_USER = False
 
+SEARCH_EXPORT_IMMEDIATE_DOWNLOAD_THRESHOLD = 2000  # The maximum number of instances a user can download from search export without celery
+
 # Contact settings
 CONTACT_EMAIL = "#"
 CONTACT_WEBSITE = "#"
+SALUTATION = "Hi"
 
 # Dictionary containing any additional context items for customising email templates
 EXTRA_EMAIL_CONTEXT = {
     "contact_email": CONTACT_EMAIL,
     "contact_website": CONTACT_WEBSITE,
+    "salutation": SALUTATION,
     "expiration": (
         datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)
     ).strftime("%A, %d %B %Y"),
