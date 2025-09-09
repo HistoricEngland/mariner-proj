@@ -6,6 +6,7 @@ ARG PROJ_NAME=project
 ARG ARCHES_PATH=./arches
 ARG DOCKER_PATH=./docker
 ARG MARINER_APP_PATH=./mariner_app
+ARG ARCHES_HE_SYSREF_FUNCS_PATH=./arches_he_sysref_funcs
 
 ## Setting default environment variables
 ENV ARCHES_PROJECT=$PROJ_NAME
@@ -89,6 +90,12 @@ RUN pip install -e '.[dev]'
 ENV MARINER_APP=${WEB_ROOT}/mariner_app
 COPY $MARINER_APP_PATH ${MARINER_APP}
 WORKDIR ${MARINER_APP}
+RUN pip install -e '.[dev]'
+
+# Install the arches_he_sysref_funcs package in editable mode
+ENV ARCHES_HE_SYSREF_FUNCS=${WEB_ROOT}/arches_he_sysref_funcs
+COPY $ARCHES_HE_SYSREF_FUNCS_PATH ${ARCHES_HE_SYSREF_FUNCS}
+WORKDIR ${ARCHES_HE_SYSREF_FUNCS}
 RUN pip install -e '.[dev]'
 
 # From here, run commands from ARCHES_ROOT
