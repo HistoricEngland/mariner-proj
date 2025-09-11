@@ -30,7 +30,12 @@ SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
 
 DATATYPE_LOCATIONS.append("mariner_app.datatypes")
 FUNCTION_LOCATIONS.append("mariner_app.functions")
+FUNCTION_LOCATIONS.append("arches_he_sysref_funcs.functions")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
+
+PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000
+# This is the initial seed for the primary reference number, which is incremented by 1 for each new resource.
+# Set the initial seed to the highest primary reference number in your database + 20
 
 LOCALE_PATHS.insert(0, os.path.join(APP_ROOT, "locale"))
 
@@ -148,13 +153,14 @@ INSTALLED_APPS = (
     # "silk",
     "mariner_proj",  # Ensure the project is listed before any other arches applications
     "mariner_app",
+    "arches_he_sysref_funcs",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
 INSTALLED_APPS += ("arches.app",)
 
-ARCHES_APPLICATIONS = ("mariner_app",)
+ARCHES_APPLICATIONS = ("mariner_app", "arches_he_sysref_funcs")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -412,14 +418,18 @@ RESTRICT_MEDIA_ACCESS = False
 # value and is not signed in with a user account then the request will not be allowed.
 RESTRICT_CELERY_EXPORT_FOR_ANONYMOUS_USER = False
 
+SEARCH_EXPORT_IMMEDIATE_DOWNLOAD_THRESHOLD = 2000  # The maximum number of instances a user can download from search export without celery
+
 # Contact settings
 CONTACT_EMAIL = "#"
 CONTACT_WEBSITE = "#"
+SALUTATION = "Hi"
 
 # Dictionary containing any additional context items for customising email templates
 EXTRA_EMAIL_CONTEXT = {
     "contact_email": CONTACT_EMAIL,
     "contact_website": CONTACT_WEBSITE,
+    "salutation": SALUTATION,
     "expiration": (
         datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)
     ).strftime("%A, %d %B %Y"),
