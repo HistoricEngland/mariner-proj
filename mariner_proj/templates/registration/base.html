@@ -22,23 +22,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock loading_mask %}
 {% block body %}
 
-<div id="container" class="cls-container arches-login">
+<div class="login-container">
 
-    <header>
+	<header class="header">
 		<div class="header-bar">
 			<div class="header-bar__logo">
-				<div class="header-bar__logo-heading">
-					<a href="/" class="header-bar__logo-link" aria-label="Link to homepage">
-						<img class="header-bar__logo-image" src="{{ STATIC_URL }}img/HE_Logo_RGB.svg" alt="Historic England logo">
+				<a href="https://historicengland.org.uk" aria-label="Historic England home page" class="header-bar__logo-link">
+					<img class="header-bar__logo-image" src="{{ STATIC_URL }}img/HE_Logo_Stacked_RGB.svg" alt="Historic England logo">
+				</a>
+			</div>
+			<div class="hp-header__link-container hidden-xs">
+				<div class="hp-header__return-link-wrapper">
+					&lt;&nbsp;
+					<a href="/" title="Return to Historic England" class="hp-header__return-link">
+						Return to main site
 					</a>
 				</div>
 			</div>
 		</div>
 	</header>
 
-    <main>
-        {% block content %} {% endblock %}
-    </main>
+	<main>
+		{% block content %} {% endblock %}
+	</main>
+
+	<footer>
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="footer-container">
+					<div class="col-xs-12 col-sm-8 footer-links">
+						<a href="https://historicengland.org.uk/access/" target="_blank">Accessibility</a>
+						<a href="#" onclick="CookieControl.open();">Manage Cookies</a>
+						<a href="https://historicengland.org.uk/terms/privacy/" target="_blank">Privacy Policy</a>
+						<a href="https://historicengland.org.uk/terms/" target="_blank">Terms &amp; Conditions</a>
+					</div>
+					<div class="col-xs-12 col-sm-4 footer-copyright">
+						<p class="copyright">&copy; Historic England <script>document.write(new Date().getFullYear());</script></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 
 </div>
 
