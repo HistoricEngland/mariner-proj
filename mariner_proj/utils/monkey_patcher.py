@@ -5,7 +5,7 @@ from mariner_proj.utils.patches.base import BasePatch
 
 
 def apply_monkey_patches():
-    print("Applying monkey patches... 🐒")
+    print("Applying monkey patches...")
 
     patches_dir = os.path.join(os.path.dirname(__file__), "patches")
     for filename in os.listdir(patches_dir):
@@ -16,4 +16,4 @@ def apply_monkey_patches():
                 if isclass(obj) and issubclass(obj, BasePatch):
                     obj().apply()
 
-    print("All monkey patches applied successfully! 🎉")
+    print("All monkey patches applied successfully!")
