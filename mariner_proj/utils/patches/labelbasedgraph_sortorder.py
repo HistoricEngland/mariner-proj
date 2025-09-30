@@ -33,7 +33,9 @@ def patched_init(self, name, node_id, tile_id, value, cardinality=None, sortorde
     # Monkey patch end
 
 
-def patched_as_json(self, compact=False, include_empty_nodes=True, include_hidden_nodes=True):
+def patched_as_json(
+    self, compact=False, include_empty_nodes=True, include_hidden_nodes=True
+):
     display_data = {}
 
     if not include_hidden_nodes:
@@ -59,12 +61,18 @@ def patched_as_json(self, compact=False, include_empty_nodes=True, include_hidde
 
                 # let's handle multiple identical node names
                 if not previous_val:
-                    should_create_new_array = cardinality == "n" and self.tile_id != child_node.tile_id
+                    should_create_new_array = (
+                        cardinality == "n" and self.tile_id != child_node.tile_id
+                    )
                     # Monkey patch start
                     if should_create_new_array:
                         formatted_node_value["@sortorder"] = child_node.sortorder
                     # Monkey patch end
-                    display_data[formatted_node_name] = [formatted_node_value] if should_create_new_array else formatted_node_value
+                    display_data[formatted_node_name] = (
+                        [formatted_node_value]
+                        if should_create_new_array
+                        else formatted_node_value
+                    )
                 elif isinstance(previous_val, list):
                     # Monkey patch start
                     formatted_node_value["@sortorder"] = child_node.sortorder
@@ -130,7 +138,9 @@ def patched_build_graph(
     node_ids_to_serialized_nodes,
     edge_domain_node_ids_to_range_nodes,
 ):
-    for associated_tile in node_ids_to_tiles_reference.get(input_node["nodeid"], [input_tile]):
+    for associated_tile in node_ids_to_tiles_reference.get(
+        input_node["nodeid"], [input_tile]
+    ):
         parent_tile = associated_tile.parenttile
 
         if associated_tile == input_tile or parent_tile == input_tile:
@@ -153,7 +163,9 @@ def patched_build_graph(
                         serialized_node=input_node,
                         datatype_factory=datatype_factory,
                     ),
-                    cardinality=nodegroup_cardinality_reference.get(str(associated_tile.nodegroup_id)),
+                    cardinality=nodegroup_cardinality_reference.get(
+                        str(associated_tile.nodegroup_id)
+                    ),
                     # Monkey patch start
                     sortorder=associated_tile.sortorder,
                     # Monkey patch end
@@ -165,7 +177,9 @@ def patched_build_graph(
                 else:
                     parent_tree.child_nodes.append(label_based_node)
 
-                for child_node in edge_domain_node_ids_to_range_nodes.get(input_node["nodeid"], []):
+                for child_node in edge_domain_node_ids_to_range_nodes.get(
+                    input_node["nodeid"], []
+                ):
                     cls._build_graph(
                         input_node=child_node,
                         input_tile=associated_tile,
