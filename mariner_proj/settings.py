@@ -327,7 +327,11 @@ PREFERRED_COORDINATE_SYSTEMS = (
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        # Setting to something other than DummyCache so that GitHub builds don't fail
+        # See check_cache_backend() in apps.py for other options
+        # Developing locally, you should use DummyCache and comment out RedisCache
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     },
     "user_permission": {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
