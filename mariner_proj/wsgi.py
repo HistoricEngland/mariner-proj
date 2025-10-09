@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import inspect
+import logging
+
 
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
@@ -30,9 +32,20 @@ if path not in sys.path:
 # http://blog.dscpl.com.au/2012/10/requests-running-in-wrong-django.html
 os.environ["DJANGO_SETTINGS_MODULE"] = "mariner_proj.settings"
 
+
 from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
+
+# After Django initialisation, configure Azure Monitor (idempotent helper)
+try:
+    from mariner_proj.utils.azure_monitoring import setup_azure_monitor
+
+    setup_azure_monitor("web")
+except Exception as _ex:  # pragma: no cover - defensive
+    logging.getLogger("mariner.telemetry").warning(
+        "Post-start Azure Monitor setup skipped: %s", _ex
+    )
 
 from arches.app.models.system_settings import settings
 
