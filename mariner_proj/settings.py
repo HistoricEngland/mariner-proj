@@ -192,6 +192,20 @@ STATICFILES_DIRS = build_staticfiles_dirs(app_root=APP_ROOT)
 TEMPLATES = build_templates_config(
     debug=DEBUG,
     app_root=APP_ROOT,
+    context_processors=[
+        "django.contrib.auth.context_processors.auth",
+        "django.template.context_processors.debug",
+        "django.template.context_processors.i18n",
+        "django.template.context_processors.media",
+        "django.template.context_processors.static",
+        "django.template.context_processors.tz",
+        "django.template.context_processors.request",
+        "django.contrib.messages.context_processors.messages",
+        "arches.app.utils.context_processors.livereload",
+        "arches.app.utils.context_processors.map_info",
+        "arches.app.utils.context_processors.app_settings",
+        "mariner_proj.context_processors.project_settings",
+    ],
 )
 
 ALLOWED_HOSTS = []
@@ -224,6 +238,34 @@ FORCE_SCRIPT_NAME = None
 RESOURCE_IMPORT_LOG = os.path.join(APP_ROOT, "logs", "resource_import.log")
 DEFAULT_RESOURCE_IMPORT_USER = {"username": "admin", "userid": 1}
 
+
+# Azure Monitor OpenTelemetry configuration - use environment variables to set these values in production
+ENABLE_AZURE_MONITORING = False
+APPLICATIONINSIGHTS_CONNECTION_STRING = None
+APPINSIGHT_SERVICE_NAME = "mariner"
+
+# Logging configuration - Azure monitoring is now handled by the azure-monitor-opentelemetry package
+# and configured in wsgi.py
+ENABLE_FILE_LOGGING = False
+ENABLE_CONSOLE_LOGGING = True
+
+LOG_LEVEL = "DEBUG"
+
+LOGGING_HANDLERS = {}
+if ENABLE_FILE_LOGGING:
+    LOGGING_HANDLERS["file"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.FileHandler",
+        "filename": os.path.join(APP_ROOT, "arches.log"),
+        "formatter": "console",
+    }
+if ENABLE_CONSOLE_LOGGING:
+    LOGGING_HANDLERS["console"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.StreamHandler",
+        "formatter": "console",
+    }
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -232,25 +274,27 @@ LOGGING = {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
     },
-    "handlers": {
-        "file": {
-            "level": "WARNING",  # DEBUG, INFO, WARNING, ERROR
-            "class": "logging.FileHandler",
-            "filename": os.path.join(APP_ROOT, "arches.log"),
-            "formatter": "console",
-        },
-        "console": {
-            "level": "WARNING",
-            "class": "logging.StreamHandler",
-            "formatter": "console",
-        },
+    "root": {
+        "handlers": list(LOGGING_HANDLERS.keys()),
+        "level": LOG_LEVEL,
     },
+    "handlers": LOGGING_HANDLERS,
     "loggers": {
-        "arches": {
-            "handlers": ["file", "console"],
-            "level": "WARNING",
+        "mariner_proj": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
             "propagate": True,
-        }
+        },
+        "arches": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
+        "django": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
     },
 }
 
