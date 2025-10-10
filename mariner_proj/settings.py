@@ -523,10 +523,12 @@ SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 # ES_MAPPING_MODIFIER_CLASSES = ["mariner_proj.search.es_mapping_modifier.EsMappingModifier"]
 
 # Ignore here as et in deploy config
-SILENCED_SYSTEM_CHECKS.extend([
-    "arches.W001",  # Cache backend does not support rate-limiting
-    "arches.E001",  # Dummy Cache in production check
-])
+SILENCED_SYSTEM_CHECKS.extend(
+    [
+        "arches.W001",  # Cache backend does not support rate-limiting
+        "arches.E001",  # Dummy Cache in production check
+    ]
+)
 
 
 try:

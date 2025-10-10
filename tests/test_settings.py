@@ -65,10 +65,12 @@ ELASTICSEARCH_PREFIX = "test"
 
 TEST_RUNNER = "arches.test.runner.ArchesTestRunner"
 
-SILENCED_SYSTEM_CHECKS.extend([
-    "arches.W001",  # Cache backend does not support rate-limiting
-    "arches.E001",  # Dummy Cache in production check
-])
+SILENCED_SYSTEM_CHECKS.extend(
+    [
+        "arches.W001",  # Cache backend does not support rate-limiting
+        "arches.E001",  # Dummy Cache in production check
+    ]
+)
 
 ELASTICSEARCH_HOSTS = [
     {"scheme": "http", "host": "localhost", "port": ELASTICSEARCH_HTTP_PORT}
