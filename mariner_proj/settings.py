@@ -23,6 +23,8 @@ WEBPACK_LOADER = {
     },
 }
 
+THUMBNAIL_GENERATOR = "arches.app.utils.thumbnail_generator.ThumbnailGenerator"
+
 DATATYPE_LOCATIONS.append("mariner_proj.datatypes")
 FUNCTION_LOCATIONS.append("mariner_proj.functions")
 ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
@@ -249,7 +251,7 @@ APPINSIGHT_SERVICE_NAME = "mariner"
 ENABLE_FILE_LOGGING = False
 ENABLE_CONSOLE_LOGGING = True
 
-LOG_LEVEL = "DEBUG"
+LOG_LEVEL = "WARNING"
 
 LOGGING_HANDLERS = {}
 if ENABLE_FILE_LOGGING:
@@ -519,6 +521,15 @@ SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 # Implement this class to associate custom documents to the ES resource index
 # See tests.views.search_tests.TestEsMappingModifier class for example
 # ES_MAPPING_MODIFIER_CLASSES = ["mariner_proj.search.es_mapping_modifier.EsMappingModifier"]
+
+# Ignore here as et in deploy config
+SILENCED_SYSTEM_CHECKS.extend(
+    [
+        "arches.W001",  # Cache backend does not support rate-limiting
+        "arches.E001",  # Dummy Cache in production check
+    ]
+)
+
 
 try:
     from .package_settings import *
