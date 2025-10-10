@@ -523,10 +523,10 @@ SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 # ES_MAPPING_MODIFIER_CLASSES = ["mariner_proj.search.es_mapping_modifier.EsMappingModifier"]
 
 # Silence check that we havae made a decision on
-SILENCED_SYSTEM_CHECKS.append(
+SILENCED_SYSTEM_CHECKS.extend([
     "arches.W001",  # Cache backend does not support rate-limiting - we set this in the deploy config
     "arches.E001",  # Dummy Cache in production check - we set this in the deploy config
-)
+])
 
 
 try:
