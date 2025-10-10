@@ -23,6 +23,8 @@ WEBPACK_LOADER = {
     },
 }
 
+THUMBNAIL_GENERATOR = "arches.app.utils.thumbnail_generator.ThumbnailGenerator"
+
 DATATYPE_LOCATIONS.append("mariner_proj.datatypes")
 FUNCTION_LOCATIONS.append("mariner_proj.functions")
 ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
