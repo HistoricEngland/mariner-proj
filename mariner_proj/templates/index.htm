@@ -1,3 +1,4 @@
+
 <!--
 ARCHES - a program developed to inventory and manage immovable cultural heritage.
 Copyright (C) 2013 J. Paul Getty Trust and World Monuments Fund
@@ -36,13 +37,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <link rel="shortcut icon" href="{% webpack_static 'favicons/favicon.ico' %}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{% webpack_static 'favicons/apple-touch-icon.png' %}" />
     <link rel="apple-touch-icon" sizes="76x76" href="{% webpack_static 'favicons/apple-touch-icon-76x76.png' %}" />
     <link rel="apple-touch-icon" sizes="120x120" href="{% webpack_static 'favicons/apple-touch-icon-120x120.png' %}" />
     <link rel="apple-touch-icon" sizes="152x152" href="{% webpack_static 'favicons/apple-touch-icon-152x152.png' %}" />
     <link rel="apple-touch-icon" sizes="180x180" href="{% webpack_static 'favicons/apple-touch-icon-180x180.png' %}" />
+    
+    {% include "appinsights.htm" %}
 
     {% block css %}
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin">
@@ -50,8 +52,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/slick.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/accessible-slick-theme.min.css' %}">
-        {% render_bundle 'css/index' 'css' %}
-        {% render_bundle 'css/index-slider' 'css' %}
+        <link rel="stylesheet" type="text/css" href="https://use.typekit.net/hkz3ptw.css">
+        {% render_bundle 'css/project' 'css' %}
         
         {% if app_settings.ACCESSIBILITY_MODE %}
             {% render_bundle 'css/accessibility' 'css' %}
@@ -59,489 +61,350 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endblock css%}
 </head>
 
-<body>
+<body id="body" class="landing-page">
     <script src="{% webpack_static 'node_modules/requirejs/require.js' %}"></script>
     {% include 'javascript.htm' %}
 
     <!--=== Header ===-->
     <header>
-        <div class="v5-splash-navbar navbar">
-            <div class="container-fluid">
+        <nav class="navbar">
+            <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false" aria-controls="myNavbar">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-
-                    <div class="relative nav-brand-container">
-                        <div class="navbar-brand-v5-icon-container">
-                            <img class="navbar-brand-v5-icon" src="{% webpack_static 'img/landing/Arches_logo_white.png' %}" alt="{% trans 'Arches Logo' %}">
-                        </div>
-                        <div class="application-name">
-                            <h1>{% blocktrans %}Mariner | {{app_version}}{% endblocktrans %}</h1>
-                        </div>
-                    </div>
+                    <a href="/" class="navbar-brand header-bar__logo-link" aria-label="Link to homepage">
+                        <img class="header-bar__logo-image" src="{% webpack_static 'img/HE_Logo_Stacked_RGB.svg' %}" alt="Historic England logo">
+                    </a>
                 </div>
-
-                <nav id="myNavbar" class="navbar-collapse collapse" aria-label="{% trans 'Arches Application Navigation' %}">
+                <div id="navbar" class="navbar-collapse collapse no-transition">
                     <ul class="nav navbar-nav navbar-right">
+                        {% for p in plugins %}
                         <li>
-                            <a href="#info-block-1">{% trans "Arches Features" %}</a>
+                            <a href="{% url p.slug %}">{{ p.name }}</a>
                         </li>
-                        <li>
-                            <a href="{% url 'search_home' %}">{% trans "Search Arches" %}</a>
-                        </li>
+                        {% endfor %}
                         {% if user|can_create_resource_instance and user.username != 'anonymous' %}
-                            <li>
-                                <a href="{% url 'resource' %}" target="_blank">{% trans "Manage" %}</a>
-                            </li>
+                        <li>
+                            <a href="{% url 'resource' %}" target="_blank">{% trans "Manage" %}</a>
+                        </li>
                         {% endif %}
-                        {% if user.username == 'anonymous' %}
-                            <li>
-                                <a class="application-login" id="auth-link" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">{% trans "Sign in" %}</a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a class="auth-welcome" href="{% url 'user_profile_manager' %}" aria-label="{% trans 'Visit user profile' %}">
-                                    {% trans "Welcome, " %} {{ user.first_name|default:user.username }}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="application-login" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">{% trans 'Log off' %}</a>
-                            </li>
+                        {% if user|can_create_graph and user.username != 'anonymous' %}
+                        <li>
+                            <a href="{% url 'graph' '' %}" target="_blank">{% trans "Graphs" %}</a>
+                        </li>
                         {% endif %}
-                        {% if show_language_swtich %}
-                        {% csrf_token %}
-                            <li>
-                                {% get_current_language as LANGUAGE_CODE %}
-                                <div class="lang-switch" style="max-width: none;" data-bind='component: {
-                                    name: "views/components/language-switcher",
-                                    params: {
-                                        current_language: "{{LANGUAGE_CODE}}"
-                                    }
-                                }'></div>
-                            </li>
-                        {% endif %}
+                        <li>
+                            {% if user.username == 'anonymous' %}
+                            <a class="hidden-xs" id="auth-link"
+                                href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">
+                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user">{% trans "Sign in" %}</a>
+                            <a class="mobile-menu-sign-in visible-xs-*" id="auth-link"
+                                href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">
+                                <img src="{% webpack_static 'img/landing/icon-user.svg' %}" alt="Sign in" class="icon-user hidden-xs">{% trans "Sign in" %}</a>
+                            {% else %}
+                            <a class="auth-welcome" href="{% url 'user_profile_manager' %}">
+                                {% trans "Profile" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">({% trans 'logoff' %})</a>
+                            {% endif %}
+                        </li>
                     </ul>
-                </nav>
+                </div>
             </div>
-        </div>
+        </nav>
     </header>
     <!--=== End Header ===-->
 
     <main>
-        <article>
-            <!-- Intro Section -->
-            <section id="info-block-0" class="app-info-block intro-section relative">
-                <!-- Vertical Nav -->
-                <nav id="cd-vertical-nav" class="vertical-nav-container" aria-label="{% trans 'Page Navigation' %}">
-                    <ul class="vertical-nav-list">
-                        <li class="active">
-                            <a class="vertical-nav-list-link" href="#info-block-0" data-number="1" aria-label="{% trans 'Go to the top of the page' %}"
-                                data-bind="click: function() { document.querySelector('#info-block-0').focus; }"
-                            >
-                                <span class="vertical-nav-list-ref">{% trans "Home" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-1" data-number="2" aria-label="{% trans 'Go to the fast section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Fast" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-2" data-number="3" aria-label="{% trans 'Go to the workflows section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Workflows" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-3" data-number="4" aria-label="{% trans 'Go to the search tools section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Search Tools" %}</span>
-                            </a>
-                        </li>
+        <article class="container">
+            <div class="row featurette1">
+                <div class="featurette1-left-container">
+                    <h1>Marine Historic Environment Record Service for England</h1>
+                    <p class="lead">The online heritage information and management system for the marine historic environment.</p>
+                </div>
+                <div class="featurette1-right-container pull-right">
+                    <img src="{% webpack_static 'img/landing/featurette1.png' %}" alt="Photo of the London landscape" class="img-rounded img-responsive">
+                </div>
+            </div>
+            <div class="featurette2">
+                <div class="searchbtn-container">
+                    <p>
+                        <a class="he-button" href="/search" role="button">Search the National Marine Heritage Record</a>
+                    </p>
+                </div>
+                <div class="featurette2-sub-container">
+                    <p><strong>Status Notification:</strong> The new online database built to host the National Marine Heritage
+                        Record (NMHR) using the Arches cultural heritage inventory software platform is currently in an initial
+                        extended accessibility and usability testing phase. This means that this website is currently only
+                        accessible to select internal users while this testing takes place. If you are a user and have feedback
+                        on the usability or accessibility of the system, please contact <a href="mailto:MHERSE@historicengland.org.uk">MHERSE@historicengland.org.uk</a>.</p>
+                    <h2>On this page</h2>
+                    <ul>
+                        <li><a href="#bm-what-service">What is the Marine Historic Environment Service for England?</a></li>
+                        <li><a href="#bm-what-record">What is the National Marine Heritage Record?</a></li>
+                        <li><a href="#bm-records-held">What type of records do we hold?</a></li>
+                        <li><a href="#bm-records-provide">What type of records do we provide?</a></li>
+                        <li><a href="#bm-how-to-use">How to use the Marine HER Service for England</a></li>
+                        <li><a href="#bm-contact">Contact Us</a></li>
                     </ul>
-                </nav>
-
-                <!-- Slider - Start -->
-                <div class="home-slider">
-                    <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/landing-primary.jpg' %}" alt="" aria-describedby="slide1-attribution">
-                        <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{version}}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
-                        </div>
-                        <div id="slide1-attribution" class="slide-img-attribution">{% trans "Image courtesy of Luis Alfonso Orellana" %}</div>
-                    </div>
-                    <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/bhutan_tigersnest_lr.jpg' %}" alt="" aria-describedby="slide2-attribution">
-                        <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{version}}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
-                        </div>
-                        <div id="slide2-attribution" class="slide-img-attribution">{% trans "Taktsang Palphug Monastery (also known as Paro Takstang or Tiger's Nest Monastery), Bhutan" %}</div>
-                    </div>
-                    <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/potala_palace.jpg' %}" alt="" aria-describedby="slide3-attribution">
-                        <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{version}}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
-                        </div>
-                        <div id="slide3-attribution" class="slide-img-attribution">{% trans "Potala Palace in Lhasa, Tibet" %}</div>
+                </div>
+            </div>
+            <div class="featurette3">
+                <h2 id="bm-what-service" tabindex="0" role="heading" aria-level="2">What is the Marine Historic Environment Record Service for England?</h2>
+                <p>The Marine HER Service for England is the first port of call for anyone seeking information about heritage
+                    that is located in England's seas and tidal waters, from the mean high water mark out to the edge of the
+                    offshore marine planning area. We provide access to, and maintenance and enhancement of, the National
+                    Marine Heritage Record.</p>
+                <div class="thumbnail featurette-image-block featurette3-first-block">
+                    <img src="{% webpack_static 'img/landing/marine-her-map.jpg' %}" aria-labelledby="what-is-map">
+                    <div class="caption" id="what-is-map">
+                        Coverage of the National Marine Heritage Record, showing territorial waters up to 12 nautical
+                        miles offshore (red line) and the English offshore marine planning area up to 200 nautical
+                        miles offshore (blue polygon)
                     </div>
                 </div>
-                <!-- Slider - End -->
-
-                <!-- Down button -->
-                <a href="#info-block-1" class="down-button" aria-label="{% trans 'Go to content' %}"><i class="fa fa-angle-down down-button-icon"></i></a>
-
-            </section>
-            <!-- End Intro Section -->
-
-            <!-- Info Block 1 -->
-            <section id="info-block-1" class="app-info-block relative">
+            </div>
+            <div class="featurette3">
+                <h2 id="bm-what-record" tabindex="0" role="heading" aria-level="2">What is the National Marine Heritage Record?</h2>
+                <p>The National Marine Heritage Record (NMHR) documents England's coastal, intertidal and underwater heritage,
+                    from the prehistoric submerged landscapes of Doggerland in the North Sea, to WWII sea defences, to newly
+                    discovered wrecks. It is constantly updated with the latest available research, by Historic England marine
+                    and coastal specialists.</p>
+            </div>
+            <div class="featurette3">
+                <h2 id="bm-records-held" tabindex="0" role="heading" aria-level="2">What type of records do we hold?</h2>
+                <p>We hold records detailing archaeological investigations of coastal structures, and intertidal and underwater
+                    sites including over 6,000 shipwrecks and aircraft wrecks, obstructions, submerged prehistoric landscapes,
+                    marine buildings and structures (such as seaforts, fish traps, docks, harbours, jetties, sea defences),
+                    and find spots. These records are based on archaeological reports, radio carbon dates, reports from Marine
+                    aggregate extractions, UKHO data, historic seascape characterisation, local and project data sets
+                    (including Citizan), recreational diver information, and Receiver of Wreck droit finds. We also hold
+                    records that document 31, 000 recorded vessel losses, where no physical site has been found, based on
+                    historical documentary evidence such as historic news articles and Lloyds listings.</p>
+            </div>
+            <div class="featurette3">
+                <h2 id="bm-records-provide" tabindex="0" role="heading" aria-level="2">What type of records do we provide?</h2>
+                <p>Dependant on the type of the query, we can provide exports of our records, including the following in
+                    HTML format:</p>
+                <ul>
+                    <li>Wreck Sites</li>
+                    <li>Maritime Vessels</li>
+                    <li>Aircraft Crash Sites</li>
+                    <li>Historic Aircraft</li>
+                    <li>Monuments</li>
+                    <li>Artefacts</li>
+                    <li>Activities</li>
+                </ul>
+                <p>All of our records can also be exported in CSV format, and where possible, geospatially in Shapefile
+                    format. Additional data and contextual information derived from GIS layers held by the Marine HER
+                    Service for England can be provided where relevant.</p>
+                <p>Where source materials cited in these records have been digitally archived by an external trusted
+                    repository, links through to these resources have been provided. Source materials held by the Marine
+                    HER Service for England will be viewable upon request. Please note that requests to view material
+                    held by the Historic England Archive should be directed to
+                    <a href="https://historicengland.org.uk/images-books/archive/" target="_blank">Archive Services</a>.</p>
+                <p>Historic England is committed to the open sharing of data relating to nationally designated sites on
+                    the National Heritage List for England (NHLE), as well as other key datasets, through their Open
+                    Data Hub under the Open Government Licence v3 (OGL). Therefore, records in the NMHR that are
+                    designated as Protected Wreck sites and Scheduled Monuments are also present within the freely
+                    available NHLE datasets. However, the contents of these two datasets are not identical, with the
+                    NMHR more frequently updated with the latest research and fieldwork results. As such, we would
+                    recommend using both datasets.</p>
+                <div class="row featurette3-row">
+                    <div class="thumbnail featurette-image-block featurette3-first-block">
+                        <img src="{% webpack_static 'img/landing/about-left.png' %}" aria-labelledby="img-left">
+                        <div class="caption">
+                            <a id="img-left" href="https://historicengland.org.uk/whats-new/research/the-london-wreck/" target="_blank">Close up of the gnomon of the pocket sun dial from the wreck of The London</a>
+                        </div>
+                    </div>
+                    <div class="thumbnail featurette-image-block">
+                        <img src="{% webpack_static 'img/landing/about-right.png' %}" aria-labelledby="img-right">
+                        <div class="caption">
+                            <a id="img-right" href="https://historicengland.org.uk/whats-new/news/innovative-marking-technology-protect-shipwrecks-heritage-crime" target="_blank">A bronze gun found at the wreck site of the Klein Hollandia, and a cuttlefish nearby</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="featurette3">
+                <h2 id="bm-how-to-use" tabindex="0" role="heading" aria-level="2">How to use the Marine HER Service for England</h2>
+                <p>The NMHR is a public record, and we welcome enquires from anyone interested in England's marine
+                    historic environment. This website allows users to view and search NMHR records for free.
+                    To request an export of any part of our dataset, please contact us by email or phone using the
+                    details below.</p>
+                <p>Please be aware that while this website may be used by commercial and academic users to carry
+                    out preliminary investigations or decide the parameters for a full search, these users should
+                    contact MHERSE to request a full search, as this will include any necessary record creation
+                    or enhancement work and ensure they receive the most up-to-date and accurate dataset possible.</p>
+            </div>
+            <div class="featurette7">
+                <h2 id="bm-contact">Contact Us</h2>
+                <div class="jumbotron">
+                    <h3>The Marine Historic Environment Record Service for England</h3>
+                    <div class="row address-phone">
+                        <div class="col-sm-12">
+                            <div class="contact-icon hidden-xs">
+                                <img src="{% webpack_static 'img/landing/icon-email.svg' %}" width="25" height="25" alt="Email icon">
+                            </div>
+                            <div class="contact-details">
+                                <p><strong>Email</strong><br>
+                                <a href="mailto:MHERSE@HistoricEngland.org.uk">MHERSE@HistoricEngland.org.uk</a></p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="contact-icon hidden-xs">
+                                <img src="{% webpack_static 'img/landing/icon-phone.svg' %}" width="25" height="25" alt="Phone icon">
+                            </div>
+                            <div class="contact-details">
+                                <p><strong>Phone number</strong><br>
+                                    01793 445100</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div>
-
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Fast" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Deploy Applications Rapidly" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Design custom information management applications in hours.  Build your databases with Arches Designer, then configure your interface all without having to write any code." %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img src="{% webpack_static 'img/landing/imac_designer.png' %}"  alt="{% trans 'Arches Designer' %}">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="row app-info-sub-block">
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Interface Manager" %}</h3>
-                                <p class="sub-block-description">
-                                    {% trans "Arches automatically creates data entry forms based on your data models.  Use Arches' Card Manager to configure the look and feel of your data entry UI." %}
-                                </p>
-                                <img class="sub-block-image" src="{% webpack_static 'img/landing/card_manager.png' %}" alt="{% trans 'Card Manager' %}">
-                            </div>
-                        </div>
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Data Security" %}</h3>
-                                <p class="sub-block-description">
-                                    {% trans "Use Arches' Permissions Manager to set up data access rules for all your user groups and individual accounts.  You can define read/write/delete and no-access permissions." %}
-                                </p>
-                                <img class="sub-block-image" src="{% webpack_static 'img/landing/permissions_manager.png' %}" alt="{% trans 'Permissions Manager' %}">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- End Sub-section -->
-
+                    <p>All photographs used on this page are &copy; Historic England Archive</p>
                 </div>
-            </section>
-            <!-- End Info Block 1 -->
-
-            <!-- Info Block 2 -->
-            <section id="info-block-2" class="app-info-block relative">
-                <div>
-
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Workflows" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Orchestrate your data entry" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Design step-wise data management interfaces that simplify complex editing tasks.  Ensure that everyone enters data completely and consistently" %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% webpack_static 'img/landing/consultation_workflow.jpg' %}" alt="{% trans 'Arches Workflows' %}">
-                    </div>
-
-                </div>
-            </section>
-            <!-- End Info Block 2 -->
-
-            <!-- Info Block 3 -->
-            <section id="info-block-3" class="app-info-block relative">
-                <div>
-
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Arches Search Tools" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Find what you're looking for" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Arches comes with powerful built-in search tools.  Quickly filter large databases with term, geospatial, and time-based search components" %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% webpack_static 'img/landing/arches_search.png' %}" alt="{% trans 'Arches Search' %}">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="wide-box">
-                        <div class="box-highlight">
-                            <h3 class="app-info-block-header">{% trans "Search Options" %}</h3>
-                            <p>
-                                {% trans "Arches gives you many ways to find precisely the information you need, even if your Arches application contains 10's of millions of records.  In addition to term, thesaurus, geospatial, and temporal filters, Arches provides you with advanced filtering options that support boolean logic, inverses, and many other filtering options." %}
-                            </p>
-                            <br>
-                            <p>
-                                {% trans "Arches' search capabilities also provide for sophisticated data visualizations, including interactive displays of the connections between your data objects using a Force Directed Graph." %}
-                            </p>
-                            <br>
-                            <p>
-                                {% trans "If you're a software developer, you can build on Arches modular search services and create your own filters, reports, and visualizations to best show off your particular dataset." %}
-                            </p>
-
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-            <!-- End Info Block 3 -->
+            </div>
         </article>
     </main>
 
-
-
-    <!-- Footer -->
+    <!--=== Footer ===-->
     <footer>
-
-        <!-- footer content container -->
-        <div class="row footer-links">
-
-            <!-- branding column -->
-            <div class="col-lg-4">
-                <h2 class="app-footer-heading">{% trans "Sample Institution Name" %}</h2>
-
-                <div class="organization-address">
-                  {% trans "Sample Address" %}<br>
-                  {% trans "Getty Conservation Institute" %}<br>
-                  {% trans "1200 Getty Center Drive" %}<br>
-                  {% trans "Los Angeles, CA  90049" %}<br>
-                </div>
-            </div>
-
-            <!-- Info Column -->
-            <div class="col-lg-8">
-                <h2 class="app-footer-heading">{% trans "Guides and Documentation" %}</h2>
-
-                <!-- Links -->
-                <div class="splash-links">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="http://https://www.archesproject.org/what-is-arches/" target="_blank">{% trans "What is Arches" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/implementation-considerations/" target="_blank">{% trans "Implementation Considerations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/development/" target="_blank">{% trans "Information For Developers" %}</a>
-                                </li>
-
-
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/faq/" target="_blank">{% trans "FAQ" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/standards/" target="_blank">{% trans "Standards and Interoperability" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://arches.readthedocs.io/en/stable/requirements-and-dependencies/" target="_blank">{% trans "Installation Guide" %}</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/project-background/" target="_blank">{% trans "Arches Project Background" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/videos/" target="_blank">{% trans "Arches Webinars/Presentations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/resource-models/" target="_blank">{% trans "Resource Models" %}</a>
-                                </li>
-                            </ul>
-                        </div>
-
+        <div class="footer-top">
+            <div class="container">
+                <div class="row footer-top-first-row">
+                    <div class="col-sm-4">
+                        <a href="#" class="logo-link">
+                            <img class="footer-he-logo" src="{% webpack_static 'img/landing/footer-he-logo-white.svg' %}" alt="Historic England logo">
+                        </a>
+                    </div>
+                    <div class="col-sm-5">
+                        <a href="#" class="logo-link">
+                            <img class="footer-getty-logo" src="{% webpack_static 'img/landing/footer-getty-logo-white.png' %}" alt="The Getty logo">
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="#" class="logo-link">
+                            <img class="footer-arches-logo" src="{% webpack_static 'img/landing/footer-arches-logo-white.png' %}" alt="Arches Project logo">
+                        </a>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- Copyright Panel -->
-        <div class="row copyright-container">
-            <!-- Arches link -->
-            <div class="app-footer-links">
-                <div class="col-sm-8">
-                    <a class="link-spacing" href="#">{% trans "Terms & Conditions" %}</a>
-                    <a class="link-spacing" href="#">{% trans "Privacy Policy" %}</a>
-                </div>
-                <div class="col-sm-4">
-                    <a class="app-footer-arches-link" href="http://www.archesproject.org" target="_blank">{% trans "Powered by Arches" %}</a>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-container">
+                    <div class="col-xs-12 col-sm-8 footer-links">
+                        <a href="https://heazure.sharepoint.com/sites/INT-hub/SitePages/Mariner-Accessibility-Statement.aspx" target="_blank">Accessibility</a>
+                        <a href="#" onclick="CookieControl.open();">Manage Cookies</a>
+                        <a href="https://historicengland.org.uk/terms/privacy/" target="_blank">Privacy Policy</a>
+                        <a href="https://historicengland.org.uk/terms/" target="_blank">Terms &amp; Conditions</a>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 footer-copyright">
+                        <p class="copyright">&copy; Historic England <script>document.write(new Date().getFullYear());</script></p>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- End Copyright Container -->
-
     </footer>
-    <!-- End Footer -->
+    <!--=== End Footer ===-->
 
-<script>
-
-    require.config({
-        baseUrl: "{% webpack_static 'build/js' %}",
-        paths: {
-            'text': "{% webpack_static 'node_modules/requirejs-text/text' %}",
-            'jquery': "{% webpack_static 'node_modules/jquery/dist/jquery.min' %}",
-            'jquery-ui': "{% webpack_static 'node_modules/jqueryui/jquery-ui.min' %}",
-            'jquery-validate': "{% webpack_static 'node_modules/jquery-validation/dist/jquery.validate.min' %}",
-            'underscore': "{% webpack_static 'node_modules/underscore/underscore-min' %}",
-            'chosen': "{% webpack_static 'node_modules/chosen-js/chosen.jquery.min' %}",
-            'knockout': "{% webpack_static 'node_modules/knockout/build/output/knockout-latest' %}",
-            'bootstrap': "{% webpack_static 'node_modules/bootstrap/dist/js/bootstrap.min' %}",
-            'one-app': "{% webpack_static 'plugins/one.app' %}",
-            'themepunch-tools': "{% webpack_static 'plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min' %}",
-            'themepunch-revolution': "{% webpack_static 'plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution' %}",
-            'revolution-slider': "{% webpack_static 'plugins/revolution-slider' %}",
-            'slick': "{% webpack_static 'plugins/slick/slick.min' %}",
-        },
-        shim: {
-            'jquery': {
-                exports: '$'
+    <script>
+        require.config({
+            baseUrl: "{% webpack_static 'build/js' %}",
+            paths: {
+                'text': "{% webpack_static 'node_modules/requirejs-text/text' %}",
+                'jquery': "{% webpack_static 'node_modules/jquery/dist/jquery.min' %}",
+                'jquery-ui': "{% webpack_static 'node_modules/jqueryui/jquery-ui.min' %}",
+                'jquery-validate': "{% webpack_static 'node_modules/jquery-validation/dist/jquery.validate.min' %}",
+                'underscore': "{% webpack_static 'node_modules/underscore/underscore-min' %}",
+                'chosen': "{% webpack_static 'node_modules/chosen-js/chosen.jquery.min' %}",
+                'knockout': "{% webpack_static 'node_modules/knockout/build/output/knockout-latest' %}",
+                'bootstrap': "{% webpack_static 'node_modules/bootstrap/dist/js/bootstrap.min' %}",
+                'one-app': "{% webpack_static 'plugins/one.app' %}",
             },
-            'bootstrap': {
-                deps: ['jquery', 'jquery-ui']
-            },
-            'chosen': {
-                deps: ['jquery'],
-            },
-            'one-app': {
-                deps: ['jquery'],
-            },
-            'themepunch-tools': {
-                deps: ['jquery'],
-            },
-            'themepunch-revolution': {
-                deps: ['jquery'],
-            },
-            'revolution-slider': {
-                deps: ['jquery'],
-            },
-            'slick': {
-                deps: ['jquery'],
+            shim: {
+                'jquery': {
+                    exports: '$'
+                },
+                'bootstrap': {
+                    deps: ['jquery', 'jquery-ui']
+                },
+                'chosen': {
+                    deps: ['jquery'],
+                },
+                'one-app': {
+                    deps: ['jquery'],
+                }
             }
-        }
-    });
-    require(
-        [
-            'jquery',
-            'knockout',
-            'bootstrap',
-            'one-app',
-            'themepunch-tools',
-            'themepunch-revolution',
-            'revolution-slider',
-            'slick',
-            'bindings/chosen',
-            'bindings/key-events-click',
-            'views/components/language-switcher'
-        ], function ($, ko) {
-            $(document).ready(function () {
-                App.init();
-                
-                var contentSections = $('.app-info-block'),
-                    navigationItems = $('#cd-vertical-nav a');
-
-                updateNavigation();
-                $(window).on('scroll', function () {
+        });
+        require(
+            [
+                'jquery',
+                'knockout',
+                'bootstrap',
+                'one-app',
+                'bindings/chosen',
+                'bindings/key-events-click',
+                'views/components/language-switcher'
+            ], function ($, ko) {
+                $(document).ready(function () {
+                    App.init();
+                    
+                    var contentSections = $('.app-info-block'),
+                        navigationItems = $('#cd-vertical-nav a');
+    
                     updateNavigation();
-                });
-
-                //smooth scroll to the section
-                navigationItems.on('click', function (event) {
-                    event.preventDefault();
-                    smoothScroll($(this.hash));
-                });
-
-
-                function updateNavigation() {
-                    contentSections.each(function () {
-                        $this = $(this);
-                        var activeSection = $('#cd-vertical-nav a[href="#' + $this.attr('id') + '"]').data('number') - 1;
-                        if (($this.offset().top - $(window).height() / 2 < $(window).scrollTop()) && ($this.offset().top + $this.height() - $(window).height() / 2 > $(window).scrollTop())) {
-                            navigationItems.eq(activeSection).addClass('is-selected');
-                        } else {
-                            navigationItems.eq(activeSection).removeClass('is-selected');
-                        }
+                    $(window).on('scroll', function () {
+                        updateNavigation();
                     });
-                }
-
-                function smoothScroll(target) {
-                    $('body,html').animate(
-                        { 'scrollTop': target.offset().top },
-                        600
-                    );
-                }
-
-                //slider
-                $('.home-slider').slick({
-                    arrowsPlacement: 'split',
-                    dots: true,
-                    autoplay: true,
-                    autoplaySpeed: 6000,
-                    prevArrow:`<button type='button' class='slick-prev pull-left' aria-label="{% trans 'Go to previous slide' %}"><i class='fa fa-chevron-left' aria-hidden='true'></i></button>`,
-                    nextArrow:`<button type='button' class='slick-next pull-right' aria-label="{% trans 'Go to next slide' %}"><i class='fa fa-chevron-right' aria-hidden='true'></i></button>`
+    
+                    //smooth scroll to the section
+                    navigationItems.on('click', function (event) {
+                        event.preventDefault();
+                        smoothScroll($(this.hash));
+                    });
+    
+    
+                    function updateNavigation() {
+                        contentSections.each(function () {
+                            $this = $(this);
+                            var activeSection = $('#cd-vertical-nav a[href="#' + $this.attr('id') + '"]').data('number') - 1;
+                            if (($this.offset().top - $(window).height() / 2 < $(window).scrollTop()) && ($this.offset().top + $this.height() - $(window).height() / 2 > $(window).scrollTop())) {
+                                navigationItems.eq(activeSection).addClass('is-selected');
+                            } else {
+                                navigationItems.eq(activeSection).removeClass('is-selected');
+                            }
+                        });
+                    }
+    
+                    function smoothScroll(target) {
+                        $('body,html').animate(
+                            { 'scrollTop': target.offset().top },
+                            600
+                        );
+                    }
+    
+                    var ViewModel = function () {
+                         // place observables here
+                    };
+    
+                    // need to have this to prevent mismatched anonymous define error in require.js
+                    setTimeout(function () {
+                        ko.applyBindings(new ViewModel());
+                    }, 300);
                 });
+            }
+        );
+    </script>
 
-                var ViewModel = function () {
-                     // place observables here
-                };
-
-                // need to have this to prevent mismatched anonymous define error in require.js
-                setTimeout(function () {
-                    ko.applyBindings(new ViewModel());
-                }, 300);
-            });
-
-        }
-    );
-</script>
 
 </body>
 

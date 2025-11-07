@@ -23,10 +23,21 @@ WEBPACK_LOADER = {
     },
 }
 
+THUMBNAIL_GENERATOR = "arches.app.utils.thumbnail_generator.ThumbnailGenerator"
+
 DATATYPE_LOCATIONS.append("mariner_proj.datatypes")
 FUNCTION_LOCATIONS.append("mariner_proj.functions")
 ETL_MODULE_LOCATIONS.append("mariner_proj.etl_modules")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_proj.search_components")
+
+DATATYPE_LOCATIONS.append("mariner_app.datatypes")
+FUNCTION_LOCATIONS.append("mariner_app.functions")
+FUNCTION_LOCATIONS.append("arches_he_sysref_funcs.functions")
+SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
+
+PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000
+# This is the initial seed for the primary reference number, which is incremented by 1 for each new resource.
+# Set the initial seed to the highest primary reference number in your database + 20
 
 LOCALE_PATHS.insert(0, os.path.join(APP_ROOT, "locale"))
 
@@ -143,11 +154,15 @@ INSTALLED_APPS = (
     "django_celery_results",
     # "silk",
     "mariner_proj",  # Ensure the project is listed before any other arches applications
+    "mariner_app",
+    "arches_he_sysref_funcs",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
 INSTALLED_APPS += ("arches.app",)
+
+ARCHES_APPLICATIONS = ("mariner_app", "arches_he_sysref_funcs")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -179,6 +194,20 @@ STATICFILES_DIRS = build_staticfiles_dirs(app_root=APP_ROOT)
 TEMPLATES = build_templates_config(
     debug=DEBUG,
     app_root=APP_ROOT,
+    context_processors=[
+        "django.contrib.auth.context_processors.auth",
+        "django.template.context_processors.debug",
+        "django.template.context_processors.i18n",
+        "django.template.context_processors.media",
+        "django.template.context_processors.static",
+        "django.template.context_processors.tz",
+        "django.template.context_processors.request",
+        "django.contrib.messages.context_processors.messages",
+        "arches.app.utils.context_processors.livereload",
+        "arches.app.utils.context_processors.map_info",
+        "arches.app.utils.context_processors.app_settings",
+        "mariner_proj.context_processors.project_settings",
+    ],
 )
 
 ALLOWED_HOSTS = []
@@ -211,6 +240,34 @@ FORCE_SCRIPT_NAME = None
 RESOURCE_IMPORT_LOG = os.path.join(APP_ROOT, "logs", "resource_import.log")
 DEFAULT_RESOURCE_IMPORT_USER = {"username": "admin", "userid": 1}
 
+
+# Azure Monitor OpenTelemetry configuration - use environment variables to set these values in production
+ENABLE_AZURE_MONITORING = False
+APPLICATIONINSIGHTS_CONNECTION_STRING = None
+APPINSIGHT_SERVICE_NAME = "mariner"
+
+# Logging configuration - Azure monitoring is now handled by the azure-monitor-opentelemetry package
+# and configured in wsgi.py
+ENABLE_FILE_LOGGING = False
+ENABLE_CONSOLE_LOGGING = True
+
+LOG_LEVEL = "WARNING"
+
+LOGGING_HANDLERS = {}
+if ENABLE_FILE_LOGGING:
+    LOGGING_HANDLERS["file"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.FileHandler",
+        "filename": os.path.join(APP_ROOT, "arches.log"),
+        "formatter": "console",
+    }
+if ENABLE_CONSOLE_LOGGING:
+    LOGGING_HANDLERS["console"] = {
+        "level": LOG_LEVEL,
+        "class": "logging.StreamHandler",
+        "formatter": "console",
+    }
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -219,25 +276,27 @@ LOGGING = {
             "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
     },
-    "handlers": {
-        "file": {
-            "level": "WARNING",  # DEBUG, INFO, WARNING, ERROR
-            "class": "logging.FileHandler",
-            "filename": os.path.join(APP_ROOT, "arches.log"),
-            "formatter": "console",
-        },
-        "console": {
-            "level": "WARNING",
-            "class": "logging.StreamHandler",
-            "formatter": "console",
-        },
+    "root": {
+        "handlers": list(LOGGING_HANDLERS.keys()),
+        "level": LOG_LEVEL,
     },
+    "handlers": LOGGING_HANDLERS,
     "loggers": {
-        "arches": {
-            "handlers": ["file", "console"],
-            "level": "WARNING",
+        "mariner_proj": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
             "propagate": True,
-        }
+        },
+        "arches": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
+        "django": {
+            "handlers": list(LOGGING_HANDLERS.keys()),
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
     },
 }
 
@@ -251,6 +310,21 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
 
 # Unique session cookie ensures that logins are treated separately for each app
 SESSION_COOKIE_NAME = "mariner"
+
+PREFERRED_COORDINATE_SYSTEMS = (
+    {
+        "name": "BNG",
+        "srid": "27700",
+        "proj4": "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs",
+        "default": False,
+    },
+    {
+        "name": "LatLong",
+        "srid": "4326",
+        "proj4": "+proj=longlat +datum=WGS84 +no_defs",
+        "default": True,
+    },  # Required
+)
 
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
@@ -280,13 +354,30 @@ EXPORT_DATA_FIELDS_IN_CARD_ORDER = False
 # Identify the usernames and duration (seconds) for which you want to cache the time wheel
 CACHE_BY_USER = {"default": 3600 * 24, "anonymous": 3600 * 24}  # 24hrs  # 24hrs
 
+TIMEWHEEL_DATE_TIERS = {
+    "name": "Millennium",
+    "interval": 1000,
+    "range": {"min": -2000, "max": 3000},
+    "root": True,
+    "child": {
+        "name": "Century",
+        "interval": 100,
+        # "range": {"min": 1500, "max": 2000},
+        "child": {
+            "name": "Decade",
+            "interval": 10,
+            "range": {"min": 1750, "max": 2100},
+        },
+    },
+}
+
 TILE_CACHE_TIMEOUT = 600  # seconds
 CLUSTER_DISTANCE_MAX = 5000  # meters
 GRAPH_MODEL_CACHE_TIMEOUT = None
 
 OAUTH_CLIENT_ID = ""  #'9JCibwrWQ4hwuGn5fu2u1oRZSs9V6gK8Vu8hpRC4'
 
-APP_TITLE = "Mariner"
+APP_TITLE = "NMHR"
 COPYRIGHT_TEXT = "All Rights Reserved."
 COPYRIGHT_YEAR = "2025"
 
@@ -314,8 +405,8 @@ CELERY_RESULT_BACKEND = (
 CELERY_TASK_SERIALIZER = "json"
 
 
-CELERY_SEARCH_EXPORT_EXPIRES = 24 * 3600  # seconds
-CELERY_SEARCH_EXPORT_CHECK = 3600  # seconds
+CELERY_SEARCH_EXPORT_EXPIRES = 60 * 3  # seconds
+CELERY_SEARCH_EXPORT_CHECK = 15  # seconds
 
 CELERY_BEAT_SCHEDULE = {
     "delete-expired-search-export": {
@@ -373,9 +464,18 @@ RESTRICT_MEDIA_ACCESS = False
 # value and is not signed in with a user account then the request will not be allowed.
 RESTRICT_CELERY_EXPORT_FOR_ANONYMOUS_USER = False
 
+SEARCH_EXPORT_IMMEDIATE_DOWNLOAD_THRESHOLD = 2000  # The maximum number of instances a user can download from search export without celery
+
+# Contact settings
+CONTACT_EMAIL = "#"
+CONTACT_WEBSITE = "#"
+SALUTATION = "Hi"
+
 # Dictionary containing any additional context items for customising email templates
 EXTRA_EMAIL_CONTEXT = {
-    "salutation": _("Hi"),
+    "contact_email": CONTACT_EMAIL,
+    "contact_website": CONTACT_WEBSITE,
+    "salutation": SALUTATION,
     "expiration": (
         datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)
     ).strftime("%A, %d %B %Y"),
@@ -421,6 +521,15 @@ SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 # Implement this class to associate custom documents to the ES resource index
 # See tests.views.search_tests.TestEsMappingModifier class for example
 # ES_MAPPING_MODIFIER_CLASSES = ["mariner_proj.search.es_mapping_modifier.EsMappingModifier"]
+
+# Ignore here as et in deploy config
+SILENCED_SYSTEM_CHECKS.extend(
+    [
+        "arches.W001",  # Cache backend does not support rate-limiting
+        "arches.E001",  # Dummy Cache in production check
+    ]
+)
+
 
 try:
     from .package_settings import *

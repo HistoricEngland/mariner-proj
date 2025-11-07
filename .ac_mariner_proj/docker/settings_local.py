@@ -79,3 +79,17 @@ if USER_SECRET_KEY:
 ARCHES_NAMESPACE_FOR_DATA_EXPORT = f"http://{get_env_variable('PUBLIC_SERVER_PROJECT_NAME')}:{get_env_variable('DJANGO_PORT')}"
 
 PUBLIC_SERVER_ADDRESS = f"http://{get_env_variable('PUBLIC_SERVER_PROJECT_NAME')}:{get_env_variable('DJANGO_PORT')}/"
+
+# Azure Monitor OpenTelemetry configuration
+ENABLE_AZURE_MONITORING = get_env_variable("ENABLE_AZURE_MONITORING").lower() == "true"
+APPLICATIONINSIGHTS_CONNECTION_STRING = get_optional_env_variable(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"
+)
+APPINSIGHT_SERVICE_NAME = get_env_variable("APPINSIGHT_SERVICE_NAME")
+
+# Logging configuration - Azure monitoring is now handled by the azure-monitor-opentelemetry package
+# and configured in wsgi.py
+ENABLE_FILE_LOGGING = get_env_variable("ENABLE_FILE_LOGGING").lower() == "true"
+ENABLE_CONSOLE_LOGGING = get_env_variable("ENABLE_CONSOLE_LOGGING").lower() == "true"
+
+LOG_LEVEL = get_env_variable("DJANGO_LOG_LEVEL").upper()
