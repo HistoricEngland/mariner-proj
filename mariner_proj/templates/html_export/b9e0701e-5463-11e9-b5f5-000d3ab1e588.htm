@@ -261,40 +261,28 @@
         {% if resource_data|has_key:"Activity Descriptions" %}
         <section>
             <div class="container">
-                <h3>Activity Descriptions</h3>
+                <h3>Descriptions</h3>
                 <div class="row">
                     <div class="column">
-                        <div class="keeptogether">
-                        {% for desc in resource_data|val_from_key:"Activity Descriptions" %}
-                        {% if desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" == "Summary" %}
-                        <div>
-                            <p>
-                                <strong>Description Type :</strong>{{ desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" }}<br>
-                                {{ desc|val_from_key:"Activity Description"|val_from_key:"@display_value"|safe }}
-                            </p>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                        {% for desc in resource_data|val_from_key:"Activity Descriptions" %}
-                        {% if desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" == "Full" %}
-                        <div>
-                            <p>
-                                <strong>Description Type :</strong>{{ desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" }}<br>
-                                {{ desc|val_from_key:"Activity Description"|val_from_key:"@display_value"|safe }}
-                            </p>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                        {% for desc in resource_data|val_from_key:"Activity Descriptions" %}
-                        {% if desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" != "Summary" and desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" != "Full" %}
-                        <div>
-                            <p>
-                                <strong>Description Type: </strong>{{ desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" }}<br>
-                                {{ desc|val_from_key:"Activity Description"|val_from_key:"@display_value"|safe }}
-                            </p>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
+                        <div class="keeptogether descindent">
+                        {% with descs=resource_data|val_from_key:"Activity Descriptions" %}
+                            {# Show 'Summary' type first if present #}
+                            {% for desc in descs %}
+                                {% if desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" == "Summary" %}
+                                    <p><strong>{{ desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" }}:</strong><br>
+                                        {{ desc|val_from_key:"Activity Description"|val_from_key:"@display_value"|safe }}</p>
+                                    <hr>
+                                {% endif %}
+                            {% endfor %}
+                            {# Then show all others except 'Summary' #}
+                            {% for desc in descs %}
+                                {% if desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" != "Summary" %}
+                                    <p><strong>{{ desc|val_from_key:"Activity Description Type"|val_from_key:"@display_value" }}:</strong><br>
+                                        {{ desc|val_from_key:"Activity Description"|val_from_key:"@display_value"|safe }}</p>
+                                    <hr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
                         </div>
                     </div>
                 </div>
@@ -315,15 +303,15 @@
                                 <div class="rrow rheader">
                                     <div class="rcell">Source Number</div>
                                     <div class="rcell">Source Title</div>
+                                    <div class="rcell">Page(s)</div>
+                                    <div class="rcell">Comment</div>
                                 </div>
-                                {% for biblio in resource_data|val_from_key:"Bibliographic Source Citation" %}
+                                {% for source in resource_data|val_from_key:"Bibliographic Source Citation" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="Source Number">
-                                        {{ biblio|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}
-                                    </div>
-                                    <div class="rcell" data-title="Source Title">
-                                        {{ biblio|val_from_key:"@display_value" }}
-                                    </div>
+                                    <div class="rcell" data-title="Source Number">{{ source|val_from_key:"Source Number"|val_from_key:"Source Number Value"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source Title">{{ source|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Page(s)">{{ source|val_from_key:"Pages"|val_from_key:"Page(s)"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Comment">{{ source|val_from_key:"Source Comment"|val_from_key:"Comment"|val_from_key:"@display_value"|safe }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -463,30 +451,16 @@
                             <div class="rtable">
                                 <div class="rrow rheader">
                                     <div class="rcell">External Cross Reference</div>
-                                    <div class="rcell">External Cross Reference Source</div>
+                                    <div class="rcell">Source</div>
+                                    <div class="rcell">Notes</div>
                                     <div class="rcell">URL</div>
                                 </div>
                                 {% for exref in resource_data|val_from_key:"External Cross References" %}
                                 <div class="rrow">
-                                    <div class="rcell" data-title="External Cross Reference">
-                                        {{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}
-                                    </div>
-                                    <div class="rcell" data-title="External Cross Reference Source">
-                                        {{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}
-                                    </div>
-                                    <div class="rcell" data-title="URL">
-                                        {% with exref|val_from_key:"URL" as URL %}
-                                        {% if URL|has_key:"url" and URL|has_key:"url_label" %}
-                                            <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url_label'}}</a>
-                                        {% elif URL|has_key:"url_label" %}
-                                            {{URL|val_from_key:"url_label"}}
-                                        {% elif URL|has_key:"url" %}
-                                            <a href="{{URL|val_from_key:'url'}}">{{URL|val_from_key:'url'}}</a>
-                                        {% else %}
-                                            <br />
-                                        {% endif %}
-                                        {% endwith %}
-                                    </div>
+                                    <div class="rcell" data-title="External Cross Reference">{{ exref|val_from_key:"External Cross Reference Number"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Source">{{ exref|val_from_key:"External Cross Reference Source"|val_from_key:"@display_value" }}</div>
+                                    <div class="rcell" data-title="Notes">{{ exref|val_from_key:"External Cross Reference Notes"|val_from_key:"External Cross Reference Description"|val_from_key:"@display_value"|safe }}</div>
+                                    <div class="rcell" data-title="URL">{{ exref|val_from_key:"URL"|val_from_key:"url" }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
