@@ -65,6 +65,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script src="{% webpack_static 'node_modules/requirejs/require.js' %}"></script>
     {% include 'javascript.htm' %}
 
+    <div id="skip-link-holder"><a id="skip-link" href="#skiptocontent">Skip to content</a></div>
+    
     <!--=== Header ===-->
     <header>
         <nav class="navbar">
@@ -122,6 +124,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <!--=== End Header ===-->
 
     <main>
+        <p id="skip-target-holder">
+            <a id="skiptocontent" name="skiptocontent" tabindex="-1" aria-label="Skip to content" innertext="Start of main content"></a>
+        </p>    
         <article class="container">
             <div class="row featurette1">
                 <div class="featurette1-left-container">
