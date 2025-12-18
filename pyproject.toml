@@ -24,7 +24,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "arches @ git+https://github.com/HistoricEngland/arches.git@KH98374_BugTermSearch",
+    "arches==7.6.17",
     "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.0",
     "arches-he-sysref-funcs @ git+https://github.com/HistoricEngland/arches-he-sysref-funcs.git@release/1.0.0",
     "wfastcgi>=3.0.0,<3.1.0",
