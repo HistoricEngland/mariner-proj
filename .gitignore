@@ -17,3 +17,10 @@ webpack-stats.json
 CACHE
 .tsconfig-paths.json
 .frontend-configuration-settings.json
+test-results
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
