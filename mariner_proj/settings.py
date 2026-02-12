@@ -34,6 +34,7 @@ DATATYPE_LOCATIONS.append("mariner_app.datatypes")
 FUNCTION_LOCATIONS.append("mariner_app.functions")
 FUNCTION_LOCATIONS.append("arches_he_sysref_funcs.functions")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
+ETL_MODULE_LOCATIONS.append("arches_he_data_transformation.etl_modules")
 
 PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000
 # This is the initial seed for the primary reference number, which is incremented by 1 for each new resource.
@@ -156,13 +157,18 @@ INSTALLED_APPS = (
     "mariner_proj",  # Ensure the project is listed before any other arches applications
     "mariner_app",
     "arches_he_sysref_funcs",
+    "arches_he_data_transformation",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
 INSTALLED_APPS += ("arches.app",)
 
-ARCHES_APPLICATIONS = ("mariner_app", "arches_he_sysref_funcs")
+ARCHES_APPLICATIONS = (
+    "mariner_app",
+    "arches_he_sysref_funcs",
+    "arches_he_data_transformation",
+)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
