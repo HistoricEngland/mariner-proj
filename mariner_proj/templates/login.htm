@@ -56,10 +56,12 @@
 						{% endif %}
 						<button class="he-button" type="submit">{% trans "Sign in" %}</button>
 					</div>
-					<div style="{% if not auth_failed %}display:none;{% endif %}" id="login-failed-alert" class="alert alert-danger fade in" role="alert" aria-live="Assertive">
+					<div style="{% if not auth_failed %}display:none;{% else %}display:block;{% endif %}" id="login-failed-alert" class="alert alert-danger fade in" role="alert" tabindex="0">
 						<button type="button" class="close" data-dismiss="alert" onclick="document.getElementById('login-failed-alert').remove();"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
-						<p class="alert-title">{% trans "Login failed" %}</p>
-						<span role="alert" id="login-fail-message">{% if rate_limited %}{% trans "Too many requests." %}{% else %}{% trans "Invalid username and/or password." %}{% endif %}</span>
+						<div role="alert">
+							<p class="alert-title">{% trans "Login failed" %}</p>
+							<span id="login-fail-message">{% if rate_limited %}{% trans "Too many requests." %}{% else %}{% trans "Invalid username and/or password." %}{% endif %}</span>
+						</div>
 					</div>
 				</fieldset>
 			</form>
