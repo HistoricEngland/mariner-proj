@@ -9,6 +9,7 @@ ARG DOCKER_PATH=./docker
 ## The Args below are only needed if you want to mount the mariner_app and arches_he_sysref_funcs for development/debugging
 # ARG MARINER_APP_PATH=./mariner_app
 # ARG ARCHES_HE_SYSREF_FUNCS_PATH=./arches_he_sysref_funcs
+# ARG ARCHES_HE_DATA_TRANSFORMATION_PATH=./arches_he_data_transformation
 
 ## Setting default environment variables
 ENV ARCHES_PROJECT=$PROJ_NAME
@@ -101,6 +102,12 @@ RUN pip install -e '.[dev]'
 #ENV ARCHES_HE_SYSREF_FUNCS=${WEB_ROOT}/arches_he_sysref_funcs
 #COPY $ARCHES_HE_SYSREF_FUNCS_PATH ${ARCHES_HE_SYSREF_FUNCS}
 #WORKDIR ${ARCHES_HE_SYSREF_FUNCS}
+#RUN pip install -e '.[dev]'
+
+# Install the arches_he_data_transformation package in editable mode
+#ENV ARCHES_HE_DATA_TRANSFORMATION=${WEB_ROOT}/arches_he_data_transformation
+#COPY $ARCHES_HE_DATA_TRANSFORMATION_PATH ${ARCHES_HE_DATA_TRANSFORMATION}
+#WORKDIR ${ARCHES_HE_DATA_TRANSFORMATION}
 #RUN pip install -e '.[dev]'
 
 # From here, run commands from ARCHES_ROOT

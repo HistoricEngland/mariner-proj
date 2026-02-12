@@ -15,6 +15,7 @@ services:
         - ../../mariner_proj:/web_root/mariner_proj
         #- ../../mariner_app:/web_root/mariner_app
         #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
+        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
         - ./docker:/web_root/docker
         - ../../mariner_proj-package:/web_root/mariner_proj_package
         - ../../mariner_proj-data:/web_root/mariner_proj_data
@@ -59,7 +60,7 @@ services:
         - ../../mariner_proj:/web_root/mariner_proj
         #- ../../mariner_app:/web_root/mariner_app
         #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
-      env_file:
+        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
         - ./docker/env_file.env
       ports:
         - 35729:35729      
@@ -77,6 +78,7 @@ services:
         - ../../mariner_proj:/web_root/mariner_proj
         #- ../../mariner_app:/web_root/mariner_app
         #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
+        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
       env_file:
         - ./docker/env_file.env
       ports:
