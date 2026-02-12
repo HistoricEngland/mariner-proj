@@ -61,6 +61,7 @@ services:
         #- ../../mariner_app:/web_root/mariner_app
         #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
         #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
+      env_file:
         - ./docker/env_file.env
       ports:
         - 35729:35729      
