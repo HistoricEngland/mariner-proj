@@ -18,6 +18,8 @@ urlpatterns = [
         ),
         name="password_reset",
     ),
+    # Display descriptor API endpoints
+    path("api/display-descriptor/", include("mariner_proj.display_descriptor.urls")),
     # added mariner_app
     path("", include("mariner_app.urls")),
     path("", include("arches_he_sysref_funcs.urls")),
