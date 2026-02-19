@@ -6,7 +6,7 @@ ARG PROJ_NAME=project
 ARG ARCHES_PATH=./arches
 ARG DOCKER_PATH=./docker
 
-## The Args below are only needed if you want to mount the mariner_app and arches_he_sysref_funcs for development/debugging
+## The Args below are only needed if you want to mount the mariner_app, arches_he_sysref_funcs, and arches_he_data_transformation for development/debugging
 # ARG MARINER_APP_PATH=./mariner_app
 # ARG ARCHES_HE_SYSREF_FUNCS_PATH=./arches_he_sysref_funcs
 # ARG ARCHES_HE_DATA_TRANSFORMATION_PATH=./arches_he_data_transformation
