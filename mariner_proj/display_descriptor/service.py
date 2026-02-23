@@ -2,7 +2,7 @@ import yaml
 import json
 from typing import Optional, Dict, Any
 from pathlib import Path
-from .display_descriptor import DisplayDescriptorEngine
+from .display_descriptor import DisplayDescriptorEngine, OperationType
 from .models import (
     DisplayDescriptorConfig,
     FieldDefinition,
@@ -84,8 +84,11 @@ class DisplayDescriptorService:
                 operations = []
                 for op_data in rule_data.get("operations", []):
                     if isinstance(op_data, str):
+                        _validate_operation_type(op_data)
                         operations.append(Operation(type=op_data))
                     elif isinstance(op_data, dict):
+                        op_type = op_data.get("type")
+                        _validate_operation_type(op_type)
                         operations.append(Operation(**op_data))
 
                 rule = RuleDefinition(
@@ -154,6 +157,28 @@ class DisplayDescriptorService:
         """Clear the cached config and engine."""
         self._config_cache = None
         self._engine_cache = None
+
+
+def _validate_operation_type(op_type: str) -> None:
+    """Validate that the operation type is valid.
+
+    Args:
+        op_type: The operation type string to validate.
+
+    Raises:
+        ValueError: If the operation type is not valid.
+    """
+    if not op_type:
+        raise ValueError("Operation type cannot be empty")
+
+    try:
+        OperationType(op_type)
+    except ValueError:
+        valid_types = [op.value for op in OperationType]
+        raise ValueError(
+            f"Invalid operation type: '{op_type}'. "
+            f"Valid types are: {', '.join(valid_types)}"
+        )
 
 
 def _normalize_field_filters(raw_filters: dict) -> dict:

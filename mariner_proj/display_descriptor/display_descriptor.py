@@ -1,7 +1,8 @@
 # from dataclasses import dataclass, field
 import re
 import unicodedata
-from typing import List, Optional, Dict, Any
+from enum import Enum
+from typing import List, Optional, Dict, Any, Tuple
 from .models import (
     FieldDefinition,
     Operation,
@@ -10,51 +11,25 @@ from .models import (
     DisplayDescriptorConfig,
 )
 
-# -------------------------------------------------------------------
-# Dataclasses (as you defined them)
-# -------------------------------------------------------------------
 
-# @dataclass
-# class FieldDefinition:
-#     name: str
-#     subfields: List[str] = field(default_factory=list)
+class OperationType(str, Enum):
+    """Valid operation types for display descriptor transformations."""
 
-
-# @dataclass
-# class Operation:
-#     type: str
-#     separator: Optional[str] = None
-#     max_items: Optional[int] = None
-#     max_length: Optional[int] = None
-#     overflow_indicator: Optional[str] = None
-
-
-# @dataclass
-# class RuleDefinition:
-#     name: str
-#     required: Optional[bool] = None
-#     default: Optional[str] = None
-#     format_when_present: Optional[str] = None
-#     format_when_default: Optional[str] = None
-#     operations: List[Operation] = field(default_factory=list)
-#     field_filters: Dict[str, List[str]] = field(default_factory=dict)
-
-
-# @dataclass
-# class DisplayDescriptorRuleBlock:
-#     rule: List[RuleDefinition]
-#     format: str
-
-
-# @dataclass
-# class DisplayDescriptorConfig:
-#     fields: List[FieldDefinition]
-#     display_descriptor_rules: List[DisplayDescriptorRuleBlock]
-
-
-# -------------------------------------------------------------------
-# Operation pipeline
-# -------------------------------------------------------------------
+    TITLECASE = "titlecase"
+    UPPERCASE = "uppercase"
+    LOWERCASE = "lowercase"
+    CAPITALIZE = "capitalize"
+    TRIM = "trim"
+    REMOVE_DIACRITICS = "remove_diacritics"
+    REMOVE_SPECIAL_CHARS = "remove_special_chars"
+    UNIQUE = "unique"
+    SORT = "sort"
+    REVERSE = "reverse"
+    ABBREVIATE = "abbreviate"
+    PREFIX = "prefix"
+    SUFFIX = "suffix"
+    TRUNCATE = "truncate"
+    COMBINE = "combine"
 
 
 def op_titlecase(value: Any) -> Any:
@@ -244,55 +219,97 @@ def op_combine(
     return combined
 
 
+# -------------------------------------------------------------------
+# Operation handler functions for dispatch dictionary
+# -------------------------------------------------------------------
+
+
+def _handle_abbreviate(value: Any, op: Operation) -> Any:
+    """Handler for abbreviate operation with parameter extraction."""
+    return op_abbreviate(
+        value,
+        length_per_word=op.length_per_word or 1,
+        skip_words=op.skip_words,
+        uppercase=op.uppercase if op.uppercase is not None else True,
+    )
+
+
+def _handle_prefix(value: Any, op: Operation) -> Any:
+    """Handler for prefix operation with parameter extraction."""
+    return op_prefix(value, prefix_value=op.prefix_value or "")
+
+
+def _handle_suffix(value: Any, op: Operation) -> Any:
+    """Handler for suffix operation with parameter extraction."""
+    return op_suffix(value, suffix_value=op.suffix_value or "")
+
+
+def _handle_truncate(value: Any, op: Operation) -> Any:
+    """Handler for truncate operation with parameter extraction."""
+    if op.max_length is not None:
+        return op_truncate(
+            value,
+            max_length=op.max_length,
+            truncate_indicator=(
+                op.overflow_indicator if op.overflow_indicator is not None else "..."
+            ),
+        )
+    return value
+
+
+def _handle_combine(value: Any, op: Operation) -> Any:
+    """Handler for combine operation with parameter extraction."""
+    return op_combine(
+        value,
+        separator=op.separator if op.separator is not None else ", ",
+        max_items=op.max_items,
+        max_length=op.max_length,
+        overflow_indicator=(
+            op.overflow_indicator if op.overflow_indicator is not None else "..."
+        ),
+    )
+
+
+# Dispatch dictionary mapping operation types to their handlers
+OPERATION_HANDLERS = {
+    OperationType.TITLECASE.value: lambda v, op: op_titlecase(v),
+    OperationType.UPPERCASE.value: lambda v, op: op_uppercase(v),
+    OperationType.LOWERCASE.value: lambda v, op: op_lowercase(v),
+    OperationType.CAPITALIZE.value: lambda v, op: op_capitalize(v),
+    OperationType.TRIM.value: lambda v, op: op_trim(v),
+    OperationType.REMOVE_DIACRITICS.value: lambda v, op: op_remove_diacritics(v),
+    OperationType.REMOVE_SPECIAL_CHARS.value: lambda v, op: op_remove_special_chars(v),
+    OperationType.UNIQUE.value: lambda v, op: op_unique(v),
+    OperationType.SORT.value: lambda v, op: op_sort(v),
+    OperationType.REVERSE.value: lambda v, op: op_reverse(v),
+    OperationType.ABBREVIATE.value: _handle_abbreviate,
+    OperationType.PREFIX.value: _handle_prefix,
+    OperationType.SUFFIX.value: _handle_suffix,
+    OperationType.TRUNCATE.value: _handle_truncate,
+    OperationType.COMBINE.value: _handle_combine,
+}
+
+
 def apply_operation_chain(value: Any, ops: List[Operation]) -> Any:
+    """Apply a chain of operations to a value.
+
+    Args:
+        value: The value to transform.
+        ops: List of Operation objects to apply sequentially.
+
+    Returns:
+        The transformed value after applying all operations.
+
+    Raises:
+        ValueError: If an unknown operation type is encountered.
+    """
     for op in ops:
-        if op.type == "titlecase":
-            value = op_titlecase(value)
-        elif op.type == "uppercase":
-            value = op_uppercase(value)
-        elif op.type == "lowercase":
-            value = op_lowercase(value)
-        elif op.type == "capitalize":
-            value = op_capitalize(value)
-        elif op.type == "trim":
-            value = op_trim(value)
-        elif op.type == "remove_diacritics":
-            value = op_remove_diacritics(value)
-        elif op.type == "remove_special_chars":
-            value = op_remove_special_chars(value)
-        elif op.type == "unique":
-            value = op_unique(value)
-        elif op.type == "sort":
-            value = op_sort(value)
-        elif op.type == "reverse":
-            value = op_reverse(value)
-        elif op.type == "abbreviate":
-            value = op_abbreviate(
-                value,
-                length_per_word=op.length_per_word or 1,
-                skip_words=op.skip_words,
-                uppercase=op.uppercase if op.uppercase is not None else True,
-            )
-        elif op.type == "prefix":
-            value = op_prefix(value, prefix_value=op.prefix_value or "")
-        elif op.type == "suffix":
-            value = op_suffix(value, suffix_value=op.suffix_value or "")
-        elif op.type == "truncate":
-            if op.max_length is not None:
-                value = op_truncate(
-                    value,
-                    max_length=op.max_length,
-                    truncate_indicator=op.overflow_indicator or "...",
-                )
-        elif op.type == "combine":
-            value = op_combine(
-                value,
-                separator=op.separator or ", ",
-                max_items=op.max_items,
-                max_length=op.max_length,
-                overflow_indicator=op.overflow_indicator or "...",
-            )
-        # extend with more op types as needed
+        handler = OPERATION_HANDLERS.get(op.type)
+        if handler:
+            value = handler(value, op)
+        else:
+            # This shouldn't happen if validation is working correctly
+            raise ValueError(f"Unknown operation type: {op.type}")
     return value
 
 
@@ -381,7 +398,7 @@ def select_field_value(rule: RuleDefinition, resource: Dict[str, Any]) -> Any:
 
 def execute_rule_definition(
     rule: RuleDefinition, resource: Dict[str, Any]
-) -> (Optional[Any], bool):
+) -> Tuple[Optional[Any], bool]:
     """
     Returns:
       (value, used_default)
