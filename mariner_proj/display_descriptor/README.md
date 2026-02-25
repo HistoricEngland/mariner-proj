@@ -103,6 +103,8 @@ All endpoints require a trailing slash:
 
 - `GET /api/display-descriptor/<resource_id>/` - Get descriptor for a resource
 - `POST /api/display-descriptor/preview/` - Preview descriptor for test data
+  - Default response is descriptor only: `{"display_descriptor": "..."}`
+  - Add `?descriptor_only=false` to return both `{"input": {...}, "display_descriptor": "..."}`
 
 ## Configuration Format
 

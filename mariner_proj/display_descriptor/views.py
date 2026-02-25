@@ -8,6 +8,12 @@ from ..display_descriptor.service import (
 import json
 
 
+def _is_descriptor_only(value):
+    if value is None:
+        return True
+    return value.strip().lower() not in {"0", "false", "no", "n", "off"}
+
+
 @require_GET
 def get_display_descriptor(request, resource_id):
     """
@@ -50,6 +56,10 @@ def preview_display_descriptor(request):
 
     If config is provided, it will be used for rendering instead of the default config.
     Config can be a dict with keys: "fields" and "display_descriptor_rules"
+
+    Optional query param:
+    - descriptor_only=false|0|no|off : returns {"input": {...}, "display_descriptor": "..."}
+    - default behavior (or descriptor_only=true) returns only {"display_descriptor": "..."}
     """
     if request.method != "POST":
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -58,6 +68,7 @@ def preview_display_descriptor(request):
         data = json.loads(request.body)
         resource = data.get("resource", {})
         config = data.get("config")
+        descriptor_only = _is_descriptor_only(request.GET.get("descriptor_only"))
 
         # Use provided config or fall back to default
         if config:
@@ -68,6 +79,9 @@ def preview_display_descriptor(request):
                 return JsonResponse({"error": f"Invalid config: {str(e)}"}, status=400)
         else:
             descriptor = render_display_descriptor(resource)
+
+        if descriptor_only:
+            return JsonResponse({"display_descriptor": descriptor})
 
         return JsonResponse({"input": resource, "display_descriptor": descriptor})
 
