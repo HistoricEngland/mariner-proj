@@ -74,6 +74,7 @@ def get_display_descriptor(request, resource_id):
     Optional query params:
     - descriptor_only=false|0|no|off : include input payload in response (POST only)
     - include_sql=true|1|yes|on : include captured SQL statements and timings
+    - strict_sortorder=true|1|yes|on : fail if mixed null/non-null sortorder exists in a nodegroup
     """
     if request.method not in {"GET", "POST"}:
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -81,11 +82,15 @@ def get_display_descriptor(request, resource_id):
     try:
         request_start = perf_counter()
         include_sql = _is_truthy(request.GET.get("include_sql"))
+        strict_sortorder = _is_truthy(request.GET.get("strict_sortorder"))
         _validate_sql_toggle(include_sql)
 
         if request.method == "GET":
             descriptor, sql_queries = _execute_with_sql_capture(
-                lambda: render_display_descriptor_for_resource(resource_id),
+                lambda: render_display_descriptor_for_resource(
+                    resource_id,
+                    strict_sortorder=strict_sortorder,
+                ),
                 include_sql=include_sql,
             )
             payload = {"resource_id": resource_id, "display_descriptor": descriptor}
@@ -99,7 +104,11 @@ def get_display_descriptor(request, resource_id):
 
         service = DisplayDescriptorService()
         resource_data, sql_queries_data = _execute_with_sql_capture(
-            lambda: service.get_resource_data(resource_id, config_data=config),
+            lambda: service.get_resource_data(
+                resource_id,
+                strict_sortorder=strict_sortorder,
+                config_data=config,
+            ),
             include_sql=include_sql,
         )
 
@@ -155,6 +164,7 @@ def preview_display_descriptor(request):
     - descriptor_only=false|0|no|off : returns {"input": {...}, "display_descriptor": "..."}
     - default behavior (or descriptor_only=true) returns only {"display_descriptor": "..."}
     - include_sql=true|1|yes|on : include captured SQL statements and timings
+    - strict_sortorder=true|1|yes|on : accepted for API consistency (no effect in preview mode)
     """
     if request.method != "POST":
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -166,7 +176,13 @@ def preview_display_descriptor(request):
         config = data.get("config")
         descriptor_only = _is_descriptor_only(request.GET.get("descriptor_only"))
         include_sql = _is_truthy(request.GET.get("include_sql"))
+        strict_sortorder = _is_truthy(request.GET.get("strict_sortorder"))
         _validate_sql_toggle(include_sql)
+
+        if strict_sortorder:
+            # Preview mode renders in-memory resource payloads and does not load tiles.
+            # The parameter is accepted for consistency with DB-backed endpoints.
+            pass
 
         # Use provided config or fall back to default
         if config:

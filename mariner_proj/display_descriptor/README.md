@@ -4,6 +4,8 @@
 
 This module provides a flexible system for generating display descriptors (human-readable labels) for resources in your Django application.
 
+For a developer-focused explanation of the actual runtime implementation, see `IMPLEMENTATION_GUIDE.md`.
+
 ## Overview
 
 The display descriptor system uses a configuration-driven approach to format resource data into readable strings. It supports:
@@ -106,10 +108,12 @@ All endpoints require a trailing slash:
   - Default response is descriptor only: `{"display_descriptor": "..."}`
   - Add `?descriptor_only=false` to return `{"resource_id": "...", "input": {...}, "display_descriptor": "..."}`
   - Add `?include_sql=true` to include captured SQL in the response (`execution_time_ms`, `sql_query_count`, `sql_queries`) when `DEBUG=True`
+  - Add `?strict_sortorder=true` to fail when a nodegroup has mixed `sortorder` null/non-null values
 - `POST /api/display-descriptor/preview/` - Preview descriptor for test data
   - Default response is descriptor only: `{"display_descriptor": "..."}`
   - Add `?descriptor_only=false` to return both `{"input": {...}, "display_descriptor": "..."}`
   - Add `?include_sql=true` to include captured SQL in the response (`execution_time_ms`, `sql_query_count`, `sql_queries`) when `DEBUG=True`
+  - `?strict_sortorder=true` is accepted for API consistency (no effect in preview mode)
 
 ## Configuration Format
 
