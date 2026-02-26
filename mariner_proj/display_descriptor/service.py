@@ -1,7 +1,9 @@
 import yaml
 import json
-from typing import Optional, Dict, Any
+from collections import defaultdict
+from typing import Optional, Dict, Any, List
 from pathlib import Path
+from uuid import UUID
 from .display_descriptor import DisplayDescriptorEngine, OperationType
 from .models import (
     DisplayDescriptorConfig,
@@ -153,6 +155,268 @@ class DisplayDescriptorService:
         engine = self.get_engine()
         return engine.render(resource)
 
+    def get_resource_data(
+        self,
+        resource_id: str,
+        language: str = "en",
+        strict_sortorder: bool = False,
+        config_data: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Build descriptor input data for a resource using configured YAML fields.
+
+        Validates that all configured fields exist in the resource graph and that all
+        configured subfields share nodegroup with their parent field.
+        """
+        config = (
+            self._parse_config_data(config_data)
+            if config_data is not None
+            else (self._config_cache or self.load_config_from_file())
+        )
+        node_map = self._resolve_nodes_for_configured_fields(resource_id, config=config)
+
+        grouped_fields: Dict[str, List[FieldDefinition]] = defaultdict(list)
+        for field in config.fields:
+            grouped_fields[str(node_map[field.name]["nodegroup_id"])].append(field)
+
+        from arches.app.models.models import TileModel
+
+        result: Dict[str, Any] = {}
+        concept_ids = set()
+        concept_placeholders = []
+
+        for nodegroup_id, fields in grouped_fields.items():
+            tile_rows = (
+                TileModel.objects.filter(
+                    resourceinstance_id=resource_id,
+                    nodegroup_id=nodegroup_id,
+                )
+                .values("tileid", "sortorder", "data")
+                .order_by("sortorder", "tileid")
+            )
+
+            has_null_sortorder = False
+            has_non_null_sortorder = False
+
+            for tile in tile_rows:
+                tile_data = tile.get("data") or {}
+                sortorder = tile.get("sortorder")
+
+                if sortorder is None:
+                    has_null_sortorder = True
+                else:
+                    has_non_null_sortorder = True
+
+                for field in fields:
+                    parent_meta = node_map[field.name]
+                    parent_val = self._extract_value(
+                        tile_data=tile_data,
+                        node_id=parent_meta["nodeid"],
+                        datatype=parent_meta["datatype"],
+                        language=language,
+                    )
+
+                    if field.subfields:
+                        if parent_val is None:
+                            continue
+
+                        entry = {"value": parent_val}
+                        for subfield_name in field.subfields:
+                            sub_meta = node_map[subfield_name]
+                            sub_val = self._extract_value(
+                                tile_data=tile_data,
+                                node_id=sub_meta["nodeid"],
+                                datatype=sub_meta["datatype"],
+                                language=language,
+                            )
+                            entry[subfield_name] = sub_val
+
+                            if sub_meta["datatype"] == "concept" and sub_val:
+                                concept_ids.add(sub_val)
+                                concept_placeholders.append(
+                                    (entry, subfield_name, sub_val)
+                                )
+
+                        if parent_meta["datatype"] == "concept" and entry.get("value"):
+                            concept_ids.add(entry["value"])
+                            concept_placeholders.append(
+                                (entry, "value", entry["value"])
+                            )
+
+                        result.setdefault(field.name, []).append(entry)
+                    else:
+                        if parent_val is None:
+                            continue
+
+                        if parent_meta["datatype"] == "concept":
+                            concept_ids.add(parent_val)
+
+                        result.setdefault(field.name, []).append(parent_val)
+
+            if strict_sortorder and has_null_sortorder and has_non_null_sortorder:
+                raise ValueError(
+                    "Inconsistent sortorder values found for nodegroup "
+                    f"{nodegroup_id}: some rows are null and some are populated."
+                )
+
+        concept_label_map = self._get_concept_label_map(concept_ids)
+
+        for field_name, values in list(result.items()):
+            parent_meta = node_map[field_name]
+            if parent_meta["datatype"] == "concept":
+                result[field_name] = [
+                    concept_label_map.get(v) for v in values if v in concept_label_map
+                ]
+
+        for entry, key, concept_id in concept_placeholders:
+            entry[key] = concept_label_map.get(concept_id, concept_id)
+
+        for field_name, values in list(result.items()):
+            if isinstance(values, list) and all(
+                not isinstance(v, dict) for v in values
+            ):
+                if len(values) == 1:
+                    result[field_name] = values[0]
+
+        for field in config.fields:
+            result.setdefault(field.name, None if not field.subfields else [])
+
+        return result
+
+    def render_for_resource(
+        self,
+        resource_id: str,
+        language: str = "en",
+        strict_sortorder: bool = False,
+        config_data: Optional[Dict[str, Any]] = None,
+    ) -> Optional[str]:
+        """Build resource data from the DB and render the configured descriptor."""
+        resource_data = self.get_resource_data(
+            resource_id=resource_id,
+            language=language,
+            strict_sortorder=strict_sortorder,
+            config_data=config_data,
+        )
+        if config_data is not None:
+            return self.render_with_config(resource_data, config_data)
+        return self.render(resource_data)
+
+    def _resolve_nodes_for_configured_fields(
+        self, resource_id: str, config: Optional[DisplayDescriptorConfig] = None
+    ) -> Dict[str, Dict[str, Any]]:
+        """Resolve node metadata for configured fields using the resource's graph."""
+        graph_id = self._get_resource_graph_id(resource_id)
+        config = config or self._config_cache or self.load_config_from_file()
+
+        requested_names = []
+        for field in config.fields:
+            requested_names.append(field.name)
+            requested_names.extend(field.subfields)
+
+        requested_names = list(dict.fromkeys(requested_names))
+
+        from arches.app.models.models import Node
+
+        nodes = Node.objects.filter(graph_id=graph_id, name__in=requested_names).values(
+            "name", "nodeid", "datatype", "nodegroup_id"
+        )
+
+        node_map = {n["name"]: n for n in nodes}
+
+        missing = [name for name in requested_names if name not in node_map]
+        if missing:
+            raise ValueError(
+                "Configured fields are missing from graph "
+                f"{graph_id}: {', '.join(sorted(missing))}"
+            )
+
+        nodegroup_errors = []
+        for field in config.fields:
+            parent = node_map[field.name]
+            parent_nodegroup = (
+                str(parent["nodegroup_id"]) if parent["nodegroup_id"] else None
+            )
+            for subfield in field.subfields:
+                child = node_map[subfield]
+                child_nodegroup = (
+                    str(child["nodegroup_id"]) if child["nodegroup_id"] else None
+                )
+                if parent_nodegroup != child_nodegroup:
+                    nodegroup_errors.append(
+                        f"{field.name} -> {subfield} (parent={parent_nodegroup}, subfield={child_nodegroup})"
+                    )
+
+        if nodegroup_errors:
+            raise ValueError(
+                "Subfield nodegroup validation failed: " + "; ".join(nodegroup_errors)
+            )
+
+        return node_map
+
+    def _get_resource_graph_id(self, resource_id: str):
+        """Get graph id for a resource instance."""
+        from arches.app.models.models import ResourceInstance
+
+        resource = (
+            ResourceInstance.objects.filter(resourceinstanceid=resource_id)
+            .values("graph_id")
+            .first()
+        )
+        if not resource:
+            raise ValueError(f"Resource instance not found: {resource_id}")
+        return resource["graph_id"]
+
+    def _extract_value(
+        self, tile_data: Dict[str, Any], node_id, datatype: str, language: str
+    ) -> Any:
+        """Extract a node value from tiledata according to datatype."""
+        raw = tile_data.get(str(node_id))
+        if raw is None:
+            return None
+
+        if datatype == "string":
+            if isinstance(raw, dict):
+                localized = raw.get(language)
+                if isinstance(localized, dict):
+                    return localized.get("value")
+
+                for localized_candidate in raw.values():
+                    if (
+                        isinstance(localized_candidate, dict)
+                        and "value" in localized_candidate
+                    ):
+                        return localized_candidate.get("value")
+            if isinstance(raw, str):
+                return raw
+            return str(raw)
+
+        if datatype == "concept":
+            if isinstance(raw, str):
+                return raw.strip() or None
+            return str(raw)
+
+        return raw
+
+    def _get_concept_label_map(self, concept_ids) -> Dict[str, str]:
+        """Resolve concept UUID strings to labels in a single query."""
+        normalized_ids = []
+        for concept_id in concept_ids:
+            try:
+                normalized_ids.append(UUID(str(concept_id)))
+            except (ValueError, TypeError):
+                continue
+
+        if not normalized_ids:
+            return {}
+
+        from arches.app.models.models import Value
+
+        return {
+            str(row["valueid"]): row["value"]
+            for row in Value.objects.filter(valueid__in=normalized_ids).values(
+                "valueid", "value"
+            )
+        }
+
     def clear_cache(self):
         """Clear the cached config and engine."""
         self._config_cache = None
@@ -232,3 +496,15 @@ def render_display_descriptor(resource: Dict[str, Any]) -> Optional[str]:
     """Convenience function to render a display descriptor."""
     service = get_display_descriptor_service()
     return service.render(resource)
+
+
+def render_display_descriptor_for_resource(
+    resource_id: str, language: str = "en", strict_sortorder: bool = False
+) -> Optional[str]:
+    """Convenience function to build resource data and render a display descriptor."""
+    service = get_display_descriptor_service()
+    return service.render_for_resource(
+        resource_id=resource_id,
+        language=language,
+        strict_sortorder=strict_sortorder,
+    )
