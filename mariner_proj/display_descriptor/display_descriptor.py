@@ -441,7 +441,7 @@ def execute_rule_block(
             formatted = rule.format_when_present.format(**{rule.name: value})
             context[rule.name] = formatted
         else:
-            context[rule.name] = value
+            context[rule.name] = "" if value is None else value
 
     try:
         return block.format.format(**context)

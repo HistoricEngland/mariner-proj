@@ -132,6 +132,8 @@ Security/operational guard:
 - `RuleDefinition`
 - `Operation`
 
+`display_descriptor_rules` blocks may omit `rule`; omitted `rule` is normalized to an empty list (`[]`), enabling unconditional fallback blocks such as `{"format": "Unknown"}`.
+
 ### Operation validation
 
 - Each operation type is validated against `OperationType` enum

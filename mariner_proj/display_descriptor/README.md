@@ -152,6 +152,15 @@ display_descriptor_rules:
     format: "Overall format string: {Field Name}"
 ```
 
+Fallback/default rule blocks can omit `rule` entirely and provide only `format`:
+
+```yaml
+display_descriptor_rules:
+  - format: "Unknown"
+```
+
+This is treated the same as `rule: []`.
+
 ## Advanced Examples
 
 ### Example 1: Clean and Format Names

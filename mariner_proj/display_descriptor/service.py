@@ -78,11 +78,8 @@ class DisplayDescriptorService:
 
         rule_blocks = []
         for block_data in rules_data:
-            if "rule" not in block_data:
-                continue
-
             rules = []
-            for rule_data in block_data["rule"]:
+            for rule_data in block_data.get("rule") or []:
                 operations = []
                 for op_data in rule_data.get("operations", []):
                     if isinstance(op_data, str):
