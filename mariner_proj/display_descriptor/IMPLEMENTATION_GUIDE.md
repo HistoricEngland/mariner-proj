@@ -141,6 +141,8 @@ Each rule block may also include `format_operations` (same operation schema as r
 - Unknown operations raise `ValueError`
 - Includes trim variants (`trim`, `ltrim`, `rtrim`) and padding variants (`lpad`, `rpad`)
 - `lpad`/`rpad` support `pad_length` (required for effect) and optional `pad_char` (defaults to space)
+- Includes `normalize_whitespace` (collapse whitespace), `replace` (`replace_from`/`replace_to`) and `coalesce` (`coalesce_value`) for fallback cleanup behavior
+- `fallback_text` is an alias of `coalesce` and can use either `fallback_text` or `coalesce_value` as the fallback parameter
 
 ### Field filter normalization
 

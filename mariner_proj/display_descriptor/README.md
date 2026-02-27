@@ -236,6 +236,10 @@ Understanding which operations work on strings, lists, or both is critical for a
 | `rtrim` | String or List | Same as input | Right trim only |
 | `lpad` | String or List | Same as input | Left pad to `pad_length` |
 | `rpad` | String or List | Same as input | Right pad to `pad_length` |
+| `normalize_whitespace` | String or List | Same as input | Collapses whitespace and trims ends |
+| `replace` | String or List | Same as input | Literal string replacement |
+| `coalesce` | String/List/None | Usually String | Replaces empty/null with fallback |
+| `fallback_text` | String/List/None | Usually String | Alias of `coalesce` for non-technical configs |
 | `remove_diacritics` | String or List | Same as input | Applies to each string in list |
 | `remove_special_chars` | String or List | Same as input | Applies to each string in list |
 | `titlecase` | String or List | Same as input | Applies to each string in list |
@@ -284,6 +288,30 @@ Use `format_operations` on a rule block to transform the **final descriptor stri
   - type: rpad
     pad_length: 20
     pad_char: "."    # optional, defaults to space
+  ```
+
+- **`normalize_whitespace`** — Collapse repeated whitespace to single spaces and trim ends
+  ```yaml
+  - type: normalize_whitespace
+  ```
+
+- **`replace`** — Literal text replacement
+  ```yaml
+  - type: replace
+    replace_from: "Church Of"
+    replace_to: "Church of"
+  ```
+
+- **`coalesce`** — Fallback when value is null/empty
+  ```yaml
+  - type: coalesce
+    coalesce_value: "Unknown"
+  ```
+
+- **`fallback_text`** — Alias of `coalesce` with friendlier naming
+  ```yaml
+  - type: fallback_text
+    fallback_text: "Unknown"
   ```
 
 ### Case Transformations

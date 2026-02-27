@@ -25,6 +25,12 @@ class Operation:
     # For pad operations
     pad_length: Optional[int] = None
     pad_char: Optional[str] = None
+    # For replace operation
+    replace_from: Optional[str] = None
+    replace_to: Optional[str] = None
+    # For coalesce operation
+    coalesce_value: Optional[str] = None
+    fallback_text: Optional[str] = None
 
 
 @dataclass

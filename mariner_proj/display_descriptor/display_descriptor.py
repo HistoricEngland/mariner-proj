@@ -24,6 +24,10 @@ class OperationType(str, Enum):
     RTRIM = "rtrim"
     LPAD = "lpad"
     RPAD = "rpad"
+    NORMALIZE_WHITESPACE = "normalize_whitespace"
+    REPLACE = "replace"
+    COALESCE = "coalesce"
+    FALLBACK_TEXT = "fallback_text"
     REMOVE_DIACRITICS = "remove_diacritics"
     REMOVE_SPECIAL_CHARS = "remove_special_chars"
     UNIQUE = "unique"
@@ -116,6 +120,36 @@ def op_rpad(value: Any, pad_length: int, pad_char: str = " ") -> Any:
         return value.ljust(pad_length, _normalize_pad_char(pad_char))
     if isinstance(value, list):
         return [op_rpad(v, pad_length, pad_char) for v in value]
+    return value
+
+
+def op_normalize_whitespace(value: Any) -> Any:
+    if isinstance(value, str):
+        return re.sub(r"\s+", " ", value).strip()
+    if isinstance(value, list):
+        return [op_normalize_whitespace(v) for v in value]
+    return value
+
+
+def op_replace(value: Any, replace_from: str, replace_to: str = "") -> Any:
+    if isinstance(value, str):
+        if replace_from is None or replace_from == "":
+            return value
+        return value.replace(replace_from, replace_to)
+    if isinstance(value, list):
+        return [op_replace(v, replace_from, replace_to) for v in value]
+    return value
+
+
+def op_coalesce(value: Any, coalesce_value: str = "") -> Any:
+    if value is None:
+        return coalesce_value
+    if isinstance(value, str) and value.strip() == "":
+        return coalesce_value
+    if isinstance(value, list):
+        if len(value) == 0:
+            return coalesce_value
+        return [op_coalesce(v, coalesce_value) for v in value]
     return value
 
 
@@ -338,6 +372,28 @@ def _handle_rpad(value: Any, op: Operation) -> Any:
     )
 
 
+def _handle_replace(value: Any, op: Operation) -> Any:
+    """Handler for replace operation with parameter extraction."""
+    return op_replace(
+        value,
+        replace_from=op.replace_from if op.replace_from is not None else "",
+        replace_to=op.replace_to if op.replace_to is not None else "",
+    )
+
+
+def _handle_coalesce(value: Any, op: Operation) -> Any:
+    """Handler for coalesce operation with parameter extraction."""
+    fallback_value = (
+        op.coalesce_value
+        if op.coalesce_value is not None
+        else (op.fallback_text if op.fallback_text is not None else "")
+    )
+    return op_coalesce(
+        value,
+        coalesce_value=fallback_value,
+    )
+
+
 # Dispatch dictionary mapping operation types to their handlers
 OPERATION_HANDLERS = {
     OperationType.TITLECASE.value: lambda v, op: op_titlecase(v),
@@ -349,6 +405,10 @@ OPERATION_HANDLERS = {
     OperationType.RTRIM.value: lambda v, op: op_rtrim(v),
     OperationType.LPAD.value: _handle_lpad,
     OperationType.RPAD.value: _handle_rpad,
+    OperationType.NORMALIZE_WHITESPACE.value: lambda v, op: op_normalize_whitespace(v),
+    OperationType.REPLACE.value: _handle_replace,
+    OperationType.COALESCE.value: _handle_coalesce,
+    OperationType.FALLBACK_TEXT.value: _handle_coalesce,
     OperationType.REMOVE_DIACRITICS.value: lambda v, op: op_remove_diacritics(v),
     OperationType.REMOVE_SPECIAL_CHARS.value: lambda v, op: op_remove_special_chars(v),
     OperationType.UNIQUE.value: lambda v, op: op_unique(v),
@@ -483,8 +543,6 @@ def execute_rule_definition(
             value = rule.default
             used_default = True
         elif rule.required:
-            return None, False
-        else:
             return None, False
 
     value = apply_operation_chain(value, rule.operations)
