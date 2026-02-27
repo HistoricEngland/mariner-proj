@@ -22,6 +22,9 @@ class Operation:
     # For prefix/suffix operations
     prefix_value: Optional[str] = None
     suffix_value: Optional[str] = None
+    # For pad operations
+    pad_length: Optional[int] = None
+    pad_char: Optional[str] = None
 
 
 @dataclass
@@ -39,6 +42,7 @@ class RuleDefinition:
 class DisplayDescriptorRuleBlock:
     rule: List[RuleDefinition]
     format: str
+    format_operations: List[Operation] = field(default_factory=list)
 
 
 @dataclass

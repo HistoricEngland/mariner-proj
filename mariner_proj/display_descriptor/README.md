@@ -150,6 +150,8 @@ display_descriptor_rules:
         format_when_present: "Custom format for present values"
         format_when_default: "Custom format for defaults"
     format: "Overall format string: {Field Name}"
+    format_operations:
+      - type: trim   # optional post-format operation(s) for final descriptor
 ```
 
 Fallback/default rule blocks can omit `rule` entirely and provide only `format`:
@@ -230,6 +232,10 @@ Understanding which operations work on strings, lists, or both is critical for a
 | Operation | Input Type | Output Type | Notes |
 |-----------|-----------|-----------|-------|
 | `trim` | String or List | Same as input | Applies to each string in list |
+| `ltrim` | String or List | Same as input | Left trim only |
+| `rtrim` | String or List | Same as input | Right trim only |
+| `lpad` | String or List | Same as input | Left pad to `pad_length` |
+| `rpad` | String or List | Same as input | Right pad to `pad_length` |
 | `remove_diacritics` | String or List | Same as input | Applies to each string in list |
 | `remove_special_chars` | String or List | Same as input | Applies to each string in list |
 | `titlecase` | String or List | Same as input | Applies to each string in list |
@@ -247,6 +253,8 @@ Understanding which operations work on strings, lists, or both is critical for a
 
 **Critical Point:** After `combine`, you have a **string**, not a list. List operations (`unique`, `sort`, `reverse`) won't work after combining.
 
+Use `format_operations` on a rule block to transform the **final descriptor string** after `format` interpolation (for example `trim`, `ltrim`, or `rtrim`).
+
 ### Text Cleaning
 
 - **`trim`** — Remove leading/trailing whitespace
@@ -262,6 +270,20 @@ Understanding which operations work on strings, lists, or both is critical for a
 - **`remove_special_chars`** — Remove punctuation, keep alphanumerics and spaces
   ```yaml
   - type: remove_special_chars
+  ```
+
+- **`lpad`** — Left-pad to a fixed length
+  ```yaml
+  - type: lpad
+    pad_length: 12
+    pad_char: "0"    # optional, defaults to space
+  ```
+
+- **`rpad`** — Right-pad to a fixed length
+  ```yaml
+  - type: rpad
+    pad_length: 20
+    pad_char: "."    # optional, defaults to space
   ```
 
 ### Case Transformations

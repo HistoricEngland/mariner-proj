@@ -133,11 +133,14 @@ Security/operational guard:
 - `Operation`
 
 `display_descriptor_rules` blocks may omit `rule`; omitted `rule` is normalized to an empty list (`[]`), enabling unconditional fallback blocks such as `{"format": "Unknown"}`.
+Each rule block may also include `format_operations` (same operation schema as rule operations) to post-process the final rendered descriptor string.
 
 ### Operation validation
 
 - Each operation type is validated against `OperationType` enum
 - Unknown operations raise `ValueError`
+- Includes trim variants (`trim`, `ltrim`, `rtrim`) and padding variants (`lpad`, `rpad`)
+- `lpad`/`rpad` support `pad_length` (required for effect) and optional `pad_char` (defaults to space)
 
 ### Field filter normalization
 

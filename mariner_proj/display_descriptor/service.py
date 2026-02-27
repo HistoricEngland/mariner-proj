@@ -104,8 +104,22 @@ class DisplayDescriptorService:
                 rules.append(rule)
 
             format_str = block_data.get("format", "")
+            format_operations = []
+            for op_data in block_data.get("format_operations", []):
+                if isinstance(op_data, str):
+                    _validate_operation_type(op_data)
+                    format_operations.append(Operation(type=op_data))
+                elif isinstance(op_data, dict):
+                    op_type = op_data.get("type")
+                    _validate_operation_type(op_type)
+                    format_operations.append(Operation(**op_data))
+
             rule_blocks.append(
-                DisplayDescriptorRuleBlock(rule=rules, format=format_str)
+                DisplayDescriptorRuleBlock(
+                    rule=rules,
+                    format=format_str,
+                    format_operations=format_operations,
+                )
             )
 
         return DisplayDescriptorConfig(

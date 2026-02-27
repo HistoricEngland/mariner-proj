@@ -20,6 +20,10 @@ class OperationType(str, Enum):
     LOWERCASE = "lowercase"
     CAPITALIZE = "capitalize"
     TRIM = "trim"
+    LTRIM = "ltrim"
+    RTRIM = "rtrim"
+    LPAD = "lpad"
+    RPAD = "rpad"
     REMOVE_DIACRITICS = "remove_diacritics"
     REMOVE_SPECIAL_CHARS = "remove_special_chars"
     UNIQUE = "unique"
@@ -70,6 +74,48 @@ def op_trim(value: Any) -> Any:
         return value.strip()
     if isinstance(value, list):
         return [op_trim(v) for v in value]
+    return value
+
+
+def op_ltrim(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.lstrip()
+    if isinstance(value, list):
+        return [op_ltrim(v) for v in value]
+    return value
+
+
+def op_rtrim(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.rstrip()
+    if isinstance(value, list):
+        return [op_rtrim(v) for v in value]
+    return value
+
+
+def _normalize_pad_char(pad_char: Optional[str]) -> str:
+    if not pad_char:
+        return " "
+    return pad_char[0]
+
+
+def op_lpad(value: Any, pad_length: int, pad_char: str = " ") -> Any:
+    if isinstance(value, str):
+        if len(value) >= pad_length:
+            return value
+        return value.rjust(pad_length, _normalize_pad_char(pad_char))
+    if isinstance(value, list):
+        return [op_lpad(v, pad_length, pad_char) for v in value]
+    return value
+
+
+def op_rpad(value: Any, pad_length: int, pad_char: str = " ") -> Any:
+    if isinstance(value, str):
+        if len(value) >= pad_length:
+            return value
+        return value.ljust(pad_length, _normalize_pad_char(pad_char))
+    if isinstance(value, list):
+        return [op_rpad(v, pad_length, pad_char) for v in value]
     return value
 
 
@@ -270,6 +316,28 @@ def _handle_combine(value: Any, op: Operation) -> Any:
     )
 
 
+def _handle_lpad(value: Any, op: Operation) -> Any:
+    """Handler for lpad operation with parameter extraction."""
+    if op.pad_length is None:
+        return value
+    return op_lpad(
+        value,
+        pad_length=op.pad_length,
+        pad_char=op.pad_char if op.pad_char is not None else " ",
+    )
+
+
+def _handle_rpad(value: Any, op: Operation) -> Any:
+    """Handler for rpad operation with parameter extraction."""
+    if op.pad_length is None:
+        return value
+    return op_rpad(
+        value,
+        pad_length=op.pad_length,
+        pad_char=op.pad_char if op.pad_char is not None else " ",
+    )
+
+
 # Dispatch dictionary mapping operation types to their handlers
 OPERATION_HANDLERS = {
     OperationType.TITLECASE.value: lambda v, op: op_titlecase(v),
@@ -277,6 +345,10 @@ OPERATION_HANDLERS = {
     OperationType.LOWERCASE.value: lambda v, op: op_lowercase(v),
     OperationType.CAPITALIZE.value: lambda v, op: op_capitalize(v),
     OperationType.TRIM.value: lambda v, op: op_trim(v),
+    OperationType.LTRIM.value: lambda v, op: op_ltrim(v),
+    OperationType.RTRIM.value: lambda v, op: op_rtrim(v),
+    OperationType.LPAD.value: _handle_lpad,
+    OperationType.RPAD.value: _handle_rpad,
     OperationType.REMOVE_DIACRITICS.value: lambda v, op: op_remove_diacritics(v),
     OperationType.REMOVE_SPECIAL_CHARS.value: lambda v, op: op_remove_special_chars(v),
     OperationType.UNIQUE.value: lambda v, op: op_unique(v),
@@ -444,7 +516,9 @@ def execute_rule_block(
             context[rule.name] = "" if value is None else value
 
     try:
-        return block.format.format(**context)
+        formatted = block.format.format(**context)
+        formatted = apply_operation_chain(formatted, block.format_operations)
+        return formatted
     except KeyError:
         return None
 

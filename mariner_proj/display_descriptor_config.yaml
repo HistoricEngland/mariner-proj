@@ -15,6 +15,8 @@ display_descriptor_rules:
           - type: uppercase
         required: true
     format: "[{Primary Reference Number}] {Monument Name}"
+    format_operations:
+      - type: trim
 
   - rule:
       - name: Primary Reference Number
