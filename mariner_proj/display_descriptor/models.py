@@ -28,6 +28,7 @@ class Operation:
     # For replace operation
     replace_from: Optional[str] = None
     replace_to: Optional[str] = None
+    ignore_case: Optional[bool] = None
     # For coalesce operation
     coalesce_value: Optional[str] = None
     fallback_text: Optional[str] = None

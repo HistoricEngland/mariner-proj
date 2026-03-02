@@ -131,13 +131,25 @@ def op_normalize_whitespace(value: Any) -> Any:
     return value
 
 
-def op_replace(value: Any, replace_from: str, replace_to: str = "") -> Any:
+def op_replace(
+    value: Any,
+    replace_from: str,
+    replace_to: str = "",
+    ignore_case: bool = False,
+) -> Any:
     if isinstance(value, str):
         if replace_from is None or replace_from == "":
             return value
+        if ignore_case:
+            return re.sub(
+                re.escape(replace_from),
+                lambda _: replace_to,
+                value,
+                flags=re.IGNORECASE,
+            )
         return value.replace(replace_from, replace_to)
     if isinstance(value, list):
-        return [op_replace(v, replace_from, replace_to) for v in value]
+        return [op_replace(v, replace_from, replace_to, ignore_case) for v in value]
     return value
 
 
@@ -378,6 +390,7 @@ def _handle_replace(value: Any, op: Operation) -> Any:
         value,
         replace_from=op.replace_from if op.replace_from is not None else "",
         replace_to=op.replace_to if op.replace_to is not None else "",
+        ignore_case=op.ignore_case if op.ignore_case is not None else False,
     )
 
 

@@ -237,7 +237,7 @@ Understanding which operations work on strings, lists, or both is critical for a
 | `lpad` | String or List | Same as input | Left pad to `pad_length` |
 | `rpad` | String or List | Same as input | Right pad to `pad_length` |
 | `normalize_whitespace` | String or List | Same as input | Collapses whitespace and trims ends |
-| `replace` | String or List | Same as input | Literal string replacement |
+| `replace` | String or List | Same as input | Literal string replacement (case-sensitive by default) |
 | `coalesce` | String/List/None | Usually String | Replaces empty/null with fallback |
 | `fallback_text` | String/List/None | Usually String | Alias of `coalesce` for non-technical configs |
 | `remove_diacritics` | String or List | Same as input | Applies to each string in list |
@@ -300,6 +300,7 @@ Use `format_operations` on a rule block to transform the **final descriptor stri
   - type: replace
     replace_from: "Church Of"
     replace_to: "Church of"
+    ignore_case: true      # optional, default: false
   ```
 
 - **`coalesce`** — Fallback when value is null/empty
