@@ -25,8 +25,8 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "arches @ git+https://github.com/HistoricEngland/arches.git@ph_101500_search_suggestion_contrast",
-    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.0",
-    "arches-he-sysref-funcs @ git+https://github.com/HistoricEngland/arches-he-sysref-funcs.git@release/1.0.0",
+    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@ph_101500_search_suggestion_contrast",
+    "arches-he-sysref-funcs @ git+https://github.com/HistoricEngland/arches-he-sysref-funcs.git@ph_101500_search_suggestion_contrast",
     "wfastcgi>=3.0.0,<3.1.0",
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
     "opentelemetry-instrumentation-celery"
