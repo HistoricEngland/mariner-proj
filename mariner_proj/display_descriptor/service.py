@@ -2,7 +2,6 @@ import yaml
 import json
 from collections import defaultdict
 from typing import Optional, Dict, Any, List
-from pathlib import Path
 from uuid import UUID
 from .display_descriptor import DisplayDescriptorEngine, OperationType
 from .models import (
@@ -17,35 +16,18 @@ from .models import (
 class DisplayDescriptorService:
     """Service for managing display descriptor configurations and rendering."""
 
-    def __init__(self, config_path: Optional[str] = None):
-        self.config_path = config_path or self._get_default_config_path()
+    def __init__(self):
         self._config_cache: Optional[DisplayDescriptorConfig] = None
-        self._engine_cache: Optional[DisplayDescriptorEngine] = None
-        self._config_hash: Optional[str] = None
 
-    def _get_default_config_path(self) -> str:
-        """Get the default path for display descriptor config."""
-        # You can customize this path based on your Django settings
-        from django.conf import settings
-
-        base_dir = getattr(settings, "BASE_DIR", Path(__file__).parent.parent)
-        return str(Path(base_dir) / "display_descriptor_config.yaml")
-
-    def load_config_from_file(
-        self, filepath: Optional[str] = None
-    ) -> DisplayDescriptorConfig:
-        """Load configuration from a YAML file."""
-        filepath = filepath or self.config_path
-
+    def load_config_from_yaml(self, yaml_str: str) -> DisplayDescriptorConfig:
+        """Load configuration from a YAML string."""
         try:
-            with open(filepath, "r") as f:
-                data = yaml.safe_load(f)
-        except FileNotFoundError:
-            raise FileNotFoundError(
-                f"Display descriptor config file not found: {filepath}"
-            )
+            data = yaml.safe_load(yaml_str)
         except yaml.YAMLError as e:
-            raise ValueError(f"Invalid YAML in config file: {e}")
+            raise ValueError(f"Invalid YAML: {e}")
+
+        if not isinstance(data, dict):
+            raise ValueError("Display descriptor YAML must deserialize to an object")
 
         return self._parse_config_data(data)
 
@@ -126,45 +108,65 @@ class DisplayDescriptorService:
             fields=fields, display_descriptor_rules=rule_blocks
         )
 
-    def get_engine(self) -> DisplayDescriptorEngine:
-        """Get the cached display descriptor engine."""
-        # If no cached engine, load and cache it along with the file checksum.
-        config_path = Path(self.config_path)
+    def _load_graph_config(self, graph_id) -> Optional[DisplayDescriptorConfig]:
+        """Load graph-scoped descriptor configuration from the database."""
+        from mariner_proj.models import DisplayDescriptorGraphConfig
 
-        current_hash = None
+        row = (
+            DisplayDescriptorGraphConfig.objects.filter(graph_id=graph_id)
+            .values("yaml_config")
+            .first()
+        )
+        if not row:
+            return None
+
+        yaml_config = row.get("yaml_config")
+        if not isinstance(yaml_config, str) or yaml_config.strip() == "":
+            return None
+
         try:
-            current_hash = _compute_file_hash(config_path)
-        except FileNotFoundError:
-            # If file is missing, fall through and let load_config_from_file raise later
-            current_hash = None
+            return self.load_config_from_yaml(yaml_config)
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid display descriptor config for graph {graph_id}: {exc}"
+            )
 
-        if self._engine_cache is None:
-            # initial load
-            self._config_cache = self.load_config_from_file()
-            self._engine_cache = DisplayDescriptorEngine(self._config_cache)
-            self._config_hash = current_hash
-            return self._engine_cache
+    def _resolve_config(
+        self,
+        resource_id: str,
+        config_data: Optional[Dict[str, Any]] = None,
+    ) -> Optional[DisplayDescriptorConfig]:
+        """Resolve config with API override precedence, then graph DB lookup."""
+        if config_data is not None:
+            return self._parse_config_data(config_data)
 
-        # If file hash changed since last load, reload config and engine
-        if current_hash is not None and self._config_hash != current_hash:
-            self._config_cache = self.load_config_from_file()
-            self._engine_cache = DisplayDescriptorEngine(self._config_cache)
-            self._config_hash = current_hash
-
-        return self._engine_cache
+        graph_id = self._get_resource_graph_id(resource_id)
+        return self._load_graph_config(graph_id)
 
     def render_with_config(
         self, resource: Dict[str, Any], config_data: Dict[str, Any]
     ) -> Optional[str]:
         """Render with an inline config (bypasses file caching)."""
         config = self._parse_config_data(config_data)
+        self._config_cache = config
+        engine = DisplayDescriptorEngine(config)
+        return engine.render(resource)
+
+    def render_with_parsed_config(
+        self, resource: Dict[str, Any], config: DisplayDescriptorConfig
+    ) -> Optional[str]:
+        """Render with a pre-parsed DisplayDescriptorConfig."""
+        self._config_cache = config
         engine = DisplayDescriptorEngine(config)
         return engine.render(resource)
 
     def render(self, resource: Dict[str, Any]) -> Optional[str]:
-        """Render a display descriptor for the given resource."""
-        engine = self.get_engine()
-        return engine.render(resource)
+        """Render a display descriptor for a pre-materialized resource payload.
+
+        This path has no graph context, so it cannot resolve DB-backed config.
+        Returning None is the expected no-op behavior unless explicit config is provided.
+        """
+        return None
 
     def get_resource_data(
         self,
@@ -172,17 +174,18 @@ class DisplayDescriptorService:
         language: str = "en",
         strict_sortorder: bool = False,
         config_data: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
-        """Build descriptor input data for a resource using configured YAML fields.
+        return_config: bool = False,
+    ) -> Any:
+        """Build descriptor input data for a resource using resolved config.
 
         Validates that all configured fields exist in the resource graph and that all
         configured subfields share nodegroup with their parent field.
         """
-        config = (
-            self._parse_config_data(config_data)
-            if config_data is not None
-            else (self._config_cache or self.load_config_from_file())
-        )
+        config = self._resolve_config(resource_id=resource_id, config_data=config_data)
+        if config is None:
+            return ({}, None) if return_config else {}
+
+        self._config_cache = config
         node_map = self._resolve_nodes_for_configured_fields(resource_id, config=config)
 
         grouped_fields: Dict[str, List[FieldDefinition]] = defaultdict(list)
@@ -291,7 +294,7 @@ class DisplayDescriptorService:
         for field in config.fields:
             result.setdefault(field.name, None if not field.subfields else [])
 
-        return result
+        return (result, config) if return_config else result
 
     def render_for_resource(
         self,
@@ -301,22 +304,27 @@ class DisplayDescriptorService:
         config_data: Optional[Dict[str, Any]] = None,
     ) -> Optional[str]:
         """Build resource data from the DB and render the configured descriptor."""
-        resource_data = self.get_resource_data(
+        resource_data, config = self.get_resource_data(
             resource_id=resource_id,
             language=language,
             strict_sortorder=strict_sortorder,
             config_data=config_data,
+            return_config=True,
         )
-        if config_data is not None:
-            return self.render_with_config(resource_data, config_data)
-        return self.render(resource_data)
+        if config is None:
+            return None
+
+        engine = DisplayDescriptorEngine(config)
+        return engine.render(resource_data)
 
     def _resolve_nodes_for_configured_fields(
         self, resource_id: str, config: Optional[DisplayDescriptorConfig] = None
     ) -> Dict[str, Dict[str, Any]]:
         """Resolve node metadata for configured fields using the resource's graph."""
         graph_id = self._get_resource_graph_id(resource_id)
-        config = config or self._config_cache or self.load_config_from_file()
+        config = config or self._config_cache
+        if config is None:
+            return {}
 
         requested_names = []
         for field in config.fields:
@@ -429,9 +437,8 @@ class DisplayDescriptorService:
         }
 
     def clear_cache(self):
-        """Clear the cached config and engine."""
+        """Clear cached parsed config."""
         self._config_cache = None
-        self._engine_cache = None
 
 
 def _validate_operation_type(op_type: str) -> None:
@@ -475,20 +482,6 @@ def _normalize_field_filters(raw_filters: dict) -> dict:
             normalized[k] = [v]
 
     return normalized
-
-
-def _compute_file_hash(path: Path) -> str:
-    """Compute SHA256 hex digest of a file's contents."""
-    if not path.exists():
-        raise FileNotFoundError(str(path))
-
-    import hashlib
-
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(8192), b""):
-            h.update(chunk)
-    return h.hexdigest()
 
 
 # Global service instance

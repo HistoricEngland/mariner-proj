@@ -103,19 +103,31 @@ def get_display_descriptor(request, resource_id):
         descriptor_only = _is_descriptor_only(request.GET.get("descriptor_only"))
 
         service = DisplayDescriptorService()
-        resource_data, sql_queries_data = _execute_with_sql_capture(
+        resource_payload, sql_queries_data = _execute_with_sql_capture(
             lambda: service.get_resource_data(
                 resource_id,
                 strict_sortorder=strict_sortorder,
                 config_data=config,
+                return_config=True,
             ),
             include_sql=include_sql,
         )
 
+        resource_data, resolved_config = resource_payload
+
         render_func = (
             (lambda: service.render_with_config(resource_data, config))
-            if config
-            else (lambda: service.render(resource_data))
+            if config is not None
+            else (
+                (lambda: None)
+                if resolved_config is None
+                else (
+                    lambda: service.render_with_parsed_config(
+                        resource_data,
+                        resolved_config,
+                    )
+                )
+            )
         )
         descriptor, sql_queries_render = _execute_with_sql_capture(
             render_func,
@@ -184,8 +196,8 @@ def preview_display_descriptor(request):
             # The parameter is accepted for consistency with DB-backed endpoints.
             pass
 
-        # Use provided config or fall back to default
-        if config:
+        # Use provided config when present; otherwise no-op (no default file fallback).
+        if config is not None:
             try:
                 service = DisplayDescriptorService()
                 descriptor, sql_queries = _execute_with_sql_capture(
