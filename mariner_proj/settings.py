@@ -80,6 +80,12 @@ ELASTICSEARCH_CONNECTION_OPTIONS = {
     "basic_auth": ("elastic", "E1asticSearchforArche5"),
 }
 
+# Arches defaults to an HTTPS localhost endpoint. Override to HTTP here so
+# development and CI environments using non-TLS Elasticsearch can connect.
+ELASTICSEARCH_HOSTS = [
+    {"scheme": "http", "host": "localhost", "port": ELASTICSEARCH_HTTP_PORT}
+]
+
 # If you need to connect to Elasticsearch via an API key instead of username/password, use the syntax below:
 # ELASTICSEARCH_CONNECTION_OPTIONS = {"request_timeout": 30, "verify_certs": False, "api_key": "<ENCODED_API_KEY>"}
 # ELASTICSEARCH_CONNECTION_OPTIONS = {"request_timeout": 30, "verify_certs": False, "api_key": ("<ID>", "<API_KEY>")}
