@@ -63,6 +63,9 @@ jobs:
       - name: Build frontend assets for test mode
         run: npm run build_test
 
+      - name: Collect static files for runtime
+        run: python manage.py collectstatic --noinput
+
       - name: Initialise application database
         run: |
           if [ -d pkg ]; then
