@@ -1,0 +1,96 @@
+name: Accessibility CI
+
+"on":
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  accessibility_smoke_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    services:
+      postgres:
+        image: postgis/postgis:13-3.0
+        env:
+          POSTGRES_PASSWORD: postgis
+          POSTGRES_DB: mariner
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          check-latest: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Java, GDAL, and other system dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libxml2-dev libpq-dev openjdk-8-jdk libgdal-dev libxslt-dev
+
+      - name: Set up Elasticsearch
+        uses: ankane/setup-elasticsearch@v1
+        with:
+          elasticsearch-version: 8
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install '.[dev]'
+
+      - name: Ensure Django configuration is valid
+        run: python manage.py check
+
+      - name: Install Arches applications
+        uses: ./.github/actions/install-arches-applications
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend assets for test mode
+        run: npm run build_test
+
+      - name: Initialise application database
+        run: |
+          if [ -d pkg ]; then
+            python manage.py packages -o load_package -s pkg -db -dev -y
+          else
+            python manage.py setup_db --force
+          fi
+
+      - name: Start Django development server
+        run: |
+          python manage.py runserver 0.0.0.0:8000 > /tmp/mariner-accessibility-server.log 2>&1 &
+
+      - name: Wait for Django server to respond
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:8000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "Django server did not become ready in time"
+          cat /tmp/mariner-accessibility-server.log
+          exit 1
+
+      - name: Run automated accessibility smoke tests
+        run: npx --yes pa11y-ci --config .github/pa11yci.json
+
+      - name: Print Django server log on failure
+        if: failure()
+        run: cat /tmp/mariner-accessibility-server.log
