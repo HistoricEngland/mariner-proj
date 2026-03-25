@@ -4,6 +4,7 @@
       "url": ["http://127.0.0.1:8000/"],
       "numberOfRuns": 1,
       "settings": {
+        "onlyCategories": ["accessibility"],
         "chromeFlags": "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu",
         "throttlingMethod": "provided",
         "disableStorageReset": false
