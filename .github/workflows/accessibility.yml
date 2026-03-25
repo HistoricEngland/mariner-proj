@@ -92,7 +92,13 @@ jobs:
           exit 1
 
       - name: Run automated accessibility smoke tests
-        run: npx --yes pa11y-ci --config .github/pa11yci.json
+        run: |
+          npx --yes @axe-core/cli http://127.0.0.1:8000/ \
+            --tags wcag2aa \
+            --timeout 60000 \
+            --load-delay 8000 \
+            --chrome-options "no-sandbox,headless,disable-dev-shm-usage,disable-gpu" \
+            --exit
 
       - name: Print Django server log on failure
         if: failure()
