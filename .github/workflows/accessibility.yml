@@ -94,13 +94,6 @@ jobs:
       - name: Run automated accessibility smoke tests
         run: npx --yes @lhci/cli autorun --config .github/lighthouserc.json
 
-      - name: Upload Lighthouse CI results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-results
-          path: /tmp/lhci-results/
-
       - name: Print Django server log on failure
         if: failure()
         run: cat /tmp/mariner-accessibility-server.log

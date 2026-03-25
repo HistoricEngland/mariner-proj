@@ -15,8 +15,7 @@
       }
     },
     "upload": {
-      "target": "filesystem",
-      "outputDir": "/tmp/lhci-results"
+      "target": "temporary-public-storage"
     }
   }
 }
