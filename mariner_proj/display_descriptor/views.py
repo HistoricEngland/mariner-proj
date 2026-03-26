@@ -8,6 +8,7 @@ from ..display_descriptor.service import (
     DisplayDescriptorService,
 )
 import json
+import yaml
 from time import perf_counter
 
 
@@ -227,3 +228,98 @@ def preview_display_descriptor(request):
         return JsonResponse({"error": "Invalid JSON"}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def test_config_for_resource(request):
+    """
+    Admin test endpoint to render display descriptor.
+
+    Usage: POST /api/display-descriptor/admin-test/
+    Body: {"resource_id": "<uuid>", "graph_id": "<uuid>", "yaml_config": "..."}
+
+    Returns: {"display_descriptor": "...", "error": "..."} or error response
+    """
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body) if request.body else {}
+        resource_id = data.get("resource_id")
+        graph_id = data.get("graph_id")
+        yaml_config = data.get("yaml_config")
+
+        if not resource_id:
+            return JsonResponse({"error": "resource_id is required"}, status=400)
+        if not graph_id:
+            return JsonResponse({"error": "graph_id is required"}, status=400)
+
+        # If yaml_config not provided in request, try to fetch from database
+        if not yaml_config:
+            from mariner_proj.models import DisplayDescriptorGraphConfig
+
+            config_row = (
+                DisplayDescriptorGraphConfig.objects.filter(graph_id=graph_id)
+                .values("yaml_config")
+                .first()
+            )
+
+            if not config_row:
+                return JsonResponse(
+                    {
+                        "display_descriptor": None,
+                        "error": f"No display descriptor config found for graph {graph_id}",
+                    }
+                )
+
+            yaml_config = config_row.get("yaml_config")
+
+        if not yaml_config:
+            return JsonResponse(
+                {
+                    "display_descriptor": None,
+                    "error": "YAML config is empty",
+                }
+            )
+
+        try:
+            config_dict = yaml.safe_load(yaml_config)
+        except yaml.YAMLError as e:
+            return JsonResponse(
+                {
+                    "display_descriptor": None,
+                    "error": f"Invalid YAML in config: {str(e)}",
+                }
+            )
+
+        service = DisplayDescriptorService()
+
+        descriptor = service.render_for_resource(
+            resource_id=resource_id,
+            config_data=config_dict,
+        )
+
+        return JsonResponse(
+            {
+                "display_descriptor": descriptor,
+                "error": None,
+            }
+        )
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except ValueError as e:
+        return JsonResponse(
+            {
+                "display_descriptor": None,
+                "error": str(e),
+            }
+        )
+    except Exception as e:
+        return JsonResponse(
+            {
+                "display_descriptor": None,
+                "error": str(e),
+            },
+            status=500,
+        )

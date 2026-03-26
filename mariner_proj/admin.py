@@ -58,6 +58,9 @@ class DisplayDescriptorGraphConfigAdminForm(forms.ModelForm):
 @admin.register(DisplayDescriptorGraphConfig)
 class DisplayDescriptorGraphConfigAdmin(admin.ModelAdmin):
     form = DisplayDescriptorGraphConfigAdminForm
+    change_form_template = (
+        "admin/mariner_proj/displaydescriptorgraphconfig/change_form.html"
+    )
     list_display = ("graph_id", "graph_name", "updated_at", "created_at")
     search_fields = ("graph_id",)
     readonly_fields = ("created_at", "updated_at")

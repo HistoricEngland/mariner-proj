@@ -8,7 +8,13 @@ For a developer-focused explanation of the actual runtime implementation, see `I
 
 ## Overview
 
-The display descriptor system uses a configuration-driven approach to format resource data into readable strings. It supports:
+The display descriptor system uses a configuration-driven approach to format resource data into readable strings. Configurations are:
+
+- **API Override** - Inline config provided in request body
+- **Database-backed** (via Django admin) - Per-graph management without code deployment
+- **No-op** - Default behavior if no config provided
+
+Key features:
 
 - Field filtering and prioritization
 - Data transformations (titlecase, combine, etc.)
@@ -19,7 +25,11 @@ The display descriptor system uses a configuration-driven approach to format res
 
 ### 1. Configuration
 
-Create a YAML configuration file (default: `display_descriptor_config.yaml`):
+Configurations are stored in the database and managed via Django admin interfaces.
+
+#### YAML Configuration Format
+
+Configurations use YAML format:
 
 ```yaml
 fields:
@@ -61,6 +71,19 @@ display_descriptor_rules:
         default: "Unnamed Monument"
     format: "[{Primary Reference Number}] {Monument Name}"
 ```
+
+#### Storing Configurations
+
+Store configurations per graph via Django admin:
+
+1. Go to **Django Admin** → **Display Descriptor Graph Configs**
+2. Click **Add Display Descriptor Graph Config**
+3. Select a graph from the dropdown
+4. Paste your YAML configuration
+5. Use the built-in **Test Display Descriptor** panel to validate against a real resource UUID
+6. Save
+
+For detailed admin interface information, see [Managing Configurations via Django Admin](#5-managing-configurations-via-django-admin).
 
 ### 2. Usage in Code
 
@@ -114,6 +137,116 @@ All endpoints require a trailing slash:
   - Add `?descriptor_only=false` to return both `{"input": {...}, "display_descriptor": "..."}`
   - Add `?include_sql=true` to include captured SQL in the response (`execution_time_ms`, `sql_query_count`, `sql_queries`) when `DEBUG=True`
   - `?strict_sortorder=true` is accepted for API consistency (no effect in preview mode)
+
+### 5. Managing Configurations via Django Admin
+
+Display descriptor configurations can be managed through the Django admin interface, allowing non-developers to create and edit configurations per graph without code deployment.
+
+#### Database-Backed Configurations
+
+Configurations are stored in the `DisplayDescriptorGraphConfig` model (one config per resource graph via `graph_id` foreign key). This enables:
+
+- **Graph-scoped storage**: Each resource graph can have its own display descriptor configuration
+- **Easy editing**: Non-technical users can update configurations via admin UI
+- **Testing before save**: In-admin test panel validates configurations without saving
+
+#### Admin Interface Features
+
+Navigate to **Django Admin** → **Display Descriptor Graph Configs**:
+
+- **List View**:
+  - Shows all configured graphs with their names, update timestamps, and creation timestamps
+  - Search by graph ID or graph name
+  - Sort by graph name, updated date, or created date
+  - Icons indicate recently modified configurations
+
+- **Add/Edit Form**:
+  - **Graph ID**: Dropdown selector (auto-populated with resource graphs only)
+  - **YAML Config**: Large textarea with monospace font for easier editing
+  - **Timestamps**: Auto-populated read-only fields (created_at, updated_at)
+
+#### In-Admin Test Panel
+
+The admin change form includes a built-in test panel to validate your configuration against a real resource **without saving first**:
+
+1. Enter a **Resource UUID** in the test section
+2. Click the **Check** button
+3. The panel immediately shows:
+   - ✅ **Green** - The rendered display descriptor (success)
+   - ❌ **Red** - Error message explaining what went wrong (e.g., invalid YAML, missing fields)
+   - ⚠️ **Orange** - "No descriptor" message (expected for no-op configs)
+
+This allows you to iterate on your YAML configuration and test each change without saving or reloading the form.
+
+#### Configuration Precedence Chain
+
+The display descriptor system resolves configurations in this order:
+
+1. **API Override** (if provided in request body as `config`)
+   - `POST /api/display-descriptor/<resource_id>/` with `{"config": {...}}`
+   - Highest priority; used for one-off custom renders
+
+2. **Graph Database Lookup** (if graph has a stored config)
+   - Looks up `DisplayDescriptorGraphConfig.objects.filter(graph_id=...)`
+   - Used for production display descriptors
+   - Managed via Django admin
+
+3. **No-op** (no config found)
+   - Returns `None` (no descriptor generated)
+   - Default behavior if neither API override nor DB config exists
+
+**Example flow for a resource:**
+
+```python
+# 1. User renders via API with inline config
+POST /api/display-descriptor/550e8400-e29b-41d4-a716-446655440000/
+body: {"config": {"fields": [...], "display_descriptor_rules": [...]}}
+# → Uses the inline config (API override)
+
+# 2. User renders via API without config
+GET /api/display-descriptor/550e8400-e29b-41d4-a716-446655440000/
+# → Looks up the resource's graph_id
+# → Searches DisplayDescriptorGraphConfig for that graph
+# → Uses stored DB config if found, returns None otherwise
+
+# 3. User tests config in admin without saving
+# → Reads current form values (textarea + dropdown)
+# → Sends to /api/display-descriptor/admin-test/
+# → Returns result immediately (no DB save needed)
+```
+
+#### Admin-Test Endpoint
+
+**Endpoint**: `POST /api/display-descriptor/admin-test/`
+
+Used by the in-admin test panel to validate configurations.
+
+**Request body**:
+```json
+{
+  "resource_id": "<uuid>",
+  "graph_id": "<uuid>",
+  "yaml_config": "fields:\n  - name: Field1\n..."
+}
+```
+
+**Response**:
+```json
+{
+  "display_descriptor": "Rendered descriptor string or null",
+  "error": null
+}
+```
+
+If testing fails:
+```json
+{
+  "display_descriptor": null,
+  "error": "Error description (e.g., 'Invalid YAML', 'Field not found')"
+}
+```
+
+This endpoint is primarily for admin UI use but can be called programmatically for testing.
 
 ## Configuration Format
 
@@ -618,10 +751,6 @@ field_filters:
   "Type": ["Statutory"]
 ```
 
-## Configuration Auto-Reload
-
-The service monitors the configuration file using SHA256 checksums. When `display_descriptor_config.yaml` is modified, the new configuration is automatically loaded on the next render call. File copy-paste operations that don't change content won't trigger reloads.
-
 ## FAQ & Troubleshooting
 
 ### Q: I applied `unique` but nothing changed. Why?
@@ -680,14 +809,6 @@ The service monitors the configuration file using SHA256 checksums. When `displa
 **Solution:**
 - Ensure your input data has properly formatted dicts: `{"value": "...", "type": "..."}`
 - Use `remove_special_chars` or other cleaning operations that handle dicts correctly
-
-### Q: Operations are slow or seem to run multiple times
-
-**A:** Each time you call `render_display_descriptor()`, the config is checked via SHA256 checksum. If the file changed, it reloads. This is normally fast, but can add up with many calls.
-
-**Solution:**
-- This is by design and unavoidable; it's very lightweight
-- If performance is critical, cache results in your application layer
 
 ### Q: Can I use conditional logic in operations?
 

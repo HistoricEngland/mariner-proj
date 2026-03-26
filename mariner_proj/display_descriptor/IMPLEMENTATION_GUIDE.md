@@ -4,16 +4,24 @@ This document explains what the code currently does at runtime, from API request
 
 ## TL;DR
 
-The display descriptor implementation has two modes:
+The display descriptor system resolves configurations via a three-tier precedence chain:
 
-1. **In-memory mode**: render a descriptor from a supplied `resource` object (`preview` endpoint).
-2. **DB-backed mode**: build `resource` data dynamically from Arches tables (`resource_instances`, `nodes`, `tiles`, `values`) and then render.
+**Configuration resolution precedence:**
 
-The pipeline is:
+1. **API override** - Request body includes `config` parameter (highest priority)
+2. **Graph lookup** - Query `DisplayDescriptorGraphConfig.objects.filter(graph_id=...)` 
+3. **No-op** - No config found; return `None` (lowest priority)
 
-1. Parse config (`display_descriptor_config.yaml` or inline config)
+**Resource data resolution:**
+
+- Either from supplied JSON (`preview` endpoint)
+- Or dynamically built from Arches tables (`resource_instances`, `nodes`, `tiles`, `values`)
+
+**Rendering pipeline:**
+
+1. Resolve config via precedence chain
 2. Validate config operations and field topology
-3. Resolve field values (either from supplied JSON or DB)
+3. Resolve field values (from JSON or DB)
 4. Apply rule blocks in order; first successful block wins
 5. Return descriptor (optionally with SQL trace metadata in DEBUG)
 
@@ -23,9 +31,11 @@ The pipeline is:
 
 - `display_descriptor/views.py`
   - API request handling
+  - Config resolution with precedence chain
   - Response shaping (`descriptor_only`, SQL tracing)
 - `display_descriptor/service.py`
-  - Config loading/parsing/caching
+  - Config loading/parsing (YAML strings, JSON, or database via `DisplayDescriptorGraphConfig`)
+  - Precedence resolution for config sources
   - Dynamic DB extraction for resource fields
   - Validation (missing fields, subfield/parent nodegroup mismatch)
 - `display_descriptor/display_descriptor.py`
@@ -34,6 +44,49 @@ The pipeline is:
   - Operation chain logic
 - `display_descriptor/models.py`
   - Dataclasses representing config schema
+- `models.py` (mariner_proj root)
+  - `DisplayDescriptorGraphConfig` model (stores graph→config mappings)
+
+---
+
+## Config Resolution Chain
+
+The `_resolve_config()` method in `service.py` implements the precedence chain:
+
+```python
+def _resolve_config(self, resource_id: str, config_data: Optional[Dict] = None):
+    # Step 1: Check for API override
+    if config_data is not None:
+        return self._parse_config_data(config_data)  # Highest priority
+    
+    # Step 2: Look up from database
+    graph_id = self._get_resource_graph_id(resource_id)
+    return self._load_graph_config(graph_id)  # Queries DisplayDescriptorGraphConfig
+    
+    # Step 3: No config found (implicit)
+    # Returns None, triggering no-op behavior
+```
+
+**Call stack:**
+
+1. API endpoint receives request with optional `config` parameter
+2. Calls `service.render_for_resource(resource_id, config_data=config)`
+3. Service calls `_resolve_config(resource_id, config_data)`
+4. Returns resolved config or None
+
+**Database lookup details** (`_load_graph_config`):
+
+```python
+def _load_graph_config(self, graph_id):
+    row = DisplayDescriptorGraphConfig.objects.filter(graph_id=graph_id).first()
+    if not row:
+        return None  # No config stored for this graph
+    
+    yaml_config = row.yaml_config
+    return self.load_config_from_yaml(yaml_config)  # Parse YAML
+```
+
+The database lookup queries the `DisplayDescriptorGraphConfig` table using the resource's graph_id as the foreign key. This table is managed via Django admin and allows non-code config updates.
 
 ---
 
@@ -99,6 +152,57 @@ Body:
 This mode does **not** pull from DB; it renders directly from provided resource JSON.
 
 `strict_sortorder` is accepted for API consistency but has no effect in preview mode.
+
+### 4) `POST /api/display-descriptor/admin-test/`
+
+**Admin-only endpoint for testing configurations before saving.**
+
+Body:
+
+```json
+{
+  "resource_id": "<uuid>",
+  "graph_id": "<uuid>",
+  "yaml_config": "fields:\n  - name: ...\n..."
+}
+```
+
+Flow:
+
+1. Validates `resource_id` and `graph_id` are provided
+2. If `yaml_config` provided in body, uses it directly (for testing unsaved edits)
+3. Otherwise looks up stored config from `DisplayDescriptorGraphConfig` table
+4. Parses YAML config
+5. Calls `service.render_for_resource()` with the provided resource and config
+6. Returns descriptor or error
+
+Response:
+
+```json
+{
+  "display_descriptor": "Rendered descriptor or null",
+  "error": null
+}
+```
+
+Error response:
+
+```json
+{
+  "display_descriptor": null,
+  "error": "Error description (e.g., 'Invalid YAML', 'Resource not found')"
+}
+```
+
+**Usage context:**
+
+This endpoint is called by the Django admin change form when a user:
+
+1. Types/edits YAML in the config textarea
+2. Enters a resource UUID in the test panel
+3. Clicks the "Check" button
+
+The admin template calls this endpoint via JavaScript fetch, allowing users to validate configurations without saving to the database first. All errors are surfaced to the user in the admin UI.
 
 ---
 
@@ -266,17 +370,17 @@ Unexpected runtime errors are returned as HTTP `500`.
 
 ---
 
-## Caching and Reload Behavior
+## Config Caching Behavior
 
-Default config mode (`render`):
+Service maintains an internal `_config_cache` for parsed config objects:
 
-- Config file checksum (SHA256) is tracked
-- If file contents change, config+engine cache is rebuilt on next call
+- Set when configs are loaded via `load_config_from_yaml()`, `load_config_from_dict()`, or `load_config_from_json()`
+- Used to avoid re-parsing identical configs on subsequent requests
+- Cache is per-service-instance; no global/cross-request caching
 
-Inline config mode (`render_with_config`):
-
-- Bypasses file cache for rendering
-- Still parses and validates operation types
+No file-based caching exists; all configs come from:
+  1. Request bodies (API override)
+  2. Database lookups (`DisplayDescriptorGraphConfig`)
 
 ---
 
