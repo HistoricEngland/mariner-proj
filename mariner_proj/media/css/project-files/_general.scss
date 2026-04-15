@@ -1,4 +1,17 @@
 body {
     font-family: articulat-cf, tahoma, verdana !important;
     letter-spacing: .02em;
+    #menu-control {
+        background: #4138E0;
+    }
+    .jstree-default {
+        .jstree-container-ul {
+            font-size: 1.4rem;
+            color: #000 !important;
+        }
+        .tree-display-tool {
+            font-size: 1.2rem;
+            color: #000;
+        }
+    }
 }
