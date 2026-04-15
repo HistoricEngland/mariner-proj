@@ -1,4 +1,16 @@
 body {
     font-family: articulat-cf, tahoma, verdana !important;
     letter-spacing: .02em;
+    .rp-card-section {
+        a {
+            color: #315B7D;
+            text-decoration: underline;
+            &:hover {
+                text-decoration: underline 2px;
+            }
+            &:focus {
+                text-decoration: underline 2px;
+            }
+        }
+    }
 }
