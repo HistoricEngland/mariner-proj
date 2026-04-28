@@ -6,6 +6,18 @@ body {
         // Core arches issue: https://github.com/archesproject/arches/issues/12720
         display: none !important;
     }
+    .rp-card-section {
+        a {
+            color: #315B7D;
+            text-decoration: underline;
+            &:hover {
+                text-decoration: underline 2px;
+            }
+            &:focus {
+                text-decoration: underline 2px;
+            }
+        }
+    }
     #menu-control {
         background: #4138E0;
     }
