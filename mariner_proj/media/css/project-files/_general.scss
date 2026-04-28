@@ -1,6 +1,11 @@
 body {
     font-family: articulat-cf, tahoma, verdana !important;
     letter-spacing: .02em;
+    #backToTopBtn {
+        // Temporary fix for back to top button - will be removed when we have a better solution for the button
+        // Core arches issue: https://github.com/archesproject/arches/issues/12720
+        display: none !important;
+    }
     .rp-card-section {
         a {
             color: #315B7D;
