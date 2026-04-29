@@ -1,4 +1,34 @@
 body {
     font-family: articulat-cf, tahoma, verdana !important;
     letter-spacing: .02em;
+    #backToTopBtn {
+        // Temporary fix for back to top button - will be removed when we have a better solution for the button
+        // Core arches issue: https://github.com/archesproject/arches/issues/12720
+        display: none !important;
+    }
+    .rp-card-section {
+        a {
+            color: #315B7D;
+            text-decoration: underline;
+            &:hover {
+                text-decoration: underline 2px;
+            }
+            &:focus {
+                text-decoration: underline 2px;
+            }
+        }
+    }
+    #menu-control {
+        background: #4138E0;
+    }
+    .jstree-default {
+        .jstree-container-ul {
+            font-size: 1.4rem;
+            color: #000 !important;
+        }
+        .tree-display-tool {
+            font-size: 1.2rem;
+            color: #000;
+        }
+    }
 }
