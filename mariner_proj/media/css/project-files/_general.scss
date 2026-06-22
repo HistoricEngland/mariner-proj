@@ -31,4 +31,14 @@ body {
             color: #000;
         }
     }
+    .ep-help-content {
+        div {
+            padding: 10px 0;
+            .ep-help-topic-toggle {
+                &:hover {
+                    text-decoration: underline 2px;
+                }
+            }
+        }    
+    }
 }
