@@ -468,16 +468,16 @@
 
                         {% if nav.help %}
                         <li>
-                            <button id="ep-help-button" class="ep-help-toggle ep-tools ep-tools-right" data-toggle="collapse" data-target="#ep-help-panel"
-                                aria-label="{% trans 'Show help' %}" aria-controls="ep-help-panel"
-                                data-bind="click: function(data, event){ 
-                                    openHelp({{ nav.help.templates }}, event.currentTarget, '#ep-help-panel', '#ep-close-help-button');
-                                }, attr: { 'aria-expanded': helpOpen().toString()},
-                            ">
+                            <a id="ep-help-button" class="ep-help-toggle ep-tools ep-tools-right"
+                                href="{% if user.username == 'anonymous' %}https://share.articulate.com/5dgpeZydiOkprecA3q-Hz{% else %}https://share.articulate.com/xQcW3-FVNiR77zcI6L9Xm{% endif %}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="{% trans 'Show help' %}"
+                            >
                                 <div data-placement="bottom" data-toggle="tooltip" data-original-title="{% trans "Help" %}">
                                     <i class="ion-help"></i>
                                 </div>
-                            </button>
+                            </a>
                         </li>
                         {% endif %}
 
