@@ -479,6 +479,17 @@
                                     <i class="ion-help"></i>
                                 </div>
                             </a>
+                            {% elif user.username != 'anonymous' and "views/resource" in main_script %}
+                            <a id="ep-help-button" class="ep-help-toggle ep-tools ep-tools-right"
+                                href="https://share.articulate.com/xQcW3-FVNiR77zcI6L9Xm"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="{% trans 'Show help' %}"
+                            >
+                                <div data-placement="bottom" data-toggle="tooltip" data-original-title="{% trans "Help" %}">
+                                    <i class="ion-help"></i>
+                                </div>
+                            </a>
                             {% else %}
                             <button id="ep-help-button" class="ep-help-toggle ep-tools ep-tools-right" data-toggle="collapse" data-target="#ep-help-panel"
                                 aria-label="{% trans 'Show help' %}" aria-controls="ep-help-panel"
