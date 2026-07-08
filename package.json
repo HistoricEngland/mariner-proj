@@ -18,13 +18,18 @@
         "ts:check": "vue-tsc --noEmit",
         "ts:watch": "vue-tsc --watch --noEmit",
         "start": "cross-env NODE_OPTIONS=--max-old-space-size=2048 webpack serve --config ./webpack/webpack.config.dev.js",
-        "vitest": "vitest --run --coverage"
+        "vitest": "vitest --run --coverage",
+        "axe": "npx playwright test --config=playwright.config.ts",
+        "axe:install": "npx playwright install chromium --with-deps"
     },
     "dependencies": {
         "arches": "archesproject/arches#stable/7.6.17"
     },
     "devDependencies": {
-        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#stable/7.6.17"
+        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#stable/7.6.17",
+        "@axe-core/playwright": "^4.10.2",
+        "@playwright/test": "^1.52.0",
+        "axe-html-reporter": "^2.2.11"
     },
     "nodeModulesPaths": {
     },

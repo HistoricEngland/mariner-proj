@@ -17,3 +17,6 @@ webpack-stats.json
 CACHE
 .tsconfig-paths.json
 .frontend-configuration-settings.json
+
+# Accessibility test outputs
+test-results
