@@ -533,6 +533,7 @@ SILENCED_SYSTEM_CHECKS.extend(
     [
         "arches.W001",  # Cache backend does not support rate-limiting
         "arches.E001",  # Dummy Cache in production check
+        "arches.E002", # "Arches requirement is invalid, missing, or given by a URL."
     ]
 )
 
