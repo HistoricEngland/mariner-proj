@@ -25,9 +25,9 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "arches @ git+https://github.com/HistoricEngland/arches.git@109807_ph_tabbed_reports_accessibility_fixes",
-    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.1",
-    "arches-he-sysref-funcs @ git+https://github.com/HistoricEngland/arches-he-sysref-funcs.git@release/1.0.1",
-    "arches-he-data-transformation @ git+https://github.com/HistoricEngland/arches-he-data-transformation.git@release/1.0.0",
+    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.2",
+    "arches-he-sysref-funcs==1.0.1",
+    "arches-he-data-transformation @ git+https://github.com/HistoricEngland/arches-he-data-transformation.git@release/1.0.1",
     "wfastcgi>=3.0.0,<3.1.0",
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
     "opentelemetry-instrumentation-celery"
