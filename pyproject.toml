@@ -28,6 +28,7 @@ dependencies = [
     "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.1",
     "arches-he-sysref-funcs @ git+https://github.com/HistoricEngland/arches-he-sysref-funcs.git@release/1.0.1",
     "arches-he-data-transformation @ git+https://github.com/HistoricEngland/arches-he-data-transformation.git@release/1.0.0",
+    "arches-he-location-extensions @ git+https://github.com/HistoricEngland/arches-he-location-extensions.git@ph_102230_map_widget_enhanced_first_repo_item",
     "wfastcgi>=3.0.0,<3.1.0",
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
     "opentelemetry-instrumentation-celery"

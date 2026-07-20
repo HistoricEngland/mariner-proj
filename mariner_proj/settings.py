@@ -158,6 +158,7 @@ INSTALLED_APPS = (
     "mariner_app",
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
+    "arches_he_location_extensions",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
@@ -168,6 +169,7 @@ ARCHES_APPLICATIONS = (
     "mariner_app",
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
+    "arches_he_location_extensions",
 )
 
 MIDDLEWARE = [

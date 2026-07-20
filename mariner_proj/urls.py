@@ -22,6 +22,7 @@ urlpatterns = [
     path("", include("mariner_app.urls")),
     path("", include("arches_he_sysref_funcs.urls")),
     path("", include("arches_he_data_transformation.urls")),
+    path("", include("arches_he_location_extensions.urls")),
 ]
 
 # Ensure Arches core urls are superseded by project-level urls
