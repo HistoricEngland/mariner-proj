@@ -1,14 +1,16 @@
 
 services:
-    marinerproj:
-      container_name: marinerproj
-      image: he/mariner_proj:dev_build
+    mariner-proj-2d344:
+      container_name: mariner-proj-2d344
+      image: he/mariner_proj-2d344:base
       build:
         args:
           - "PROJ_NAME=mariner_proj"
-          - "DOCKER_PATH=./mariner_proj/.ac_mariner_proj/docker"
+          - "PROJ_REPO_NAME=mariner-proj"
+          - "DOCKER_PATH=./mariner-proj/.ac_mariner_proj/docker"
         context: ../..
-        dockerfile: ./mariner_proj/.ac_mariner_proj/Dockerfile
+        dockerfile: ./mariner-proj/.ac_mariner_proj/Dockerfile
+        target: base
       command: create_project
       volumes:
         - ../..:/web_root

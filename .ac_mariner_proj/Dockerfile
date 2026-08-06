@@ -1,18 +1,19 @@
-FROM python:3.11.8
+FROM python:3.12-bookworm AS base
 USER root
 
 ## Build Args
 ARG PROJ_NAME=project
+ARG PROJ_REPO_NAME=mariner-proj
 ARG ARCHES_PATH=./arches
 ARG DOCKER_PATH=./docker
 
-## The Args below are only needed if you want to mount the mariner_app, arches_he_sysref_funcs, and arches_he_data_transformation for development/debugging
-# ARG MARINER_APP_PATH=./mariner_app
-# ARG ARCHES_HE_SYSREF_FUNCS_PATH=./arches_he_sysref_funcs
-# ARG ARCHES_HE_DATA_TRANSFORMATION_PATH=./arches_he_data_transformation
+## The Args below are only needed if you want to mount the mariner_app and arches_he_sysref_funcs for development/debugging
+# ARG MARINER_APP_PATH=./mariner-app
+# ARG ARCHES_HE_SYSREF_FUNCS_PATH=./arches-he-sysref-funcs
 
 ## Setting default environment variables
 ENV ARCHES_PROJECT=$PROJ_NAME
+ENV ARCHES_PROJECT_REPO_DIRECTORY=$PROJ_REPO_NAME
 ENV WEB_ROOT=/web_root
 ENV APP_ROOT=${WEB_ROOT}/${ARCHES_PROJECT}
 ENV PKG_ROOT=${APP_ROOT}_package
@@ -21,7 +22,7 @@ ENV DATA_ROOT=${APP_ROOT}_data
 ENV ARCHES_ROOT=${WEB_ROOT}/arches
 ENV WHEELS=/wheels
 ENV PYTHONUNBUFFERED=1
-ENV NODE_VERSION 20.14.0
+ENV NODE_VERSION=20.14.0
 
 RUN apt-get update && apt-get install -y make software-properties-common
 
@@ -54,7 +55,7 @@ RUN set -ex \
 
 
 # nvm environment variables
-ENV NVM_DIR /usr/local/nvm
+ENV NVM_DIR=/usr/local/nvm
 RUN mkdir $NVM_DIR
 
 
@@ -70,8 +71,8 @@ RUN echo "source $NVM_DIR/nvm.sh \
     && nvm use default" | bash -
 
 # add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 RUN apt install wait-for-it
 
@@ -82,41 +83,12 @@ RUN rm -rf /root/.cache/pip/*
 COPY $ARCHES_PATH ${ARCHES_ROOT}
 RUN chmod +x ${ARCHES_ROOT}/arches/install/arches_admin.py
 
-RUN pip install --upgrade pip setuptools wheel
-
-# Install the project
-COPY ./${PROJ_NAME} ${APP_ROOT}
-WORKDIR ${APP_ROOT}
-RUN pip install -e '.[dev]'
-
-
-## Install sections below are only needed if you want to mount the mariner_app and arches_he_sysref_funcs for development/debugging
-
-# Install the mariner_app package in editable mode
-#ENV MARINER_APP=${WEB_ROOT}/mariner_app
-#COPY $MARINER_APP_PATH ${MARINER_APP}
-#WORKDIR ${MARINER_APP}
-#RUN pip install -e '.[dev]'
-
-# Install the arches_he_sysref_funcs package in editable mode
-#ENV ARCHES_HE_SYSREF_FUNCS=${WEB_ROOT}/arches_he_sysref_funcs
-#COPY $ARCHES_HE_SYSREF_FUNCS_PATH ${ARCHES_HE_SYSREF_FUNCS}
-#WORKDIR ${ARCHES_HE_SYSREF_FUNCS}
-#RUN pip install -e '.[dev]'
-
-# Install the arches_he_data_transformation package in editable mode
-#ENV ARCHES_HE_DATA_TRANSFORMATION=${WEB_ROOT}/arches_he_data_transformation
-#COPY $ARCHES_HE_DATA_TRANSFORMATION_PATH ${ARCHES_HE_DATA_TRANSFORMATION}
-#WORKDIR ${ARCHES_HE_DATA_TRANSFORMATION}
-#RUN pip install -e '.[dev]'
-
 # From here, run commands from ARCHES_ROOT
 WORKDIR ${ARCHES_ROOT}
 
-# Install the local editable Arches to override the installed package - this is so we can debug Arches
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install -e '.[dev]'
 RUN pre-commit install
-
 
 COPY $DOCKER_PATH/entrypoint.sh /entrypoint.sh
 RUN chmod -R 700 /entrypoint.sh && \
@@ -141,3 +113,41 @@ CMD ["run_arches"]
 
 # Expose port 8000
 EXPOSE 8000
+
+# Dev stage: extends base and installs the Arches project package.
+# This stage is used by docker-compose.yml for the dev server.
+# Requires the project directory to exist on disk (i.e. act init must have been run first).
+FROM base AS dev
+
+# Re-declare build args — ARGs do not persist across stages
+ARG PROJ_NAME=project
+ARG PROJ_REPO_NAME=mariner-proj
+
+# Copy the project source from the build context (workspace root)
+COPY ${PROJ_REPO_NAME}/ ${WEB_ROOT}/${PROJ_NAME}/
+
+# Install the project as an editable package so Django can import it
+RUN pip install -e ${WEB_ROOT}/${PROJ_NAME}
+
+## Install sections below are only needed if you want to mount the mariner_app and arches_he_sysref_funcs for development/debugging
+
+# Install the mariner_app package in editable mode
+#ENV MARINER_APP=${WEB_ROOT}/mariner_app
+#COPY $MARINER_APP_PATH ${MARINER_APP}
+#WORKDIR ${MARINER_APP}
+#RUN pip install -e '.[dev]'
+
+# Install the arches_he_sysref_funcs package in editable mode
+#ENV ARCHES_HE_SYSREF_FUNCS=${WEB_ROOT}/arches_he_sysref_funcs
+#COPY $ARCHES_HE_SYSREF_FUNCS_PATH ${ARCHES_HE_SYSREF_FUNCS}
+#WORKDIR ${ARCHES_HE_SYSREF_FUNCS}
+#RUN pip install -e '.[dev]'
+
+
+# By default we resintall arches from ARCHES_ROOT to allow debug and development of Arches.
+# If you comment this out, you'll install what meets the version requirements of the project package.
+WORKDIR ${ARCHES_ROOT}
+RUN pip install -e '.[dev]'
+
+# Set default workdir
+WORKDIR ${WEB_ROOT}
