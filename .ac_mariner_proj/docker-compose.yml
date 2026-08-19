@@ -1,24 +1,26 @@
 
 services:
-    marinerproj:
-      container_name: marinerproj
-      image: he/mariner_proj:dev_build
+    mariner-proj-2d344:
+      container_name: mariner-proj-2d344
+      image: he/mariner_proj-2d344:dev_build
       build:
         args:
           - "PROJ_NAME=mariner_proj"
-          - "DOCKER_PATH=./mariner_proj/.ac_mariner_proj/docker"
+          - "PROJ_REPO_NAME=mariner-proj"
+          - "DOCKER_PATH=./mariner-proj/.ac_mariner_proj/docker"
         context: ../..
-        dockerfile: ./mariner_proj/.ac_mariner_proj/Dockerfile
+        dockerfile: ./mariner-proj/.ac_mariner_proj/Dockerfile
+        target: dev
       command: run_arches
       volumes:
         - ../../arches:/web_root/arches
-        - ../../mariner_proj:/web_root/mariner_proj
+        - ../../mariner-proj:/web_root/mariner_proj
         #- ../../mariner_app:/web_root/mariner_app
-        #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
-        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
+        #- ../../arches-he-sysref-funcs:/web_root/arches_he_sysref_funcs
+        #- ../../arches-he-data-transformation:/web_root/arches_he_data_transformation
         - ./docker:/web_root/docker
-        - ../../mariner_proj-package:/web_root/mariner_proj_package
-        - ../../mariner_proj-data:/web_root/mariner_proj_data
+        - ../../mariner-proj-package:/web_root/mariner_proj_package
+        - ../../mariner-proj-data:/web_root/mariner_proj_data
       env_file:
         - ./docker/env_file.env
       ports:
@@ -28,72 +30,66 @@ services:
       tty: true
     
     ## - possible 
-    #marinerproj-bash:
+    #mariner-proj-bash:
     #  profiles:
     #    - livereload
-    #  container_name: marinerproj-bash
+    #  container_name: mariner-proj-bash
     #  image: he/mariner_proj:dev_build
     #  command: ["bash"]
     #  volumes:
     #    - ../../arches:/web_root/arches
-    #    - ../../mariner_proj:/web_root/mariner_proj
+    #    - ../../mariner-proj:/web_root/mariner_proj
     #    - ./docker:/web_root/docker
-    #    - ../../mariner_proj-package:/web_root/mariner_proj_package
-    #    - ../../mariner_proj-data:/web_root/mariner_proj_data
+    #    - ../../mariner-proj-package:/web_root/mariner_proj_package
+    #    - ../../mariner-proj-data:/web_root/mariner_proj_data
     #  env_file:
     #    - ./docker/env_file.env
     #  ports:
     #    - 35729:35729      
     #  depends_on:
-    #      - marinerproj
+    #      - mariner-proj-2d344
     #  stdin_open: true
     #  tty: true
 
-    marinerproj-livereload:
+    mariner-proj-2d344-livereload:
       profiles:
         - livereload
-      container_name: marinerproj-livereload
-      image: he/mariner_proj:dev_build
+      container_name: mariner-proj-2d344-livereload
+      image: he/mariner_proj-2d344:dev_build
       command: run_livereload
       volumes:
         - ../../arches:/web_root/arches
-        - ../../mariner_proj:/web_root/mariner_proj
-        #- ../../mariner_app:/web_root/mariner_app
-        #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
-        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
+        - ../../mariner-proj:/web_root/mariner_proj
       env_file:
         - ./docker/env_file.env
       ports:
         - 35729:35729      
       depends_on:
-          - marinerproj
+          - mariner-proj-2d344
       stdin_open: true
       tty: true
     
-    marinerproj-webpack:
-      container_name: marinerproj-webpack
-      image: he/mariner_proj:dev_build
+    mariner-proj-2d344-webpack:
+      container_name: mariner-proj-2d344-webpack
+      image: he/mariner_proj-2d344:dev_build
       command: run_webpack
       volumes:
         - ../../arches:/web_root/arches
-        - ../../mariner_proj:/web_root/mariner_proj
-        #- ../../mariner_app:/web_root/mariner_app
-        #- ../../arches_he_sysref_funcs:/web_root/arches_he_sysref_funcs
-        #- ../../arches_he_data_transformation:/web_root/arches_he_data_transformation
+        - ../../mariner-proj:/web_root/mariner_proj
       env_file:
         - ./docker/env_file.env
       ports:
         - 8028:8021
       depends_on:
-          - marinerproj
+          - mariner-proj-2d344
       stdin_open: true
       tty: true
 
 networks:
   default:
     external: true
-    name: marinerproj-network
+    name: mariner-proj-2d344-network
 
 volumes:
-    arches-log:
-    arches-static:
+    arches-log-2d344:
+    arches-static-2d344:

@@ -1,7 +1,9 @@
 {
     "project_name": "mariner_proj",
-    "project_name_url_safe": "marinerproj",
+    "project_name_url_safe": "mariner-proj",
+    "project_repo_directory": "mariner-proj",
+    "project_hash": "2d344",
     "arches_version": "7.6",
     "arches_repo_organization": "archesproject",
-    "arches_repo_branch": "stable/7.6.22"
+    "arches_repo_branch": "stable/7.6.25"
 }
