@@ -27,13 +27,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% block head %}
 <head>
     {% if app_settings.GOOGLE_ANALYTICS_TRACKING_ID != None %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}');
-    </script>
+        {% if analytics_cookies or accept_all_cookies %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}');
+        </script>
+        {% endif %}
     {% endif %}
     <title>
         {% block title %}{% endblock title %}
@@ -86,6 +88,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% if main_script %}
         <script src="{% webpack_static '' %}build/js/{{main_script}}.js"></script>
     {% endif %}
+
+    <script>
+        window.__mtAnalyticsConsentPreloaded = {% if analytics_cookies or accept_all_cookies %}true{% else %}false{% endif %};
+    </script>
+    <script src="https://cc.cdn.civiccomputing.com/9/cookieControl-9.5.min.js"></script>
+    <script src="{% webpack_static 'js/cookieControl.js' %}"></script>
 {% endblock javascript %}
 
 </html>

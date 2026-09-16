@@ -59,10 +59,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% render_bundle 'css/accessibility' 'css' %}
         {% endif %}
     {% endblock css%}
+
+    {% if app_settings.GOOGLE_ANALYTICS_TRACKING_ID != None %}
+        {% if analytics_cookies or accept_all_cookies %}
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '{{app_settings.GOOGLE_ANALYTICS_TRACKING_ID}}');
+            </script>
+        {% endif %}
+    {% endif %}
+
+    <script>
+        window.__mtAnalyticsConsentPreloaded = {% if analytics_cookies or accept_all_cookies %}true{% else %}false{% endif %};
+    </script>
+    <script src="https://cc.cdn.civiccomputing.com/9/cookieControl-9.5.min.js"></script>
 </head>
 
 <body id="body" class="landing-page">
     <script src="{% webpack_static 'node_modules/requirejs/require.js' %}"></script>
+    <script src="{% webpack_static 'js/cookieControl.js' %}"></script>
     {% include 'javascript.htm' %}
 
     <div id="skip-link-holder"><a id="skip-link" href="#skiptocontent">Skip to content</a></div>
