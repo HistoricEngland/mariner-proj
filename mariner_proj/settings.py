@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 APP_NAME = "mariner_proj"
-APP_VERSION = semantic_version.Version(major=1, minor=1, patch=0)
+APP_VERSION = semantic_version.Version(major=1, minor=2, patch=0)
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 WEBPACK_LOADER = {
