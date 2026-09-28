@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="relative">
+    <div class="close-popup-panel-container">
+        <span class="close-popup-panel" tabindex="0" role="button" id="latlong-filter-type-close-btn"
+            aria-label="{% trans 'Close Filter by Latitude and Longitude' %}"
+            data-bind="onEnterkeyClick, onSpaceClick,
+                click: function(){selectedPopup(''); $root.shiftFocus('#latlong-filter-type-open-btn');}
+        ">{% trans "Filter by Latitude and Longitude" %}</span>
+        <div class="btn-group">
+            <button class="btn btn-primary btn-active-primary" type="button" data-bind="click: function(){ clear(); }">
+                <i class="fa fa-close" aria-hidden="true"></i>
+                <span>{% trans "Clear" %}</span>
+            </button>
+        </div>
+    </div>
+    <hr class="title-underline">
+</div>
