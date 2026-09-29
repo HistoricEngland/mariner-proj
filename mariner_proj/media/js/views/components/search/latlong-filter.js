@@ -53,15 +53,41 @@ define([
                 return !!(this.longitudeError() || this.latitudeError() || this.bufferError());
             }, this);
 
+            // the filter only reaches the query once applied, but inverting the
+            // term-filter tag afterwards must re-run the search
+            this.applied = ko.observable(false);
+            this.filter.inverted.subscribe(function() {
+                if (this.applied()) { this.updateQuery(); }
+            }, this);
+
             this.restoreState();
             this.searchFilterVms[componentName](this);
         },
 
+        apply: function() {
+            if (this.filter.longitude() === null) { this.filter.longitude(''); }
+            if (this.filter.latitude() === null) { this.filter.latitude(''); }
+            if (this.hasErrors()) { return; }
+
+            this.applied(true);
+            this.addTag();
+            this.updateQuery();
+        },
+
+        addTag: function() {
+            // term-filter ignores a repeated tag, and keeps our inverted observable
+            this.getFilterByType('term-filter-type').addTag(this.name, this.name, this.filter.inverted);
+        },
+
         updateQuery: function() {
             const queryObj = this.query();
-            const hasCoordinates = this.filter.longitude() !== null && this.filter.latitude() !== null;
-            if (hasCoordinates && !this.hasErrors()) {
-                queryObj[componentName] = ko.toJSON(this.filter);
+            if (this.applied() && !this.hasErrors()) {
+                queryObj[componentName] = JSON.stringify({
+                    longitude: Number(this.filter.longitude()),
+                    latitude: Number(this.filter.latitude()),
+                    buffer: Number(this.filter.buffer()) || 0,
+                    inverted: this.filter.inverted()
+                });
             } else {
                 delete queryObj[componentName];
             }
@@ -72,11 +98,12 @@ define([
             const query = this.query();
             if (componentName in query) {
                 const value = JSON.parse(query[componentName]);
-                this.filter.inverted(!!value.inverted);
-                this.getFilterByType('term-filter-type').addTag(this.name, this.name, this.filter.inverted);
                 this.filter.longitude(value.longitude);
                 this.filter.latitude(value.latitude);
                 this.filter.buffer(value.buffer);
+                this.filter.inverted(!!value.inverted);
+                this.applied(true);
+                this.addTag();
             }
         },
 
@@ -85,6 +112,7 @@ define([
             this.filter.latitude(null);
             this.filter.buffer(0);
             this.filter.inverted(false);
+            this.applied(false);
             this.getFilterByType('term-filter-type').removeTag(this.name);
             this.updateQuery();
         }

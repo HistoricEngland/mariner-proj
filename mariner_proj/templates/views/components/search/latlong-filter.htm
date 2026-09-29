@@ -42,5 +42,12 @@
             <span id="latlong-filter-buffer-error" class="text-danger text-sm" role="alert"
                 data-bind="text: bufferError"></span>
         </div>
+
+        <div class="latlong-filter-actions">
+            <button class="btn btn-primary btn-active-primary" type="button" data-bind="click: function(){ apply(); }">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                <span>{% trans "Apply" %}</span>
+            </button>
+        </div>
     </div>
 </div>
