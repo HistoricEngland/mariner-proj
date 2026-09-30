@@ -37,14 +37,14 @@
             <div class="search-export-instruction-h2 h2">
                 <label for="latlong-filter-latitude">{% trans "Latitude (Y)" %}</label>
             </div>
-            <div id="latlong-filter-coordinates-info" class="search-export-instruction-h4 h4">
+            <div id="latlong-filter-latitude-info" class="search-export-instruction-h4 h4">
                 <i class="fa fa-info" aria-hidden="true"></i>
                 <span>{% trans "Enter valid decimal degree value for latitude (-90 to 90)." %}</span>
             </div>
         </div>
         <div class="latlong-filter-field parameter">
             <input id="latlong-filter-latitude" class="form-control input-md" type="text" inputmode="decimal"
-                aria-describedby="latlong-filter-latitude-error latlong-filter-coordinates-info" aria-required="true"
+                aria-describedby="latlong-filter-latitude-error latlong-filter-latitude-info" aria-required="true"
                 data-bind="textInput: filter.latitude, attr: {'aria-invalid': !!latitudeError()}">
             <span id="latlong-filter-latitude-error" class="text-danger text-sm" role="alert"
                 data-bind="text: latitudeError"></span>
