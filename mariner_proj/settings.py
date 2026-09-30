@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 APP_NAME = "mariner_proj"
-APP_VERSION = semantic_version.Version(major=1, minor=1, patch=0)
+APP_VERSION = semantic_version.Version(major=1, minor=2, patch=0)
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 WEBPACK_LOADER = {
@@ -158,6 +158,7 @@ INSTALLED_APPS = (
     "mariner_app",
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
+    "arches_he_location_extensions",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
@@ -168,6 +169,7 @@ ARCHES_APPLICATIONS = (
     "mariner_app",
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
+    "arches_he_location_extensions",
 )
 
 MIDDLEWARE = [
@@ -383,7 +385,7 @@ GRAPH_MODEL_CACHE_TIMEOUT = None
 
 OAUTH_CLIENT_ID = ""  #'9JCibwrWQ4hwuGn5fu2u1oRZSs9V6gK8Vu8hpRC4'
 
-APP_TITLE = "NMHR"
+APP_TITLE = "Marine HER"
 COPYRIGHT_TEXT = "All Rights Reserved."
 COPYRIGHT_YEAR = "2025"
 
