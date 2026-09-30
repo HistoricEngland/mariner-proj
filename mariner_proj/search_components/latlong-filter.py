@@ -1,4 +1,5 @@
 import logging
+import math
 
 from arches.app.search.components.base import BaseSearchFilter
 from arches.app.search.components.map_filter import _buffer
@@ -37,11 +38,17 @@ class LatLongFilter(BaseSearchFilter):
             )
             return
 
-        if not (-180 <= longitude <= 180) or not (-90 <= latitude <= 90):
+        if (
+            not math.isfinite(longitude)
+            or not math.isfinite(latitude)
+            or not math.isfinite(buffer_radius)
+            or not (-180 <= longitude <= 180)
+            or not (-90 <= latitude <= 90)
+            or buffer_radius < 0
+        ):
             logger.warning(
-                "LatLong Filter: ignoring out of range coordinates %s, %s",
-                longitude,
-                latitude,
+                "LatLong Filter: ignoring invalid coordinates or buffer %s",
+                latlong_filter,
             )
             return
 
