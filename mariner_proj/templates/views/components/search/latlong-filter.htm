@@ -16,28 +16,52 @@
     <hr class="title-underline">
 
     <div class="latlong-filter search-export">
-        <div class="latlong-filter-field parameter">
-            <label class="search-label" for="latlong-filter-latitude">{% trans "Latitude (Y)" %}</label>
-            <input id="latlong-filter-latitude" class="form-control input-md" type="text" inputmode="decimal"
-                aria-describedby="latlong-filter-latitude-error" aria-required="true"
-                data-bind="textInput: filter.latitude, attr: {'aria-invalid': !!latitudeError()}">
-            <span id="latlong-filter-latitude-error" class="text-danger text-sm" role="alert"
-                data-bind="text: latitudeError"></span>
+        <div class="instruction">
+            <div class="search-export-instruction-h2 h2">
+                <label for="latlong-filter-longitude">{% trans "Longitude (X)" %}</label>
+            </div>
+            <div id="latlong-filter-coordinates-info" class="search-export-instruction-h4 h4">
+                <i class="fa fa-info" aria-hidden="true"></i>
+                <span>{% trans "Enter valid decimal degree value for longitude (-180 to 180)." %}</span>
+            </div>
         </div>
-
         <div class="latlong-filter-field parameter">
-            <label class="search-label" for="latlong-filter-longitude">{% trans "Longitude (X)" %}</label>
             <input id="latlong-filter-longitude" class="form-control input-md" type="text" inputmode="decimal"
-                aria-describedby="latlong-filter-longitude-error" aria-required="true"
+                aria-describedby="latlong-filter-longitude-error latlong-filter-coordinates-info" aria-required="true"
                 data-bind="textInput: filter.longitude, attr: {'aria-invalid': !!longitudeError()}">
             <span id="latlong-filter-longitude-error" class="text-danger text-sm" role="alert"
                 data-bind="text: longitudeError"></span>
         </div>
 
+        <div class="instruction">
+            <div class="search-export-instruction-h2 h2">
+                <label for="latlong-filter-latitude">{% trans "Latitude (Y)" %}</label>
+            </div>
+            <div id="latlong-filter-coordinates-info" class="search-export-instruction-h4 h4">
+                <i class="fa fa-info" aria-hidden="true"></i>
+                <span>{% trans "Enter valid decimal degree value for latitude (-90 to 90)." %}</span>
+            </div>
+        </div>
         <div class="latlong-filter-field parameter">
-            <label class="search-label" for="latlong-filter-buffer">{% trans "Buffer Radius (m)" %}</label>
+            <input id="latlong-filter-latitude" class="form-control input-md" type="text" inputmode="decimal"
+                aria-describedby="latlong-filter-latitude-error latlong-filter-coordinates-info" aria-required="true"
+                data-bind="textInput: filter.latitude, attr: {'aria-invalid': !!latitudeError()}">
+            <span id="latlong-filter-latitude-error" class="text-danger text-sm" role="alert"
+                data-bind="text: latitudeError"></span>
+        </div>
+
+        <div class="instruction">
+            <div class="search-export-instruction-h2 h2">
+                <label for="latlong-filter-buffer">{% trans "Buffer Radius (m)" %}</label>
+            </div>
+            <div id="latlong-filter-buffer-info" class="search-export-instruction-h4 h4">
+                <i class="fa fa-info" aria-hidden="true"></i>
+                <span>{% trans "Set a buffer distance in meters to extend the search area." %}</span>
+            </div>
+        </div>
+        <div class="latlong-filter-field parameter">
             <input id="latlong-filter-buffer" class="form-control input-md" type="text" inputmode="decimal"
-                aria-describedby="latlong-filter-buffer-error"
+                aria-describedby="latlong-filter-buffer-error latlong-filter-buffer-info"
                 data-bind="textInput: filter.buffer, attr: {'aria-invalid': !!bufferError()}">
             <span id="latlong-filter-buffer-error" class="text-danger text-sm" role="alert"
                 data-bind="text: bufferError"></span>
