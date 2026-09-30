@@ -100,14 +100,17 @@ class BaseManagerView(TemplateView):
         if cookie_key in self.request.COOKIES:
             cookie_control = json.loads(self.request.COOKIES[cookie_key])
             optional_cookies = cookie_control["optionalCookies"]
-            context["analytics_cookies"] = self.get_optional_cookie_value_as_boolean(optional_cookies, "analytics")
+            context["analytics_cookies"] = self.get_optional_cookie_value_as_boolean(
+                optional_cookies, "analytics"
+            )
         else:
             context["accept_all_cookies"] = True
 
         return context
 
     def get_optional_cookie_value_as_boolean(self, cookie, key, value="accepted"):
-            return cookie[key] == value if key in cookie else False
+        return cookie[key] == value if key in cookie else False
+
 
 class MapBaseManagerView(BaseManagerView):
     def get_context_data(self, **kwargs):
