@@ -1,17 +1,12 @@
 {% load i18n %}
-<div class="time-search-container relative">
-    <div class="close-popup-panel-container time-filter-title">
+<div class="relative">
+    <div class="close-popup-panel-container">
         <span class="close-popup-panel" tabindex="0" role="button" id="latlong-filter-type-close-btn"
-            aria-label="{% trans 'Close Filter by Latitude and Longitude' %}"
             data-bind="onEnterkeyClick, onSpaceClick,
-                click: function(){selectedPopup(''); $root.shiftFocus('#latlong-filter-type-open-btn');}
-        ">{% trans "Filter by Latitude and Longitude" %}</span>
-        <div class="btn-group">
-            <button class="btn btn-primary btn-active-primary" type="button" data-bind="click: function(){ clear(); }">
-                <i class="fa fa-close" aria-hidden="true"></i>
-                <span>{% trans "Clear" %}</span>
-            </button>
-        </div>
+                click: function(){selectedPopup(''); $root.shiftFocus('#latlong-filter-type-open-btn');},
+                attr: {'aria-label': '{% trans "Close Filter by Latitude and Longitude" %}'},
+                text: '{% trans "Filter by Latitude and Longitude" %}'
+        "></span>
     </div>
     <hr class="title-underline">
 
@@ -21,12 +16,11 @@
                 <label for="latlong-filter-longitude">{% trans "Longitude (X)" %}</label>
             </div>
             <div id="latlong-filter-coordinates-info" class="search-export-instruction-h4 h4">
-                <i class="fa fa-info" aria-hidden="true"></i>
                 <span>{% trans "Enter valid decimal degree value for longitude (-180 to 180)." %}</span>
             </div>
         </div>
-        <div class="latlong-filter-field parameter">
-            <input id="latlong-filter-longitude" class="form-control input-md" type="text" inputmode="decimal"
+        <div class="parameter">
+            <input id="latlong-filter-longitude" class="form-control input-md widget-input" type="text" inputmode="decimal"
                 aria-describedby="latlong-filter-longitude-error latlong-filter-coordinates-info" aria-required="true"
                 data-bind="textInput: filter.longitude, attr: {'aria-invalid': !!longitudeError()}">
             <span id="latlong-filter-longitude-error" class="text-danger text-sm" role="alert"
@@ -38,12 +32,11 @@
                 <label for="latlong-filter-latitude">{% trans "Latitude (Y)" %}</label>
             </div>
             <div id="latlong-filter-latitude-info" class="search-export-instruction-h4 h4">
-                <i class="fa fa-info" aria-hidden="true"></i>
                 <span>{% trans "Enter valid decimal degree value for latitude (-90 to 90)." %}</span>
             </div>
         </div>
-        <div class="latlong-filter-field parameter">
-            <input id="latlong-filter-latitude" class="form-control input-md" type="text" inputmode="decimal"
+        <div class="parameter">
+            <input id="latlong-filter-latitude" class="form-control input-md widget-input" type="text" inputmode="decimal"
                 aria-describedby="latlong-filter-latitude-error latlong-filter-latitude-info" aria-required="true"
                 data-bind="textInput: filter.latitude, attr: {'aria-invalid': !!latitudeError()}">
             <span id="latlong-filter-latitude-error" class="text-danger text-sm" role="alert"
@@ -55,23 +48,27 @@
                 <label for="latlong-filter-buffer">{% trans "Buffer Radius (m)" %}</label>
             </div>
             <div id="latlong-filter-buffer-info" class="search-export-instruction-h4 h4">
-                <i class="fa fa-info" aria-hidden="true"></i>
                 <span>{% trans "Set a buffer distance in meters to extend the search area." %}</span>
             </div>
         </div>
-        <div class="latlong-filter-field parameter">
-            <input id="latlong-filter-buffer" class="form-control input-md" type="text" inputmode="decimal"
+        <div class="parameter">
+            <input id="latlong-filter-buffer" class="form-control input-md widget-input" type="text" inputmode="decimal"
                 aria-describedby="latlong-filter-buffer-error latlong-filter-buffer-info"
                 data-bind="textInput: filter.buffer, attr: {'aria-invalid': !!bufferError()}">
             <span id="latlong-filter-buffer-error" class="text-danger text-sm" role="alert"
                 data-bind="text: bufferError"></span>
         </div>
 
-        <div class="latlong-filter-actions search-export download">
+        <div class="search-export download">
             <button class="btn btn-lg btn-primary btn-active-primary" type="button" data-bind="click: function(){ apply(); }">
-                <i class="fa fa-check" aria-hidden="true"></i>
                 <span>{% trans "Apply" %}</span>
             </button>
+            <div class="btn-group pull-right">
+                <button class="btn btn-lg btn-primary btn-active-primary" type="button" data-bind="click: function(){ clear(); }">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>{% trans "Clear" %}</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
