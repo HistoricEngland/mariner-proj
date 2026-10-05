@@ -28,7 +28,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "arches==7.6.25",
-    "mariner-app==1.0.2",
+    "mariner-app @ git+https://github.com/HistoricEngland/mariner-app.git@release/1.0.2",
     "arches-he-sysref-funcs==1.0.2",
     "arches-he-data-transformation==1.0.2",
     "arches-he-location-extensions==1.0.0",
