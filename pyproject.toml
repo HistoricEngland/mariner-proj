@@ -4,11 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mariner_proj"
-readme = "README.md"
+description = "This is the top level Arches project for the Marine HER system."
+readme = {file = "README.md", content-type = "text/markdown"}
 authors = []
+maintainers = [{name = "Historic England", email = "donotreply@historicengland.org.uk"}]
+keywords = ["arches", "extension", "django", "heritage", "historic-data", "marine-data"]
 license = {text = "GNU AGPL3"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -33,7 +36,7 @@ dependencies = [
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
     "opentelemetry-instrumentation-celery"
 ]
-version = "1.2.0rc1"
+version = "1.2.0"
 
 [project.optional-dependencies]
 dev = [
@@ -45,5 +48,15 @@ dev = [
     "black==24.4.2",
 ]
 
+[project.urls]
+Homepage = "https://github.com/HistoricEngland/mariner-proj"
+Repository = "https://github.com/HistoricEngland/mariner-proj.git"
+Issues = "https://github.com/HistoricEngland/mariner-proj/issues"
+Changelog = "https://github.com/HistoricEngland/mariner-proj/releases"
+ 
+[tool.setuptools.packages.find]
+include = ["mariner_proj*"]
+exclude = ["mariner_proj.logs*"]
+
 [tool.setuptools]
-packages = ["mariner_proj"]
+include-package-data = true
