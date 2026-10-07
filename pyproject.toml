@@ -11,7 +11,7 @@ maintainers = [{name = "Historic England", email = "donotreply@historicengland.o
 keywords = ["arches", "extension", "django", "heritage", "historic-data", "marine-data"]
 license = {text = "GNU AGPL3"}
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -36,7 +36,7 @@ dependencies = [
     "azure-monitor-opentelemetry>=1.0.0,<2.0.0",
     "opentelemetry-instrumentation-celery"
 ]
-version = "1.2.0"
+version = "1.3.x"
 
 [project.optional-dependencies]
 dev = [
