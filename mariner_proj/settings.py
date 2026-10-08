@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     "django_celery_results",
     # "silk",
     "mariner_proj",  # Ensure the project is listed before any other arches applications
+    "arches_he_common_ui",  # ph_112381 discovery spike - remove after investigation
     "mariner_app",
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
@@ -215,8 +216,14 @@ TEMPLATES = build_templates_config(
         "arches.app.utils.context_processors.map_info",
         "arches.app.utils.context_processors.app_settings",
         "mariner_proj.context_processors.project_settings",
+        "arches_he_common_ui.context_processors.common_ui_settings",  # ph_112381 discovery spike
     ],
 )
+
+# ph_112381 discovery spike: host-level overrides of arches_he_common_ui default values
+COMMON_UI_HEADLINE = "Pauls Common-UI Test"
+COMMON_UI_FEATURE_IMAGE = "/media/img/paul-test-featurette.jpg"
+COMMON_UI_FOOTER_TEXT = "Footer text set via mariner_proj settings"
 
 ALLOWED_HOSTS = []
 
