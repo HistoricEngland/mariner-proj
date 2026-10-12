@@ -221,9 +221,9 @@ TEMPLATES = build_templates_config(
 )
 
 # ph_112381 discovery spike: host-level overrides of arches_he_common_ui default values
-COMMON_UI_HEADLINE = "Pauls Common-UI Test"
-COMMON_UI_FEATURE_IMAGE = "/media/img/paul-test-featurette.jpg"
-COMMON_UI_FOOTER_TEXT = "Footer text set via mariner_proj settings"
+COMMON_UI_HEADLINE = "Marine Historic Environment Record"
+COMMON_UI_LEAD_TEXT = "The online heritage information and management system for the marine historic environment."
+COMMON_UI_FOOTER_TEXT = "© Historic England"
 
 ALLOWED_HOSTS = []
 
