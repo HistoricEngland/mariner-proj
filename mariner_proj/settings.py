@@ -36,6 +36,12 @@ FUNCTION_LOCATIONS.append("arches_he_sysref_funcs.functions")
 SEARCH_COMPONENT_LOCATIONS.append("mariner_app.search.components")
 ETL_MODULE_LOCATIONS.append("arches_he_data_transformation.etl_modules")
 
+DATATYPE_LOCATIONS.append("arches_he_descriptors.datatypes")
+FUNCTION_LOCATIONS.append("arches_he_descriptors.functions")
+SEARCH_COMPONENT_LOCATIONS.append("arches_he_descriptors.search_components")
+
+
+
 PRIMARY_REFERENCE_NUMBER_INITIAL_SEED = 1000000
 # This is the initial seed for the primary reference number, which is incremented by 1 for each new resource.
 # Set the initial seed to the highest primary reference number in your database + 20
@@ -159,6 +165,7 @@ INSTALLED_APPS = (
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
     "arches_he_location_extensions",
+    "arches_he_descriptors",
 )
 
 # Placing this last ensures any templates provided by Arches Applications
@@ -170,6 +177,7 @@ ARCHES_APPLICATIONS = (
     "arches_he_sysref_funcs",
     "arches_he_data_transformation",
     "arches_he_location_extensions",
+    "arches_he_descriptors",
 )
 
 MIDDLEWARE = [
